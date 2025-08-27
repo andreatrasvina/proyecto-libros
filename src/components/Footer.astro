@@ -1,1 +1,73 @@
-Hola soy el footer
+---
+import "../styles/global.css";
+---
+
+<div class="contenedor w-full">
+  <div>
+    <img src="/logouabcs.png" alt="logo uabcs" class="w-74" />
+
+    <section class="mt-4">
+      <h1 class="text-lg text-black lato-bold">Dirección:</h1>
+      <h2 class="text-lg text-black">
+        Boulevard Forjadores S/N entre calle Av. Universidad y Calle félix
+        Agramont Cota Col. Universitario. La Paz, Baja California Sur, México
+      </h2>
+      <h1 class="text-lg lato-bold mt-4 text-black">Contacto:</h1>
+      <section class="grid mt-2">
+        <a href="/" class="text-black text-lg">612-123/8800</a>
+        <a href="/" class="text-black text-lg">email@example.com</a>
+      </section>
+    </section>
+  </div>
+
+  <div class="gap-x-48 lato-bold text-xl">
+    <a href="/">Enlace Uno</a>
+    <a href="/">Enlace Dos</a>
+    <a href="/">Enlace Tres</a>
+    <a href="/">Enlace Cuatro</a>
+    <a href="/">Enlace Cinco</a>
+    <a href="/">Enlace Seis</a>
+    <a href="/">Enlace Siete</a>
+    <a href="/">Enlace Ocho</a>
+    <a href="/">Enlace Nueve</a>
+    <a href="/">Enlace Diez</a>
+  </div>
+</div>
+
+<div class="flex w-full social-media">
+  <div>
+    <h1>Hola</h1>
+    <h1>Hola</h1>
+    <h1>Hola</h1>
+    <h1>Hola</h1>
+  </div>
+</div>
+
+<style>
+  .contenedor {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 500px;
+    background: #f2f2f2;
+  }
+
+  .contenedor div:first-child {
+    padding: 8%;
+  }
+
+  .contenedor div:nth-child(2) {
+    display: grid;
+    padding: 8% 0;
+    grid-template-columns: 1fr 1fr;
+    margin: 0 auto;
+  }
+
+  .social-media {
+    background: lightcoral;
+  }
+
+  .social-media div {
+    display: flex;
+    margin: 0 auto;
+  }
+</style>
