@@ -1,15 +1,45 @@
 ---
-import Welcome from "../components/Welcome.astro";
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
 <Layout>
   <Navbar />
-  <!-- <Welcome /> -->
-  <Footer />
+
+    <section class="max-w-7xl mx-auto px-6 py-16">
+
+      <!--contenedor del texto en dos columnas-->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+
+        <!--columna izquierda: titulo-->
+        <h1 class="text-5xl font-bold leading-tight">
+          Bienvenido a nuestra<br>
+          plataforma educativa<br>
+          interactiva
+        </h1>
+
+        <!--columna derecha: parrafo y los dos botones-->
+        <div class="flex flex-col justify-center">
+          
+          <p class="text-gray-700 mb-6">
+            Nuestra misión es ofrecer una experiencia de aprendizaje única a través de libros interactivos sobre geología. 
+            Explora nuestra colección y descubre una nueva forma de aprender.
+          </p>
+
+          <div class="flex gap-4">
+            <a href="#explorar" class="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition">Explorar</a>
+            <a href="#iniciar" class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300 transition">Iniciar</a>
+          </div>
+        </div>
+      </div>
+
+      <!--iamgen de la uabcs-->
+      <div>
+        <img src="/public/uabcsimage.png" alt="Campus UABCS" class="w-full rounded shadow">
+      </div>
+</section>
+      
+  <!-- <Footer /> -->
 </Layout>
