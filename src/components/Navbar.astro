@@ -1,14 +1,47 @@
 ---
 import "../styles/global.css";
-import tailwindcss from "@tailwindcss/vite";
 ---
 
 <div id="container">
-  <h1 class="lato-regular text-4xl text-black-50">hola soy un navbar</h1>
+    
+  <nav class="navbar" >
+
+    <div class="contenedor flex">
+        <a href="/">
+            <img src="/public/logouabcs.png" width="200"/>        
+        </a>
+    
+        <ul class="ul flex items-center gap-14">
+            <li><a href="/" class="lato-regular">Inicio Rápido</a></li>
+            <li><a href="" class="lato-regular">Libros Interactivos</a></li>
+            <li><a href="" class="lato-regular">Contacto</a></li>
+            <li><a href="" class="lato-regular">Idioma</a></li>
+            <li><a href="" class="lato-regular">Modo Oscuro</a></li>
+        </ul>
+    </div>
+
+  </nav>
+
 </div>
 
 <style>
-  #background {
-    position: fixed;
+  .navbar {
+    background-color: #F2F2F2;
+    display: flex;
+    position: sticky;
+    width: 100%;
   }
+
+  .contenedor{
+    width: 100%;
+    padding: 10px 50px 10px 50px;
+  }
+
+  .ul{
+    justify-content: flex-end;
+    width: 100%;
+  }
+
 </style>
+
+
