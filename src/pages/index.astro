@@ -50,7 +50,102 @@ import BookGrid from "../components/BookGrid.astro";
       />
     </div>
 
-    <BookGrid />
+    <div class="contenedor w-full flex justify-center mt-24">
+      <div class="text-center">
+        <p class="lato-regular mb-6">Portafolio</p>
+        <h1 class="text-4xl lato-bold">Descubre nuestros libros</h1>
+        <p class="mt-8 lato-regular">
+          Explora una variedad de libros interactivos
+        </p>
+
+        <!-- GRID DE LIBROS -->
+        <div
+          class="matriz grid grid-cols-1 md:grid-cols-2 sm:grid-cols-1 gap-8 mt-18"
+        >
+          <!-- Cuerpo de la tarjeta  -->
+          <div
+            class="shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition"
+          >
+            <img
+              class="w-full h-88 object-cover"
+              src="/book1.webp"
+              alt="Book Cover"
+            />
+
+            <div class="p-6 text-left">
+              <h1 class="text-lg lato-bold mb-2">
+                A Conceptual Overview Of Surface and Near-Surface Brines an
+                Evaporite Minerals
+              </h1>
+              <h3 class="text-gray-500 mb-4 lato-regular">Warren W. Wood</h3>
+
+              <!-- Etiquetas -->
+              <div class="flex flex-wrap gap-2 mb-4">
+                <span class="px-3 py-1 text-sm bg-gray-200">Geología</span>
+                <span class="px-3 py-1 text-sm bg-gray-200">Hidrología</span>
+                <span class="px-3 py-1 text-sm bg-gray-200">Agua</span>
+              </div>
+
+              <!-- Boton ver proyecto -->
+              <a href="#" class="text-blue-600 font-semibold hover:underline"
+                >Ver proyecto →</a
+              >
+            </div>
+          </div>
+
+          <!-- TARJETA 2 -->
+          <div
+            class="shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition"
+          >
+            <!-- Fondo gris para sustuir con la imagen -->
+            <div
+              class="w-full h-88 bg-gray-200 flex items-center justify-center"
+            >
+              <span class="text-gray-400">Imagen no disponible</span>
+            </div>
+            <!-- <img -->
+            <!--   class="w-full h-88 object-cover" -->
+            <!--   src="/book1.webp" -->
+            <!--   alt="Book Cover" -->
+            <!-- /> -->
+
+            <div class="p-6 text-left">
+              <h1 class="text-lg lato-bold mb-2">Libro Interactivo 2</h1>
+              <h3 class="text-gray-500 mb-4">
+                Una experiencia única que transorma la forma de aprender.
+              </h3>
+
+              <!-- Etiquetas -->
+              <div class="flex flex-wrap gap-2 mb-4">
+                <span class="px-3 py-1 text-sm bg-gray-200 rounded-full"
+                  >Tecnología Educariva</span
+                >
+                <span class="px-3 py-1 text-sm bg-gray-200 rounded-full"
+                  >Aprendizaje Activo</span
+                >
+                <span class="px-3 py-1 text-sm bg-gray-200 rounded-full"
+                  >Experiencia Única</span
+                >
+              </div>
+
+              <!-- Boton ver proyecto -->
+              <a href="#" class="text-blue-600 font-semibold hover:underline"
+                >Ver proyecto →</a
+              >
+            </div>
+          </div>
+        </div>
+        <!-- BOTÓN VER TODOS -->
+        <div class="mt-24 mb-24">
+          <button
+            class="px-6 py-2 border border-gray-400 rounded hover:bg-gray-100"
+          >
+            Ver todo
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- <BookGrid /> -->
   </section>
 
   <Footer />
