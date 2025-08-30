@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
+import BookPreview from "../components/BookPreview.astro";
 // import BookGrid from "../components/BookGrid.astro";
 ---
 
@@ -12,7 +13,7 @@ import Footer from "../components/Footer.astro";
     <!--contenedor del texto en dos columnas-->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
       <!--columna izquierda: titulo-->
-      <h1 class="text-5xl font-bold leading-tight">
+      <h1 class="text-5xl lato-bold leading-tight">
         Bienvenido a nuestra<br />
         plataforma educativa<br />
         interactiva
@@ -145,7 +146,7 @@ import Footer from "../components/Footer.astro";
         </div>
       </div>
     </div>
-    <!-- <BookGrid /> -->
+    <BookPreview />
   </section>
 
   <Footer />
