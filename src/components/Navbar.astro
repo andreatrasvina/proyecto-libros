@@ -3,70 +3,98 @@ import "../styles/global.css";
 ---
 
 <div id="container">
-    
-  <nav class="navbar" >
-
+  <nav class="navbar">
     <div class="contenedor flex">
+      <a href="/">
+        <img src="/public/logouabcs.png" width="250" />
+      </a>
 
-        <a href="/">
-            <img src="/public/logouabcs.png" width="250"/>        
-        </a>
-    
-        <ul class="ul flex items-center gap-14 font-lato">
-            
-            <li><a href="/" class="font-regular text-gray-800 hover:text-blue-400 transition-colors duration-300">Inicio Rápido</a></li>
+      <ul class="ul flex items-center gap-14 font-lato">
+        <li>
+          <a
+            href="/"
+            class="font-regular text-gray-800 hover:text-blue-400 transition-colors duration-300"
+            >Inicio Rápido</a
+          >
+        </li>
 
-            <li><a href="" class="font-regular text-gray-800 hover:text-blue-400 transition-colors duration-300">Libros Interactivos</a></li>
+        <li>
+          <a
+            href=""
+            class="font-regular text-gray-800 hover:text-blue-400 transition-colors duration-300"
+            >Libros Interactivos</a
+          >
+        </li>
 
-            <li><a href="" class="font-regular text-gray-800 hover:text-blue-400 transition-colors duration-300">Contacto</a></li>
+        <li>
+          <a
+            href=""
+            class="font-regular text-gray-800 hover:text-blue-400 transition-colors duration-300"
+            >Contacto</a
+          >
+        </li>
 
-            <!-- seleccionar idioma -->
-            <li class="relative group">
-                <a href="#" class="flex items-center gap-2 font-regular text-gray-800 hover:text-blue-400 transition-colors duration-300 cursor-pointer">
-                
-                    English
+        <!-- seleccionar idioma -->
+        <li class="relative group">
+          <a
+            href="#"
+            class="flex items-center gap-2 font-regular text-gray-800 hover:text-blue-400 transition-colors duration-300 cursor-pointer"
+          >
+            English
 
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                </svg>
-                </a>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-4 h-4 transition-transform duration-300 group-hover:rotate-180"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </a>
 
-                <!--submenu de opciones-->
-                <ul class="absolute left-0 mt-2 w-32 bg-white border border-gray-200 rounded shadow-lg opacity-0 translate-y-2 scale-95 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 invisible group-hover:visible transition-all duration-300 z-10">
-                <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Español</a></li>
-                <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">English</a></li>
-                <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Deutsch</a></li>
-                </ul>
+          <!--submenu de opciones-->
+          <ul
+            class="absolute left-0 mt-2 w-32 bg-white border border-gray-200 rounded shadow-lg opacity-0 translate-y-2 scale-95 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 invisible group-hover:visible transition-all duration-300 z-10"
+          >
+            <li>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100">Español</a>
             </li>
+            <li>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100">English</a>
+            </li>
+            <li>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100">Deutsch</a>
+            </li>
+          </ul>
+        </li>
 
-            <!-- seleccionar el color del sistema -->
-            <li><a href="" class="">Modo Oscuro</a></li>
-
-        </ul>
+        <!-- seleccionar el color del sistema -->
+        <li><a href="" class="">Modo Oscuro</a></li>
+      </ul>
     </div>
-
   </nav>
-
 </div>
 
 <style>
   .navbar {
-    background-color: #F2F2F2;
+    background-color: #f2f2f2;
     display: flex;
     position: sticky;
     width: 100%;
   }
 
-  .contenedor{
+  .contenedor {
     width: 100%;
     padding: 10px 75px 10px 75px;
   }
 
-  .ul{
+  .ul {
     justify-content: flex-end;
     width: 100%;
   }
-
 </style>
-
-

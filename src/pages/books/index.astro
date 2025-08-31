@@ -1,11 +1,35 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import BookPreview from "../../components/BookPreview.astro";
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
 <Layout>
+  <div class="max-w-[75%] flex flex-col justify-center mt-22 mx-auto">
+    <div>
+      <h1 class="lato-bold">Detalles de los libros</h1>
+      <h1 class="lato-bold text-7xl mt-8">Explora nuestros libros</h1>
+      <h2 class="lato-regular text-xl w-[90%] mt-8 mb-8">
+        Descubre una nueva forma de aprender.
+      </h2>
+    </div>
+
+    <!-- <div class="flex justify-center mt-22"> -->
+    <!--   <hr class="border-t-1 border-black w-[100%] max-w-[100%]" /> -->
+    <!-- </div> -->
+  </div>
+
   <BookPreview />
+  <BookPreview />
+  <BookPreview />
+  <BookPreview />
+  <BookPreview />
+  <BookPreview />
+  <BookPreview />
+
+  <!-- BOTÓN VER TODOS -->
+  <div class="mt-24 mb-24 ver-mas flex justify-center">
+    <button class="px-6 py-2 border border-gray-400 rounded hover:bg-gray-100"
+      >Ver más</button
+    >
+  </div>
 </Layout>
