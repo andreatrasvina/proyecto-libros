@@ -1,0 +1,27 @@
+---
+import "../styles/global.css";
+//const { exercises = [] } = Astro.props;
+---
+<html>
+
+  <body class="flex">
+    <!--exercise count-->
+    <aside class="w-64 bg-gray-100 p-4 space-y-4 sticky top-0 h-screen">
+      <h2 class="font-bold mb-4">Contenido</h2>
+      <ul>
+          <li>
+            <a href="" class="flex items-center gap-2 hover:text-blue-500">
+              introduccion
+            </a>
+          </li>
+      </ul>
+    </aside>
+
+    <!--index md-->
+    <main class="flex-1 overflow-y-auto">
+      <div class="max-w-4xl mx-auto p-8">
+        <slot />
+      </div>
+    </main>
+  </body>
+</html>
