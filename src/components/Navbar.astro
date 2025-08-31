@@ -6,14 +6,25 @@ import "../styles/global.css";
   <nav class="navbar">
     <div class="contenedor flex">
       <a href="/">
-        <img src="/public/logouabcs.png" width="250" />
+        <img
+          src="/logouabcs.png"
+          alt="logo uabcs"
+          class="w-74 light-mode-logo"
+          width="250"
+        />
+        <img
+          src="/logouabcsblanco.png"
+          alt="logo uabcs"
+          class="w-94 dark-mode-logo"
+          width="400"
+        />
       </a>
 
       <ul class="ul flex items-center gap-14 font-lato">
         <li>
           <a
             href="/"
-            class="font-regular text-gray-800 hover:text-blue-400 transition-colors duration-300"
+            class="font-regular text-[var(--titles)] hover:text-blue-400 transition-colors duration-300"
             >Inicio Rápido</a
           >
         </li>
@@ -21,7 +32,7 @@ import "../styles/global.css";
         <li>
           <a
             href=""
-            class="font-regular text-gray-800 hover:text-blue-400 transition-colors duration-300"
+            class="font-regular text-[var(--titles)] hover:text-blue-400 transition-colors duration-300"
             >Libros Interactivos</a
           >
         </li>
@@ -29,7 +40,7 @@ import "../styles/global.css";
         <li>
           <a
             href=""
-            class="font-regular text-gray-800 hover:text-blue-400 transition-colors duration-300"
+            class="font-regular text-[var(--titles)] hover:text-blue-400 transition-colors duration-300"
             >Contacto</a
           >
         </li>
@@ -38,7 +49,7 @@ import "../styles/global.css";
         <li class="relative group">
           <a
             href="#"
-            class="flex items-center gap-2 font-regular text-gray-800 hover:text-blue-400 transition-colors duration-300 cursor-pointer"
+            class="flex items-center gap-2 font-regular text-[var(--titles)] hover:text-blue-400 transition-colors duration-300 cursor-pointer"
           >
             English
 
@@ -74,15 +85,46 @@ import "../styles/global.css";
         </li>
 
         <!-- seleccionar el color del sistema -->
-        <li><a href="" class="">Modo Oscuro</a></li>
+        <li>
+          <a href="#" class="text-[var(--titles)]" id="theme-toggle"
+            >Modo Oscuro</a
+          >
+        </li>
       </ul>
     </div>
   </nav>
 </div>
 
+<script>
+  const themeToggle = document.getElementById("theme-toggle");
+  const body = document.body;
+
+  //Preferencia por localstorage
+  const currentTheme = localStorage.getItem("theme");
+  if (currentTheme) {
+    body.classList.add(currentTheme);
+  }
+
+  // Agrega el "listener" para el clic en el botón
+  themeToggle.addEventListener("click", () => {
+    // Cambia la clase en el body
+    body.classList.toggle("dark-mode");
+
+    // Guarda la preferencia en localStorage
+    if (body.classList.contains("dark-mode")) {
+      localStorage.setItem("theme", "dark-mode");
+    } else {
+      localStorage.removeItem("theme");
+    }
+  });
+</script>
+
 <style>
   .navbar {
-    background-color: #f2f2f2;
+    background-color: var(--navfooter);
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
     display: flex;
     position: sticky;
     width: 100%;

@@ -10,7 +10,7 @@ import Layout from "../layouts/Layout.astro";
     <!--contenedor del texto en dos columnas-->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
       <!--columna izquierda: titulo-->
-      <h1 class="text-5xl lato-bold leading-tight">
+      <h1 class="text-5xl lato-bold leading-tight title-[var(--titles)]">
         Bienvenido a nuestra<br />
         plataforma educativa<br />
         interactiva
@@ -51,7 +51,9 @@ import Layout from "../layouts/Layout.astro";
     <div class="contenedor w-full flex justify-center mt-24">
       <div class="text-center">
         <p class="lato-regular mb-6">Portafolio</p>
-        <h1 class="text-4xl lato-bold">Descubre nuestros libros</h1>
+        <h1 class="text-4xl lato-bold">
+          Descubre nuestros libros interactivos
+        </h1>
         <p class="mt-8 lato-regular">
           Explora una variedad de libros interactivos
         </p>
@@ -62,7 +64,7 @@ import Layout from "../layouts/Layout.astro";
         >
           <!-- Cuerpo de la tarjeta  -->
           <div
-            class="shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition"
+            class="shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition bg-[var(--cards)]"
           >
             <img
               class="w-full h-88 object-cover"
@@ -79,9 +81,18 @@ import Layout from "../layouts/Layout.astro";
 
               <!-- Etiquetas -->
               <div class="flex flex-wrap gap-2 mb-4">
-                <span class="px-3 py-1 text-sm bg-gray-200">Geología</span>
-                <span class="px-3 py-1 text-sm bg-gray-200">Hidrología</span>
-                <span class="px-3 py-1 text-sm bg-gray-200">Agua</span>
+                <span
+                  class="px-3 py-1 text-sm text-[var(--titles)] bg-[var(--navfooternt)]"
+                  >Geología</span
+                >
+                <span
+                  class="px-3 py-1 text-sm text-[var(--titles)] bg-[var(--navfooternt)]"
+                  >Hidrología</span
+                >
+                <span
+                  class="px-3 py-1 text-sm text-[var(--titles)] bg-[var(--navfooternt)]"
+                  >Agua</span
+                >
               </div>
 
               <!-- Boton ver proyecto -->

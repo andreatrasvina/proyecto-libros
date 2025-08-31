@@ -20,3 +20,64 @@
   font-weight: 400;
   font-style: normal;
 }
+
+/* Clases para el modo dark/light: */
+
+:root {
+  /* Esta solo para el nav y el footer */
+  --navfooter: #f2f2f2;
+
+  /* //Lo contrario por si se ocupa */
+  --navfooternt: #1a1b1f;
+
+  /* Para las cards */
+  --cards: #fff;
+
+  /* Esta va para los titulos grandes */
+  --titles: #030906;
+
+
+  --color-background: #fdfdfd;
+  --color-primary: #000;
+}
+
+body.dark-mode {
+  /* Esta solo para el nav y el footer */
+  --navfooter: #131314;
+
+  /* //Lo contrario por si se ocupa */
+  --navfooternt: #1a1b1f;
+
+  /* Para las cards */
+  --cards: #131314;
+
+  /* Esta va para los titulos grandes */
+  --titles: #f2f2f2;
+
+  --color-background: #1a1b1f;
+  --color-primary: #ffffff;
+}
+
+h1,
+p {
+  color: var(--titles);
+}
+
+/* Aplica las variables a los elementos */
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark-mode-logo {
+  display: none;
+}
+
+body.dark-mode .dark-mode-logo {
+  display: block;
+}
+
+body.dark-mode .light-mode-logo {
+  display: none;
+}
