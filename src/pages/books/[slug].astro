@@ -1,0 +1,37 @@
+---
+// Importa las funciones y tipos necesarios de Astro
+import { getCollection, type CollectionEntry } from "astro:content";
+import BookLayout from "../../layouts/BookLayout.astro";
+
+// La función getStaticPaths le dice a Astro qué páginas generar
+export async function getStaticPaths() {
+  // Obtiene todos los archivos de la colección 'books'
+  const allBooks = await getCollection("books");
+
+  // Retorna un arreglo de objetos, cada uno para una página
+  return allBooks.map((book) => ({
+    params: {
+      // Usa el slug del libro para el nombre de la ruta
+      slug: book.slug,
+    },
+    props: {
+      // Pasa los datos del libro a la plantilla
+      book,
+    },
+  }));
+}
+
+// 1. Define el tipo de la variable `book` usando 'CollectionEntry'
+type Props = {
+  book: CollectionEntry<"books">;
+};
+
+// 2. Desestructura `book` de `Astro.props` y asigna el tipo correcto
+const { book } = Astro.props as Props;
+const { Content } = await book.render();
+---
+
+<BookLayout>
+  <h1>{book.data.title}</h1>
+  <Content />
+</BookLayout>

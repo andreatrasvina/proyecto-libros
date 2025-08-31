@@ -27,18 +27,20 @@ console.log(books)
   {  
     books.map((book: { data: any; slug: any; }) => {
       const { data, slug } = book;
-      const { title, author, img, date, place, publisher, pages, link } = data;
+      const { title, author,  img, date, place, pages  } = data;
 
       return(
         <div class="flex gap-8 p-6 bg-white max-w-[75%] mx-auto mt-8 border-t border-gray-800">
           
           {/* <!-- imagen del libro --> */}
           <div>
-            <img
-              src={`${img}`}
-              alt="Portada del libro"
-              class="max-w-[500px] max-h-[300px] h-auto rounded-sm shadow-md object-cover"
-            />
+<a href={`/books/${slug}`}>
+  <img
+    src={`${img}`}
+    alt="Portada del libro"
+    class="max-w-[500px] max-h-[300px] h-auto rounded-sm shadow-md object-cover"
+  />
+</a>
           </div>
 
           {/* <!-- información del libro --> */}
