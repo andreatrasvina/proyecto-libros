@@ -1,6 +1,12 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import BookPreview from "../../components/BookPreview.astro";
+import { getCollection } from "astro:content";
+
+const books = await getCollection('books')
+console.log(books)
+
+
 ---
 
 <Layout>
@@ -18,13 +24,67 @@ import BookPreview from "../../components/BookPreview.astro";
     <!-- </div> -->
   </div>
 
-  <BookPreview />
-  <BookPreview />
-  <BookPreview />
-  <BookPreview />
-  <BookPreview />
-  <BookPreview />
-  <BookPreview />
+  {  
+    books.map((book: { data: any; slug: any; }) => {
+      const { data, slug } = book;
+      const { title, author, img, date, place, publisher, pages, link } = data;
+
+      return(
+        <div class="flex gap-8 p-6 bg-white max-w-[75%] mx-auto mt-8 border-t border-gray-800">
+          
+          {/* <!-- imagen del libro --> */}
+          <div>
+            <img
+              src={`${img}`}
+              alt="Portada del libro"
+              class="max-w-[500px] max-h-[300px] h-auto rounded-sm shadow-md object-cover"
+            />
+          </div>
+
+          {/* <!-- información del libro --> */}
+          <div class="flex-1 flex flex-col justify-between">
+            <div>
+              <h2 class="text-2xl font-bold mb-2">{title}</h2>
+              <div class="flex gap-2 mb-4">
+                <span class="px-2 py-1 text-xs text-white bg-blue-300 rounded-full">
+                  Educación Digital
+                </span>
+                <span class="px-2 py-1 text-xs text-blue-900 bg-blue-100 rounded-full">
+                  Libros Interactivos
+                </span>
+                <span class="px-2 py-1 text-xs bg-blue-200 rounded-full">
+                  Aprendizaje Activo
+                </span>
+              </div>
+              <p class="text-gray-700 mb-4">
+                {}
+              </p>
+              <ul class="text-gray-600 text-sm space-y-1 mb-4">
+                <li><strong>Autor:</strong> {author}</li>
+                <li><strong>Fecha:</strong> {date}</li>
+                <li><strong>Lugar:</strong> {place}</li>
+                <li><strong>Páginas:</strong> {pages}</li>
+              </ul>
+            </div>
+
+            {/* <!-- botones --> */}
+            <div class="flex gap-3">
+              <button
+                class="px-4 py-2 bg-black text-white rounded-sm hover:bg-gray-800 transition"
+              >
+                Leer
+              </button>
+              <button
+                class="px-4 py-2 bg-gray-200 text-gray-800 rounded-sm hover:bg-gray-300 transition"
+              >
+                Ejercicios
+              </button>
+            </div>
+          </div>
+        </div>
+      )
+    })
+  }
 
   <!-- BOTÓN VER TODOS -->
   <div class="mt-24 mb-24 ver-mas flex justify-center">
