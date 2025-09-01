@@ -28,7 +28,13 @@
   --navfooter: #f2f2f2;
 
   /* //Lo contrario por si se ocupa */
-  --navfooternt: #1a1b1f;
+  --navfooternt: #e6e7eb;
+
+  /* Para las rayas del sitio */
+  --rayas: #e8e8ec;
+
+  /* Para boton positivo u oscuro */
+  --botonOscuro: #131314;
 
   /* Para las cards */
   --cards: #fff;
@@ -45,6 +51,12 @@ body.dark-mode {
   /* Esta solo para el nav y el footer */
   --navfooter: #131314;
 
+  /* Para las rayas del sitio */
+  --rayas: #16191c;
+
+  /* Para boton positivo u oscuro */
+  --botonOscuro: #131314;
+
   /* //Lo contrario por si se ocupa */
   --navfooternt: #1a1b1f;
 
@@ -59,6 +71,7 @@ body.dark-mode {
 }
 
 h1,
+h2,
 p {
   color: var(--titles);
 }

@@ -31,7 +31,7 @@ import "../styles/global.css";
 
         <li>
           <a
-            href=""
+            href="/books"
             class="font-regular text-[var(--titles)] hover:text-blue-400 transition-colors duration-300"
             >Libros Interactivos</a
           >
@@ -105,12 +105,10 @@ import "../styles/global.css";
     body.classList.add(currentTheme);
   }
 
-  // Agrega el "listener" para el clic en el botón
+  // Agrega el listener para el clic en el botón
   themeToggle.addEventListener("click", () => {
-    // Cambia la clase en el body
     body.classList.toggle("dark-mode");
 
-    // Guarda la preferencia en localStorage
     if (body.classList.contains("dark-mode")) {
       localStorage.setItem("theme", "dark-mode");
     } else {
