@@ -11,7 +11,7 @@ import "../styles/global.css";
       <ul>
           <li>
             <a href="" class="flex items-center gap-2 hover:text-blue-500">
-              introduccion
+              <slot name="sidebar-li"/>
             </a>
           </li>
       </ul>
@@ -20,7 +20,9 @@ import "../styles/global.css";
     <!--index md-->
     <main class="flex-1 overflow-y-auto">
       <div class="max-w-4xl mx-auto p-8">
-        <slot />
+        <slot name="presentation"/>
+        
+        <slot name="introduction" />
       </div>
     </main>
   </body>
