@@ -31,7 +31,7 @@ import "../styles/global.css";
 
         <li>
           <a
-            href="/books"
+            href=""
             class="font-regular text-[var(--titles)] hover:text-blue-400 transition-colors duration-300"
             >Libros Interactivos</a
           >
@@ -84,7 +84,7 @@ import "../styles/global.css";
           </ul>
         </li>
 
-        <!-- seleccionar el color del sistema -->
+        <!-- cambio de colorsito -->
         <li>
           <a href="#" class="text-[var(--titles)]" id="theme-toggle"
             >Modo Oscuro</a
@@ -105,14 +105,17 @@ import "../styles/global.css";
     body.classList.add(currentTheme);
   }
 
-  // Agrega el listener para el clic en el botón
-  themeToggle.addEventListener("click", () => {
+  // Agrega el "listener" para el clic en el botón
+  themeToggle.addEventListener("click", (e) => {
+    e.preventDefault();
     body.classList.toggle("dark-mode");
 
     if (body.classList.contains("dark-mode")) {
       localStorage.setItem("theme", "dark-mode");
+      themeToggle.textContent = "Modo claro";
     } else {
       localStorage.removeItem("theme");
+      themeToggle.textContent = "Modo oscuro";
     }
   });
 </script>
