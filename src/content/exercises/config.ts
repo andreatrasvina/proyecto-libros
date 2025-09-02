@@ -1,10 +1,14 @@
-import { defineCollection, z } from "astro:content";
+// src/content/exercises/config.ts
+import { z, defineCollection } from 'astro:content';
 
-const exercises = defineCollection({
-    schema: z.object({
-        title: z.string(),
-        author: z.string(),
-    })
-})
+const exercisesCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    bookSlug: z.string(),
+  }),
+});
 
-export const collections = { exercises }
+export const collections = {
+  'exercises': exercisesCollection,
+};

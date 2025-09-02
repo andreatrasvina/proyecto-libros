@@ -1,6 +1,6 @@
 ---
-title: "Ejercicio 21"
-author: "Andrea Lucero"
+title: "Titulo del Ejercicio 2"
+bookSlug: "book-02"
 ---
 
 Aquí va el contenido del ejercicio.
