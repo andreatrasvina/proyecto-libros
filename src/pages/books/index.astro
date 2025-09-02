@@ -1,12 +1,10 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import BookPreview from "../../components/BookPreview.astro";
+// import BookPreview from "../../components/BookPreview.astro";
 import { getCollection } from "astro:content";
 
-const books = await getCollection('books')
-console.log(books)
-
-
+const books = await getCollection("books");
+console.log(books);
 ---
 
 <Layout>
@@ -24,14 +22,13 @@ console.log(books)
     <!-- </div> -->
   </div>
 
-  {  
-    books.map((book: { data: any; slug: any; }) => {
+  {
+    books.map((book: { data: any; slug: any }) => {
       const { data, slug } = book;
-      const { title, author,  img, date, place, pages  } = data;
+      const { title, author, img, date, place, pages, description } = data;
 
-      return(
+      return (
         <div class="flex gap-8 p-6 bg-[var(--cards)] max-w-[75%] mx-auto mt-8 border-t border-[var(--rayas)]">
-          
           {/* <!-- imagen del libro --> */}
           <div>
             <a href={`/books/${slug}`}>
@@ -58,43 +55,45 @@ console.log(books)
                   Aprendizaje Activo
                 </span>
               </div>
-              <p class="text-gray-700 mb-4">
-                {}
-              </p>
-              <ul class="text-gray-600 text-sm space-y-1 mb-4">
-                <li><strong>Autor:</strong> {author}</li>
-                <li><strong>Fecha:</strong> {date}</li>
-                <li><strong>Lugar:</strong> {place}</li>
-                <li><strong>Páginas:</strong> {pages}</li>
+              <p class="text-gray-700 mb-4 lato-regular">{description}</p>
+              <ul class="text-[var(--titles)] text-sm space-y-1 mb-4">
+                <li>
+                  <strong>Autor:</strong> {author}
+                </li>
+                <li>
+                  <strong>Fecha:</strong> {date}
+                </li>
+                <li>
+                  <strong>Lugar:</strong> {place}
+                </li>
+                <li>
+                  <strong>Páginas:</strong> {pages}
+                </li>
               </ul>
             </div>
 
             {/* <!-- botones --> */}
             <div class="flex gap-3">
-              <button
-                class="px-4 py-2 border border-gray-400 rounded-sm hover:bg-gray-800 transition rounded hover:bg-[var(--navfooternt)] bg-[var(--cards)] text-[var(--titles)] transition-colors duration-300 ease-in-out"
-              >
+              <button class="px-4 py-2 border border-gray-400 rounded-sm hover:bg-gray-800 transition rounded hover:bg-[var(--navfooternt)] bg-[var(--cards)] text-[var(--titles)] transition-colors duration-300 ease-in-out">
                 Leer
               </button>
-              <button
-                class="px-4 py-2 bg-gray-200 text-gray-800 rounded-sm hover:bg-gray-300 transition"
-              >
+              <button class="px-4 py-2 bg-gray-200 text-gray-800 rounded-sm hover:bg-gray-300 transition">
                 Ejercicios
               </button>
             </div>
           </div>
         </div>
-      )
+      );
     })
   }
 
   <!-- BOTÓN VER TODOS -->
   <div class="mt-24 mb-24 ver-mas flex justify-center">
-          <a
-            href="/books"
-            class="px-6 py-2 border border-gray-400 rounded hover:bg-[var(--navfooternt)] bg-[var(--cards)] text-[var(--titles)] transition-colors duration-300 ease-in-out"
-          >
-            Ver más
-          </a>
+    <a
+      href="/books"
+      class="px-6 py-2 border border-gray-400 rounded hover:bg-[var(--navfooternt)] bg-[var(--cards)] text-[var(--titles)] transition-colors duration-300 ease-in-out"
+    >
+      Ver más
+    </a>
   </div>
 </Layout>

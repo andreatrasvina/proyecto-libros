@@ -1,6 +1,7 @@
 ---
 title: A Conceptual Overview of Surface and Near-Surface Brines and Evaporate Minerals
 author: Warren W. Wood
+description: Arid environments form in response to a combination of arid or semi-arid climate and a topography that results in the pervasive formation of brine and associated mineral deposits. The salts originate as dissolved solids in the rainfall and from the weathering of minerals as the rain infiltrates in the uplands and flows as groundwater to discharge in the lowlands where salt accumulates.
 img: book1.webp
 date: December 14, 2021
 place: Guelph Ontario, Canada
