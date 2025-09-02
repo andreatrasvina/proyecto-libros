@@ -1,6 +1,6 @@
 ---
-title: "Titulo del Ejercicio 2"
-bookSlug: "book-02"
+title: "Ejercicio 2"
+bookSlug: "book-01"
 ---
 
 Aquí va el contenido del ejercicio.

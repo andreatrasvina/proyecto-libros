@@ -5,14 +5,16 @@ import BookLayout from "../../layouts/BookLayout.astro";
 
 // La función getStaticPaths le dice a Astro qué páginas generar
 export async function getStaticPaths() {
+
   const allBooks = await getCollection("books");
   const allExercises = await getCollection("exercises");
 
-  return allBooks.map((book) => {
+  return allBooks.map((book: { slug: any; }) => {
     // Filtra los ejercicios para que solo se incluyan los de este libro
     const filteredExercises = allExercises.filter(
-      (exercise) => exercise.data.bookSlug === book.slug,
+      (exercise: { data: { bookSlug: any; }; }) => exercise.data.bookSlug === book.slug,
     );
+    // console.log(filteredExercises)
 
     return {
       params: {
@@ -33,12 +35,22 @@ type Props = {
 };
 
 // 2. Desestructura `book` y `exercises` de `Astro.props`
-const { book, exercises } = Astro.props as Props;
+const { book, exercises = [] } = Astro.props as Props;
 const { Content } = await book.render();
+
+console.log(exercises.map(e => e.data.title));
 ---
 
 <BookLayout>
-  <div slot="sidebar-li">Introduccion</div>
+  <!-- <div slot="sidebar-li">Introduccion</div> -->
+  <div slot="sidebar-li">
+    
+    {exercises.map((exercise) => (
+      <li>{exercise.data.title}</li>
+    ))}
+  
+</div>
+
   <div slot="introduction">
     <h1>{book.data.title}</h1>
     <Content />

@@ -1,5 +1,5 @@
 ---
-title: "Titulo del Ejercicio 1"
+title: "Ejercicio 1"
 bookSlug: "book-01"
 ---
 
