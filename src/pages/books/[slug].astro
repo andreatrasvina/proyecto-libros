@@ -13,7 +13,7 @@ export async function getStaticPaths() {
   const allBooks = await getCollection("books");
 
   // Retorna un arreglo de objetos, cada uno para una página
-  return allBooks.map((book) => ({
+  return allBooks.map((book: { slug: any; }) => ({
     params: {
       // Usa el slug del libro para el nombre de la ruta
       slug: book.slug,
@@ -49,9 +49,9 @@ const { Content } = await book.render();
   {  
     exercises.map((exercise: { data: any }) => {
       const { data } = exercise;
-      const { title, number } = data;
+      const { title, author } = data;
 
-      console.log('hola soy el PEPEPEPEPE',title)
+      console.log(title)
 
       return(
         <div>
