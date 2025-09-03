@@ -1,15 +1,15 @@
 ---
 // Importa las funciones y tipos necesarios
 import { getCollection, type CollectionEntry } from "astro:content";
-import BookLayout from "../../layouts/BookLayout.astro";
+import BookLayout from "../../../layouts/BookLayout.astro";
 
 export async function getStaticPaths() {
   const allBooks = await getCollection("books");
   const allExercises = await getCollection("exercises");
 
-  return allBooks.map((book) => {
+  return allBooks.map((book: { slug: any; }) => {
     const filteredExercises = allExercises.filter(
-      (exercise) => exercise.data.bookSlug === book.slug,
+      (exercise: { data: { bookSlug: any; }; }) => exercise.data.bookSlug === book.slug,
     );
 
     return {

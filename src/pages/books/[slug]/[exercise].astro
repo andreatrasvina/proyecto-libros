@@ -7,7 +7,7 @@ export async function getStaticPaths() {
 
   return allExercises.map((exercise) => ({
     params: {
-      bookSlug: exercise.data.bookSlug,
+      slug: exercise.data.bookSlug,
       // Usamos .split('/').pop() para obtener solo la última parte del slug
       exercise: exercise.slug.split("/").pop(),
     },
