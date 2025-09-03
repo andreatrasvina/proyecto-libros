@@ -2,6 +2,8 @@
 import { getCollection, type CollectionEntry } from "astro:content";
 import BookLayout from "../../../layouts/BookLayout.astro";
 
+const allExercises = await getCollection("exercises");
+
 export async function getStaticPaths() {
   const allExercises = await getCollection("exercises");
 
@@ -22,10 +24,19 @@ type Props = {
 };
 
 const { exercise } = Astro.props as Props;
+
+//filtra todos los ejercicios del mismo libro
+const bookExercises = allExercises.filter(
+  (ex) => ex.data.bookSlug === exercise.data.bookSlug
+);
+
 const { Content } = await exercise.render();
+//current book
+const currentBookSlug = exercise.data.bookSlug;
 ---
 
-<BookLayout>
+<BookLayout exercises={bookExercises} currentBookSlug={currentBookSlug}>
+
   <div slot="introduction">
     <h1>{exercise.data.title}</h1>
     <Content />

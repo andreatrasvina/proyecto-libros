@@ -1,6 +1,16 @@
 ---
+import { getCollection } from "astro:content";
 import "../styles/global.css";
-//const { exercises = [] } = Astro.props;
+
+const { exercises = [], currentBookSlug } = Astro.props;
+
+// const books = await getCollection("books");
+// const exercises = await getCollection("exercises");
+// //console.log(exercises);
+
+// const filteredExercises = exercises.filter()
+
+// console.log(filteredExercises)
 ---
 <html>
 
@@ -8,13 +18,15 @@ import "../styles/global.css";
     <!--exercise count-->
     <aside class="w-64 bg-gray-100 p-4 space-y-4 sticky top-0 h-screen">
       <h2 class="font-bold mb-4">Contenido</h2>
-      <ul>
-          <li>
-            <a href="" class="flex items-center gap-2 hover:text-blue-500">
-              <slot name="sidebar-li"/>
-            </a>
-          </li>
-      </ul>
+       <ul>
+          {exercises.map((ex: { slug: string; data: { title: unknown; }; }) => (
+            <li>
+              <a href={`/books/${currentBookSlug}/${ex.slug.split("/").pop()}`}>
+                {ex.data.title}
+              </a>
+            </li>
+          ))}
+        </ul>
     </aside>
 
     <!--index md-->

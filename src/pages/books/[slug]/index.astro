@@ -33,14 +33,18 @@ type Props = {
 // Desestructura los props
 const { book, exercises } = Astro.props as Props;
 const { Content } = await book.render();
+
+const currentBookSlug = book.slug;
 ---
 
-<BookLayout>
+<BookLayout exercises={exercises} currentBookSlug={currentBookSlug}>
   <div slot="sidebar-li">
     {
       exercises.map((exercise) => (
         <li>
-          <a href={`/books/${exercise.slug}`}>{exercise.data.title}</a>
+          <a href={`/books/${exercise.data.bookSlug}/${exercise.slug.split("/").pop()}`}>
+            {exercise.data.title}
+          </a>
         </li>
       ))
     }
