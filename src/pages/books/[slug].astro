@@ -1,20 +1,16 @@
 ---
-// Importa las funciones y tipos necesarios de Astro
+// Importa las funciones y tipos necesarios
 import { getCollection, type CollectionEntry } from "astro:content";
 import BookLayout from "../../layouts/BookLayout.astro";
 
-// La función getStaticPaths le dice a Astro qué páginas generar
 export async function getStaticPaths() {
-
   const allBooks = await getCollection("books");
   const allExercises = await getCollection("exercises");
 
-  return allBooks.map((book: { slug: any; }) => {
-    // Filtra los ejercicios para que solo se incluyan los de este libro
+  return allBooks.map((book) => {
     const filteredExercises = allExercises.filter(
-      (exercise: { data: { bookSlug: any; }; }) => exercise.data.bookSlug === book.slug,
+      (exercise) => exercise.data.bookSlug === book.slug,
     );
-    // console.log(filteredExercises)
 
     return {
       params: {
@@ -22,50 +18,39 @@ export async function getStaticPaths() {
       },
       props: {
         book,
-        exercises: filteredExercises, // Pasa los ejercicios filtrados
+        exercises: filteredExercises,
       },
     };
   });
 }
 
-// 1. Define el tipo de la variable `book` y `exercises`
+// Define el tipo de los props
 type Props = {
   book: CollectionEntry<"books">;
   exercises: CollectionEntry<"exercises">[];
 };
 
-// 2. Desestructura `book` y `exercises` de `Astro.props`
-const { book, exercises = [] } = Astro.props as Props;
+// Desestructura los props
+const { book, exercises } = Astro.props as Props;
 const { Content } = await book.render();
-
-console.log(exercises.map(e => e.data.title));
 ---
 
 <BookLayout>
-  <!-- <div slot="sidebar-li">Introduccion</div> -->
   <div slot="sidebar-li">
-    
-    {exercises.map((exercise) => (
-      <li>{exercise.data.title}</li>
-    ))}
-  
-</div>
+    {
+      exercises.map((exercise) => (
+        <li>
+          <a href={`/books/${exercise.slug}`}>{exercise.data.title}</a>
+        </li>
+      ))
+    }
+  </div>
 
   <div slot="introduction">
     <h1>{book.data.title}</h1>
     <Content />
-
-    {/* Ahora mapeamos sobre la lista de ejercicios ya filtrada */}
-    {
-      exercises.map((exercise) => {
-        const { title, author } = exercise.data;
-        return (
-          <div>
-            <h1>{title}</h1>
-            <h1>{author}</h1>
-          </div>
-        );
-      })
-    }
+    <br />
+    <h2>Ejercicios</h2>
+    <p>Selecciona un ejercicio de la lista lateral para ver su contenido.</p>
   </div>
 </BookLayout>

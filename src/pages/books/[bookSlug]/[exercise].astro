@@ -1,0 +1,33 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import BookLayout from "../../../layouts/BookLayout.astro";
+
+export async function getStaticPaths() {
+  const allExercises = await getCollection("exercises");
+
+  return allExercises.map((exercise) => ({
+    params: {
+      bookSlug: exercise.data.bookSlug,
+      // Usamos .split('/').pop() para obtener solo la última parte del slug
+      exercise: exercise.slug.split("/").pop(),
+    },
+    props: {
+      exercise,
+    },
+  }));
+}
+
+type Props = {
+  exercise: CollectionEntry<"exercises">;
+};
+
+const { exercise } = Astro.props as Props;
+const { Content } = await exercise.render();
+---
+
+<BookLayout>
+  <div slot="introduction">
+    <h1>{exercise.data.title}</h1>
+    <Content />
+  </div>
+</BookLayout>
