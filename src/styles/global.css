@@ -42,6 +42,9 @@
   /* Esta va para los titulos grandes */
   --titles: #030906;
 
+  /* Color de fondo del sidebar */
+  --pepe: #F0F2F6;
+
 
   --color-background: #fdfdfd;
   --color-primary: #000;
@@ -68,6 +71,9 @@ body.dark-mode {
 
   --color-background: #1a1b1f;
   --color-primary: #ffffff;
+
+  /* Color de fondo del sidebar */
+  --pepe: #131314;
 }
 
 h1,
