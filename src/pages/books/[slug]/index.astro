@@ -7,9 +7,10 @@ export async function getStaticPaths() {
   const allBooks = await getCollection("books");
   const allExercises = await getCollection("exercises");
 
-  return allBooks.map((book: { slug: any; }) => {
+  return allBooks.map((book: { slug: any }) => {
     const filteredExercises = allExercises.filter(
-      (exercise: { data: { bookSlug: any; }; }) => exercise.data.bookSlug === book.slug,
+      (exercise: { data: { bookSlug: any } }) =>
+        exercise.data.bookSlug === book.slug,
     );
 
     return {
@@ -42,7 +43,9 @@ const currentBookSlug = book.slug;
     {
       exercises.map((exercise) => (
         <li>
-          <a href={`/books/${exercise.data.bookSlug}/${exercise.slug.split("/").pop()}`}>
+          <a
+            href={`/books/${exercise.data.bookSlug}/${exercise.slug.split("/").pop()}`}
+          >
             {exercise.data.title}
           </a>
         </li>
@@ -54,7 +57,5 @@ const currentBookSlug = book.slug;
     <h1>{book.data.title}</h1>
     <Content />
     <br />
-    <h2>Ejercicios</h2>
-    <p>Selecciona un ejercicio de la lista lateral para ver su contenido.</p>
   </div>
 </BookLayout>

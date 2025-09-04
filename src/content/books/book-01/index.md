@@ -16,10 +16,10 @@ In general, permeant-elevated solute conditions in shallow systems occur because
 
 Shallow saline environments have been given a variety of names including: sabkhat (plural for sabkha, and its variant spellings, in the Arabic-speaking world); salinas, salares, saladas, salars, and playas (in the Spanish-speaking world); and pans, saline lakes, alkali flats, salt plains, dry lakes, and salt flats (in the English-speaking world). Brine, saline, and brackish water are different expressions for water with solute concentrations greater than 1,000 mg/L. For the purposes of this book, water is classified as:
 
-- slightly saline, where solute concentrations range from 1,000 to 3,000 mg/L;
-- moderately saline, where solute concentrations range from 3,000 to 10,000 mg/L;
-- highly saline, where solute concentrations range from 10,000 to 35,000 mg/L; and,
-- brine, where solute concentrations are greater than seawater (35,000 mg/L).
+- <span class="text-[var(--titles)]">slightly saline, where solute concentrations range from 1,000 to 3,000 mg/L;</span>
+- <span class="text-[var(--titles)]">moderately saline, where solute concentrations range from 3,000 to 10,000 mg/L;</span>
+- <span class="text-[var(--titles)]">highly saline, where solute concentrations range from 10,000 to 35,000 mg/L;</span>
+- <span class="text-[var(--titles)]">brine, where solute concentrations are greater than seawater (35,000 mg/L).</span>
 
 Rainfall/evaporation ratio maps that identify extremely arid, arid, and semi-arid areas are a good first approximation of areas where shallow saline environments typically form (Figure 1).
 
@@ -35,17 +35,48 @@ In contrast, deep basin brines, and evaporites and brines in igneous rocks, are 
 <b>Table 1</b> <em>- Common marine evaporite minerals and their composition (Stewart, 1963).</em>
 ![Table 1](https://books.gw-project.org/a-conceptual-overview-of-surface-and-near-surface-brines-and-evaporite-minerals/wp-content/uploads/sites/22/2022/01/image2.png)
 
-<b>Table 2</b> <em>- Common terrestrial minerals and their composition.</em>
-| Minerals  | Composition                                                              |
-|-----------|--------------------------------------------------------------------------|
-| Epsomite  | MgSO<sub>4</sub> &middot; 7H<sub>2</sub>O                                |
-| Bloedite  | Na<sub>2</sub>Mg(SO<sub>4</sub>)<sub>2</sub> &middot; 4H<sub>2</sub>O    |
-| Mirabilite| Na<sub>2</sub>SO<sub>4</sub> &middot; 10H<sub>2</sub>O.                  |
-| Nahcolite | NaHCO<sub>3</sub>                                                        |
-| Thernadite| Na<sub>2</sub>SO<sub>4</sub>                                             |
-| Trona     | Na<sub>3</sub>(CO<sub>3</sub>)(HCO<sub>3</sub>) &middot; 2H<sub>2</sub>O |
-| Gaylussite| Na<sub>2</sub>Ca(CO<sub>3</sub>)<sub>2</sub> &middot; 5H<sub>2</sub>O    |
-| Borax     | Na<sub>2</sub>B<sub>4</sub>O<sub>7</sub>                                 |
+<table class="w-full">
+  <thead>
+    <tr>
+      <th class="text-[var(--titles)]">Minerals</th>
+      <th class="text-[var(--titles)]">Composition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="text-[var(--titles)]">Epsomite</td>
+      <td class="text-[var(--titles)]">MgSO<sub>4</sub> &middot; 7H<sub>2</sub>O</td>
+    </tr>
+    <tr>
+      <td class="text-[var(--titles)]">Bloedite</td>
+      <td class="text-[var(--titles)]">Na<sub>2</sub>Mg(SO<sub>4</sub>)<sub>2</sub> &middot; 4H<sub>2</sub>O</td>
+    </tr>
+    <tr>
+      <td class="text-[var(--titles)]">Mirabilite</td>
+      <td class="text-[var(--titles)]">Na<sub>2</sub>SO<sub>4</sub> &middot; 10H<sub>2</sub>O.</td>
+    </tr>
+    <tr>
+      <td class="text-[var(--titles)]">Nahcolite</td>
+      <td class="text-[var(--titles)]">NaHCO<sub>3</sub></td>
+    </tr>
+    <tr>
+      <td class="text-[var(--titles)]">Thernadite</td>
+      <td class="text-[var(--titles)]">Na<sub>2</sub>SO<sub>4</sub></td>
+    </tr>
+    <tr>
+      <td class="text-[var(--titles)]">Trona</td>
+      <td class="text-[var(--titles)]">Na<sub>3</sub>(CO<sub>3</sub>)(HCO<sub>3</sub>) &middot; 2H<sub>2</sub>O</td>
+    </tr>
+    <tr>
+      <td class="text-[var(--titles)]">Gaylussite</td>
+      <td class="text-[var(--titles)]">Na<sub>2</sub>Ca(CO<sub>3</sub>)<sub>2</sub> &middot; 5H<sub>2</sub>O</td>
+    </tr>
+    <tr>
+      <td class="text-[var(--titles)]">Borax</td>
+      <td class="text-[var(--titles)]">Na<sub>2</sub>B<sub>4</sub>O<sub>7</sub></td>
+    </tr>
+  </tbody>
+</table>
 
 
 Approximately 8,000 to 10,000 years BCE (before the current era), the human diet shifted from salt-rich wild game to agricultural cereals and domesticated animals. More salt (halite or NaCl) was desired to preserve meat and to enhance flavor. Underground deposits were beyond reach, ocean salt was difficult to transport far inland, and salt springs were rare. Scarcity kept the mineral precious and salt became one of the world’s principal trading commodities with expressions like “salt of the Earth” becoming part of our language. A soldier’s pay, consisting in part of salt, was known as solarium argentum, from which we derive the word salary. A soldier’s salary was cut if he was “not worth his salt,” a phrase that came into being because the Greeks and Romans often purchased slaves with salt. During the Middle Ages, the spilling of salt was considered an omen of doom. After spilling salt, the spiller had to cast a pinch of it over his left shoulder to placate the evil spirts because the left side was thought to be sinister, a place where evil spirits tended to congregate. In Leonardo da Vinci’s painting The Last Supper, Judas is shown with an overturned saltcellar in front of him. Salt taxes were common and for centuries the French people were forced to buy all their salt from royal deposits. The salt tax (gabelle) was so high during the reign of Louis XVI that it became a major grievance and helped inflame the French Revolution. In protest against the high British tax on salt in India, Mahatma Gandhi led a pilgrimage of his followers to make their own salt. Some of the earliest known deep wells were drilled to find brines. Thus, salt has had a significant cultural impact.
