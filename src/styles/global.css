@@ -45,9 +45,17 @@
   /* Color de fondo del sidebar */
   --pepe: #F0F2F6;
 
+  /* color para el texto del sidebar */
+  --sidebarText: #565c6d;
 
   --color-background: #fdfdfd;
   --color-primary: #000;
+
+  /* color para el hover de los elementos del sidebar */
+  --hoverSidebar: #f0f6fe;
+
+  /* color para el hover de los elementos del sidebar */
+  --textoHover: #2b398a;
 }
 
 body.dark-mode {
@@ -74,6 +82,15 @@ body.dark-mode {
 
   /* Color de fondo del sidebar */
   --pepe: #131314;
+
+  /* color para el texto del sidebar */
+  --sidebarText: #fff;
+
+  /* color para el hover de los elementos del sidebar */
+  --hoverSidebar: #1b1b1e;
+
+  /* color para el hover de los elementos del sidebar */
+  --textoHover: #fff;
 }
 
 h1,

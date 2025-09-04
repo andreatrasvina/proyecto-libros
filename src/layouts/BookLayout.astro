@@ -7,118 +7,143 @@ const { exercises = [], currentBookSlug } = Astro.props;
 
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Libro interactivo</title>
   </head>
 
   <body class="flex flex-col min-h-screen">
-    <!--raya arcoiris-->
-    <div class="w-full h-[4px] rainbow-bar"></div>
+    <div class="w-full h-[2px] rainbow-bar"></div>
 
-<div class="fixed top-4 right-4 z-50 flex items-center space-x-2">
-  <a
-    href="https://github.com/andreatrasvina/proyecto-libros"
-    class="flex items-center justify-center w-10 h-10 bg-gray-800 text-white rounded-md shadow-lg transition-transform transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-gray-600"
-    aria-label="GitHub Repository"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      class="w-6 h-6"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-    >
-      <path
-        d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.809 1.305 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.118-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.046.138 3.003.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-      />
-    </svg>
-  </a>
+    <div class="fixed top-4 right-4 z-50 flex items-center space-x-2">
+      <a
+        href="https://github.com/andreatrasvina/proyecto-libros"
+        class="flex items-center justify-center w-10 h-10 bg-gray-800 text-white rounded-md shadow-lg transition-transform transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-gray-600"
+        aria-label="GitHub Repository"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-6 h-6"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+        >
+          <path
+            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.809 1.305 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.118-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.046.138 3.003.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+          ></path>
+        </svg>
+      </a>
 
-<button
-  id="theme-toggle"
-  class="flex items-center justify-center w-10 h-10 rounded-md shadow-lg transition-transform transform hover:scale-110 focus:outline-none focus:ring-2 dark:bg-gray-800 dark:text-white dark:focus:ring-gray-600"
-  aria-label="Toggle dark mode"
->
-  <svg
-    id="theme-icon"
-    xmlns="http://www.w3.org/2000/svg"
-    class="w-6 h-6"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-  >
-    <path
-      class="moon-path"
-      d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"
-    />
-    <path
-      class="sun-path hidden"
-      d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm-9-7a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1zm16 0a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1zm-8-15a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1zm0 16a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1zM7.05 6.05a1 1 0 0 1-.707-1.707l1.414-1.414a1 1 0 0 1 1.414 1.414L7.05 6.05zm9.9-9.9a1 1 0 0 1-.707-1.707l1.414-1.414a1 1 0 0 1 1.414 1.414l-1.414 1.414zM4.93 18.36a1 1 0 0 1-.707-1.707L5.64 15.24a1 1 0 0 1 1.414 1.414l-1.414 1.414zM16.36 5.64a1 1 0 0 1-.707-1.707l1.414-1.414a1 1 0 0 1 1.414 1.414L16.36 5.64z"
-    />
-  </svg>
-</button>
-</div>
+      <button
+        id="theme-toggle"
+        class="flex items-center justify-center w-10 h-10 rounded-md shadow-lg transition-transform transform hover:scale-110 focus:outline-none focus:ring-2 dark:bg-gray-800 dark:text-white dark:focus:ring-gray-600"
+        aria-label="Toggle dark mode"
+      >
+        <svg
+          id="theme-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-6 h-6"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+        >
+          <path
+            class="moon-path"
+            d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"></path>
+          <path
+            class="sun-path hidden"
+            d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm-9-7a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1zm16 0a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1zm-8-15a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1zm0 16a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1zM7.05 6.05a1 1 0 0 1-.707-1.707l1.414-1.414a1 1 0 0 1 1.414 1.414L7.05 6.05zm9.9-9.9a1 1 0 0 1-.707-1.707l1.414-1.414a1 1 0 0 1 1.414 1.414l-1.414 1.414zM4.93 18.36a1 1 0 0 1-.707-1.707L5.64 15.24a1 1 0 0 1 1.414 1.414l-1.414 1.414zM16.36 5.64a1 1 0 0 1-.707-1.707l1.414-1.414a1 1 0 0 1 1.414 1.414L16.36 5.64z"
+          ></path>
+        </svg>
+      </button>
+    </div>
 
     <div class="flex flex-1">
-      <!--sidebar-->
       <aside
         id="resizable-sidebar"
         class="relative flex flex-col bg-clip-border rounded-xl bg-[var(--pepe)] text-gray-700 w-64 min-w-[200px] max-w-[500px] p-4 shadow-xl shadow-blue-gray-900/5 sticky top-0"
       >
-  <div class="mb-2 p-4">
-    <h5 class="block antialiased tracking-normal font-sans text-xl font-semibold leading-snug text-gray-900">Contenido</h5>
-  </div>
-        <nav class="flex flex-col gap-1 p-2 font-sans lato-regular text-gray-700">
-          <!-- Esto es la introduccion -->
-        <a href = `#`
-            class="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+        <div class="mb-2 p-4">
+          <h5
+            class="block antialiased tracking-normal font-sans text-xl font-semibold leading-snug text-[var(--titles)]"
+          >
+            Contenido
+          </h5>
+        </div>
+        <nav
+          class="flex flex-col gap-1 p-2 font-sans lato-regular text-gray-700"
+        >
+          <a
+            href=`/books/${currentBookSlug}/introduccion`
+            class={`text-[var(--sidebarText)] flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none
+          ${Astro.url.pathname.endsWith("/introduccion") ? "bg-blue-50 bg-opacity-80 !text-blue-900" : ""}`}
           >
             Introduccion
           </a>
 
-          {exercises.map((ex: { slug: string; data: { title: unknown } }) => (
-            <a
-              href={`/books/${currentBookSlug}/${ex.slug.split("/").pop()}`}
-              class="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
-            >
-              <div class="grid place-items-center mr-4">
-                <!--icono genérico para cada ejercicio-->
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  class="h-5 w-5"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M4.5 6.75A2.25 2.25 0 016.75 4.5h10.5A2.25 2.25 0 0119.5 6.75v10.5a2.25 2.25 0 01-2.25 2.25H6.75a2.25 2.25 0 01-2.25-2.25V6.75zM6 8.25h12v1.5H6v-1.5zm0 3h12v1.5H6v-1.5zm0 3h8.25v1.5H6v-1.5z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-              </div>
-              {ex.data.title}
-            </a>
-          ))}
+          {
+            exercises.map((ex: { slug: string; data: { title: unknown } }) => (
+              <a
+                href={`/books/${currentBookSlug}/${ex.slug.split("/").pop()}`}
+                class={`text-[var(--sidebarText)] flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-[var(--hoverSidebar)] hover:bg-opacity-80 focus:bg-[var(--hoverSidebar)] focus:bg-opacity-80 active:bg-[var(--hoverSidebar)] active:bg-opacity-80 hover:text-[var(--textoHover)] focus:text-[var(--textoHover)] active:text-[var(--textoHover)] outline-none
+  ${Astro.url.pathname.includes(ex.slug.split("/").pop() as string) ? "bg-[var(--hoverSidebar)] bg-opacity-80 !text-[var(--textoHover)]" : ""}`}
+              >
+                <div class="grid place-items-center mr-4">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="h-5 w-5"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M4.5 6.75A2.25 2.25 0 016.75 4.5h10.5A2.25 2.25 0 0119.5 6.75v10.5a2.25 2.25 0 01-2.25 2.25H6.75a2.25 2.25 0 01-2.25-2.25V6.75zM6 8.25h12v1.5H6v-1.5zm0 3h12v1.5H6v-1.5zm0 3h8.25v1.5H6v-1.5z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </div>
+                {ex.data.title}
+              </a>
+            ))
+          }
 
-          <a href="/books" class="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
-  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M19 12H5M12 19l-7-7 7-7" />
-  </svg>
-  <span>Volver</span>
-</a>
+          <a
+            href="/books"
+            class="text-[var(--sidebarText)] flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 mr-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M19 12H5M12 19l-7-7 7-7"></path>
+            </svg>
+            <span>Volver</span>
+          </a>
         </nav>
 
-        <!-- Raya divisoria -->
-        <hr class="border-0 h-[3px] mt-3 bg-[var(--rayas)]">
+        <hr class="border-0 h-[3px] mt-3 bg-[var(--rayas)]" />
 
-        <div class="mt-8 flex items-center gap-2 border border-green-500 rounded-md p-4 text-[#206f47] bg-[#dbede6] max-w-md">
-  <span>☝️  Para acceder a los ejercicios selecciona una opción de arriba</span>
-</div>
-
+        <div
+          class="mt-8 flex items-center gap-2 border border-green-500 rounded-md p-4 text-[#206f47] bg-[#dbede6] max-w-md"
+        >
+          <span
+            >☝️ Para acceder a los ejercicios selecciona una opción de arriba</span
+          >
+        </div>
       </aside>
 
+      <div
+        id="resizer"
+        class="w-[2px] bg-[var(--rayas)] cursor-col-resize hover:bg-gray-400"
+      >
+      </div>
 
- <!--  handle para redimensionar -->
-      <div id="resizer" class="w-[2px] bg-[var(--rayas)] cursor-col-resize hover:bg-gray-400"></div>
-
-      <!--index md-->
       <main class="flex-1 overflow-y-auto">
         <div class="max-w-4xl mx-auto p-8">
           <slot name="introduction" />
@@ -126,6 +151,8 @@ const { exercises = [], currentBookSlug } = Astro.props;
         </div>
       </main>
     </div>
+  </body>
+</html>
 
 <script>
   const sidebar = document.getElementById("resizable-sidebar");
@@ -180,31 +207,28 @@ const { exercises = [], currentBookSlug } = Astro.props;
     }
   });
 </script>
-  </body>
-</html>
-
 <style>
-@keyframes rainbow {
-  0% {
-    background-position: 0% 50%;
+  @keyframes rainbow {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 200% 50%;
+    }
   }
-  100% {
-    background-position: 200% 50%;
-  }
-}
 
-.rainbow-bar {
-  background: linear-gradient(
-    to right,
-    red,
-    orange,
-    yellow,
-    green,
-    blue,
-    indigo,
-    violet
-  );
-  background-size: 200% 200%;
-  animation: rainbow 4s linear infinite;
-}
+  .rainbow-bar {
+    background: linear-gradient(
+      to right,
+      red,
+      orange,
+      yellow,
+      green,
+      blue,
+      indigo,
+      violet
+    );
+    background-size: 200% 200%;
+    animation: rainbow 4s linear infinite;
+  }
 </style>
