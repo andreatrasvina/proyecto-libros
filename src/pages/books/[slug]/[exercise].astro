@@ -7,7 +7,7 @@ const allExercises = await getCollection("exercises");
 export async function getStaticPaths() {
   const allExercises = await getCollection("exercises");
 
-  return allExercises.map((exercise) => ({
+  return allExercises.map((exercise: { data: { bookSlug: any; }; slug: string; }) => ({
     params: {
       slug: exercise.data.bookSlug,
       // Usamos .split('/').pop() para obtener solo la última parte del slug
@@ -27,7 +27,7 @@ const { exercise } = Astro.props as Props;
 
 //filtra todos los ejercicios del mismo libro
 const bookExercises = allExercises.filter(
-  (ex) => ex.data.bookSlug === exercise.data.bookSlug
+  (ex: { data: { bookSlug: any; }; }) => ex.data.bookSlug === exercise.data.bookSlug
 );
 
 const { Content } = await exercise.render();
