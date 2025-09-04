@@ -22,3 +22,31 @@ Shallow saline environments have been given a variety of names including: sabkha
 - brine, where solute concentrations are greater than seawater (35,000 mg/L).
 
 Rainfall/evaporation ratio maps that identify extremely arid, arid, and semi-arid areas are a good first approximation of areas where shallow saline environments typically form (Figure 1).
+
+![Figure 1](https://books.gw-project.org/a-conceptual-overview-of-surface-and-near-surface-brines-and-evaporite-minerals/wp-content/uploads/sites/22/2022/01/image1.png)
+<small><b>Figure 1</b> <em> – Location of extremely arid, arid, and semiarid areas on Earth where contemporary near-surface brines typically develop (USGS, 1997).</em></small>
+
+The source of solutes in most shallow saline waters is largely the result of rock weathering, atmospheric input and relic solutes. Small accumulations of saline waters occur in various, more geographically restricted environments as described in Frape and Fritz (1987), Bottomley (1996) and Lowenstein and Risacher (2008).
+
+The groundwater solute flux of surface and near surface features that are currently developing or developed in recent geologic time is relatively easy to measure. The boundary and initial conditions of the chemical and flow processes that control their development can generally be measured or reasonably inferred, as can the mass of evaporites in the deposits.
+
+In contrast, deep basin brines, and evaporites and brines in igneous rocks, are difficult to sample. These brines formed tens of millions of years ago under unknown or poorly constrained boundary conditions and may be slowly evolving today. They require proxies to facilitate understanding of their origin. Additionally, the extended time, dependence on surrounding lithology, elevated temperatures, and pressures of deeper systems promote processes and reactions not commonly relevant in surface or near-surface features. The solutes of deep geologic brines have in general had their origins in a marine environment with a distinct set of minerals (Table 1). There are approximately 80 different marine evaporite minerals (Stewart, 1963), however, only 12 are common enough to form significant deposits and of those only six are uniquely marine (Table 1). Similarly, there are only eight unique minerals from the terrestrial saline environment (Table 2). The minerals halite, sylvite, carnallite, gypsum, anhydrite, calcite, and dolomite are common in both marine and terrestrial environments.
+
+<b>Table 1</b> <em>- Common marine evaporite minerals and their composition (Stewart, 1963).</em>
+![Table 1](https://books.gw-project.org/a-conceptual-overview-of-surface-and-near-surface-brines-and-evaporite-minerals/wp-content/uploads/sites/22/2022/01/image2.png)
+
+<b>Table 2</b> <em>- Common terrestrial minerals and their composition.</em>
+| Minerals  | Composition                                                              |
+|-----------|--------------------------------------------------------------------------|
+| Epsomite  | MgSO<sub>4</sub> &middot; 7H<sub>2</sub>O                                |
+| Bloedite  | Na<sub>2</sub>Mg(SO<sub>4</sub>)<sub>2</sub> &middot; 4H<sub>2</sub>O    |
+| Mirabilite| Na<sub>2</sub>SO<sub>4</sub> &middot; 10H<sub>2</sub>O.                  |
+| Nahcolite | NaHCO<sub>3</sub>                                                        |
+| Thernadite| Na<sub>2</sub>SO<sub>4</sub>                                             |
+| Trona     | Na<sub>3</sub>(CO<sub>3</sub>)(HCO<sub>3</sub>) &middot; 2H<sub>2</sub>O |
+| Gaylussite| Na<sub>2</sub>Ca(CO<sub>3</sub>)<sub>2</sub> &middot; 5H<sub>2</sub>O    |
+| Borax     | Na<sub>2</sub>B<sub>4</sub>O<sub>7</sub>                                 |
+
+
+Approximately 8,000 to 10,000 years BCE (before the current era), the human diet shifted from salt-rich wild game to agricultural cereals and domesticated animals. More salt (halite or NaCl) was desired to preserve meat and to enhance flavor. Underground deposits were beyond reach, ocean salt was difficult to transport far inland, and salt springs were rare. Scarcity kept the mineral precious and salt became one of the world’s principal trading commodities with expressions like “salt of the Earth” becoming part of our language. A soldier’s pay, consisting in part of salt, was known as solarium argentum, from which we derive the word salary. A soldier’s salary was cut if he was “not worth his salt,” a phrase that came into being because the Greeks and Romans often purchased slaves with salt. During the Middle Ages, the spilling of salt was considered an omen of doom. After spilling salt, the spiller had to cast a pinch of it over his left shoulder to placate the evil spirts because the left side was thought to be sinister, a place where evil spirits tended to congregate. In Leonardo da Vinci’s painting The Last Supper, Judas is shown with an overturned saltcellar in front of him. Salt taxes were common and for centuries the French people were forced to buy all their salt from royal deposits. The salt tax (gabelle) was so high during the reign of Louis XVI that it became a major grievance and helped inflame the French Revolution. In protest against the high British tax on salt in India, Mahatma Gandhi led a pilgrimage of his followers to make their own salt. Some of the earliest known deep wells were drilled to find brines. Thus, salt has had a significant cultural impact.
+
