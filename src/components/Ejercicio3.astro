@@ -1,0 +1,39 @@
+---
+import "../styles/global.css";
+let waterLevel = 0;
+---
+
+<div class="p-4 border rounded-md bg-[var(--cards)] text-[var(--color-text)]">
+  <h3 class="text-lg font-bold mb-2 text-[var(--titles)]">Interactive Hydraulic Head</h3>
+  
+  <label for="waterSlider" class="block mb-2">
+    <span class="text-[var(--titles)]">Select water level (m):</span> 
+    <span id="waterValue" class="font-semibold text-[var(--titles)]">{waterLevel}</span>
+  </label>
+  
+  <input 
+    id="waterSlider" 
+    type="range" 
+    min="0" 
+    max="20" 
+    value={waterLevel} 
+    step="1"
+    class="w-full accent-green-400"
+    oninput="document.getElementById('waterValue').innerText=this.value;
+             document.getElementById('headIndicator').style.height=this.value*10 + 'px';"
+  />
+
+  <div class="mt-6 flex justify-around">
+    <!-- Simulación de piezómetro -->
+    <div class="w-6 h-60 bg-[var(--titles)] relative">
+      <div id="headIndicator" 
+           class="absolute bottom-0 w-6 bg-blue-400" 
+           style="height:{waterLevel*10}px">
+      </div>
+    </div>
+  </div>
+  
+  <p class="mt-4 text-sm text-[var(--color-text)]">
+    The slider controls the water level. Hydraulic head corresponds to the water column height in the piezometer.
+  </p>
+</div>
