@@ -46,7 +46,7 @@
   --titles: #030906;
 
   /* Color de fondo del sidebar */
-  --pepe: #F0F2F6;
+  --titlesnt: #F0F2F6;
 
   /* color para el texto del sidebar */
   --sidebarText: #565c6d;
@@ -87,7 +87,7 @@ body.dark-mode {
   --color-primary: #ffffff;
 
   /* Color de fondo del sidebar */
-  --pepe: #131314;
+  --titlesnt: #131314;
 
   /* color para el texto del sidebar */
   --sidebarText: #fff;
@@ -101,6 +101,7 @@ body.dark-mode {
 
 h1,
 h2,
+small,
 p {
   color: var(--titles);
 }

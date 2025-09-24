@@ -3,7 +3,9 @@
 const { pregunta = "" } = Astro.props;
 ---
 
-<div class="p-4 my-6 bg-gray-100 border rounded-md shadow text-[var(--titles)]">
+<div
+  class="p-4 my-6 border border-[var(--rayas)] rounded-md shadow bg-[var(--titlesnt)]"
+>
   <h3 class="font-semibold text-lg text-[var(--titles)]">Ejercicio</h3>
   <p class="mt-2">{pregunta}</p>
 </div>
