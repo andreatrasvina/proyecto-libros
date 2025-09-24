@@ -32,8 +32,10 @@ The groundwater solute flux of surface and near surface features that are curren
 
 In contrast, deep basin brines, and evaporites and brines in igneous rocks, are difficult to sample. These brines formed tens of millions of years ago under unknown or poorly constrained boundary conditions and may be slowly evolving today. They require proxies to facilitate understanding of their origin. Additionally, the extended time, dependence on surrounding lithology, elevated temperatures, and pressures of deeper systems promote processes and reactions not commonly relevant in surface or near-surface features. The solutes of deep geologic brines have in general had their origins in a marine environment with a distinct set of minerals (Table 1). There are approximately 80 different marine evaporite minerals (Stewart, 1963), however, only 12 are common enough to form significant deposits and of those only six are uniquely marine (Table 1). Similarly, there are only eight unique minerals from the terrestrial saline environment (Table 2). The minerals halite, sylvite, carnallite, gypsum, anhydrite, calcite, and dolomite are common in both marine and terrestrial environments.
 
-<b>Table 1</b> <em>- Common marine evaporite minerals and their composition (Stewart, 1963).</em>
+<b>Table 1</b> <em> - Common marine evaporite minerals and their composition (Stewart, 1963).</em>
 ![Table 1](https://books.gw-project.org/a-conceptual-overview-of-surface-and-near-surface-brines-and-evaporite-minerals/wp-content/uploads/sites/22/2022/01/image2.png)
+
+<b>Table 2</b> <em> - Common terrestrial minerals and their composition.</em>
 
 <table class="w-full">
   <thead>
