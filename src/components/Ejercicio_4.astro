@@ -1,0 +1,86 @@
+---
+---
+<div class="border-2 border-blue-600 rounded-lg p-4 max-w-5xl mx-auto bg-blue-50 mt-6">
+  <p class="text-center text-sm text-gray-700 mb-4">
+    Ajusta los controles para que Q sea <strong>0.015 m³/s</strong>. Utiliza el modo horizontal o inclinado según sea necesario.
+  </p>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Controles -->
+    <div class="bg-white border border-gray-300 rounded-md p-4 text-sm">
+      <label class="block font-medium mb-1">Δh</label>
+      <input type="range" min="0" max="10" value="2" class="w-full accent-blue-600" />
+      <span class="text-gray-600 block mb-3">2 m</span>
+
+      <label class="block font-medium mb-1">ΔL</label>
+      <input type="range" min="0" max="20" value="10" class="w-full accent-blue-600" />
+      <span class="text-gray-600 block mb-3">10 m</span>
+
+      <label class="block font-medium mb-1">Ángulo</label>
+      <input type="range" min="0" max="90" value="20" class="w-full accent-blue-600" />
+      <span class="text-gray-600 block mb-3">20°</span>
+
+      <div class="flex justify-between mt-4">
+        <button class="px-3 py-1 border border-gray-400 rounded bg-gray-100 text-gray-500" disabled>Reiniciar</button>
+        <button class="px-3 py-1 border border-gray-400 rounded bg-gray-100 text-gray-500" disabled>Aleatorio</button>
+      </div>
+    </div>
+
+    <!-- Gráfico (inclinado) -->
+    <div class="bg-white border border-gray-300 rounded-md p-4 text-sm text-center">
+      <div class="mb-4 flex justify-center">
+        <svg viewBox="0 0 480 260" class="w-full max-w-[420px]">
+          <defs>
+            <pattern id="dotsI" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
+              <circle cx="1" cy="1" r="1" fill="#60a5fa" />
+            </pattern>
+            <marker id="arrowI" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L0,10 L10,5 z" fill="black" />
+            </marker>
+          </defs>
+
+          <!-- Grupo del tubo rotado -->
+          <g transform="rotate(-15 230 150)">
+            <ellipse cx="150" cy="150" rx="26" ry="26" fill="#bfdbfe" stroke="#0284c7" stroke-width="2"/>
+            <rect   x="150" y="124" width="220" height="52" rx="26" fill="url(#dotsI)" stroke="#0284c7" stroke-width="2"/>
+            <ellipse cx="370" cy="150" rx="26" ry="26" fill="#bfdbfe" stroke="#0284c7" stroke-width="2"/>
+          </g>
+
+          <!-- Flecha Q (alineada a la boca del tubo) -->
+          <line x1="85" y1="160" x2="120" y2="160" stroke="black" stroke-width="2" marker-end="url(#arrowI)"/>
+          <text x="68" y="154" font-size="14" font-weight="bold" fill="black">Q</text>
+
+          <!-- Piezómetros (verticales) -->
+          <line x1="220" y1="70"  x2="220" y2="128" stroke="black" stroke-width="2"/>
+          <line x1="320" y1="40"  x2="320" y2="128" stroke="black" stroke-width="2"/>
+
+          <!-- Agua en piezómetros -->
+          <rect x="217" y="108" width="6" height="20" fill="#60a5fa"></rect>
+          <rect x="317" y="60"  width="6" height="68" fill="#60a5fa"></rect>
+
+          <!-- Líneas punteadas h1/h2 -->
+          <line x1="220" y1="70" x2="400" y2="70" stroke="black" stroke-dasharray="4 2"/>
+          <line x1="320" y1="40" x2="400" y2="40" stroke="black" stroke-dasharray="4 2"/>
+
+          <!-- Etiquetas -->
+          <text x="200" y="65" font-size="12" fill="black">h1</text>
+          <text x="330" y="40" font-size="12" fill="black">h2</text>
+
+          <!-- Δh -->
+          <line x1="400" y1="40" x2="400" y2="70" stroke="black"/>
+          <text x="406" y="57" font-size="12" fill="black">Δh</text>
+
+          <!-- ΔL (abajo) -->
+          <line x1="220" y1="210" x2="320" y2="210" stroke="black" marker-start="url(#arrowI)" marker-end="url(#arrowI)"/>
+          <text x="265" y="226" font-size="12" fill="black">ΔL</text>
+        </svg>
+      </div>
+
+      <p class="font-medium">Gradiente Hidráulico</p>
+      <p class="text-gray-600 text-xs">Δh: 2.00 m<br/>ΔL: 10.00 m</p>
+
+      <p class="font-medium mt-3">Caudal (Q = 0.0010 m³/s)</p>
+      <p class="text-gray-600 text-xs">Q = K (0.20 m²/s) * Δh/ΔL * A (0.02 m²)</p>
+    </div>
+  </div>
+</div>
