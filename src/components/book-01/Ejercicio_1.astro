@@ -1,24 +1,87 @@
----
-// src/components/exercises/Ejercicio_1.astro
-const { pregunta = "" } = Astro.props;
----
-
 <div>
   <h3 class="text-[var(--pepe)] text-3xl lato-bold">Ejercicios interactivos</h3>
   <hr class="border-[var(--pepe)]" />
   <div
     class="p-4 my-6 border border-[var(--rayas)] rounded-md shadow bg-[var(--titlesnt)]"
   >
-    <h1 class="font-semibold text-lg text-[var(--titles)]">Ejercicio</h1>
-    <p class="mt-2">{pregunta}</p>
+    <h1 class="font-semibold text-lg text-[var(--titles)]">Evaporación</h1>
 
-    <!-- aqui esta el canvas -->
-    <!-- <canvas id="miCanvas" width="400" height="500" class="vaso"></canvas> -->
-     <div class="vaso">
-  <div class="agua"></div>
+    <label for="humedad" class="text-[var(--titles)] mt-2">
+      <span class="lato-bold">Cómo funciona(resumen): </span>El simulador
+      calcula una actividad del agua a partir de la salinidad (aproximación
+      ilustrativa). Si la actividad del agua es mayor que la del aire, el agua
+      se evapora a una velocidad proporcional a esa diferencia. Más sal → menor
+      actividad → evaporación más lenta.
+    </label>
+
+    <div class="vaso mt-12">
+      <div class="agua"></div>
+    </div>
+
+    <div class="grid">
+      <label for="salinidad" class="text-[var(--titles)] mt-12"
+        >Nivel de agua: <span id="agua">50</span>
+      </label>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value="50"
+        id="control"
+        class="mb-2"
+      />
+
+      <label for="salinidad" class="text-[var(--titles)] mb-8"
+        >Aumenta el nivel del agua para experimentar distintos parámetros de
+        evaporación</label
+      >
+
+      <label for="salinidad" class="text-[var(--titles)]">
+        Salinidad (mg/L): <span id="salinidad-value">1000</span>
+      </label>
+
+      <input
+        type="range"
+        id="salinidad"
+        name="salinidad"
+        min="1000"
+        max="40000"
+        value="20"
+      />
+      <label for="salinidad" class="text-[var(--titles)] mt-2">
+        Aumenta la salinidad para ver cómo disminuye la evaporación
+      </label>
+
+      <label for="humedad" class="text-[var(--titles)] mt-8">
+        Humedad relativa atmosférica (RH): <span id="humedad-value">65</span>
+      </label>
+      <input
+        type="range"
+        id="humedad"
+        name="humedad"
+        min="0"
+        max="100"
+        value="0"
+      />
+      <label for="humedad" class="text-[var(--titles)] mt-2">
+        Puedes cambiar la humedad del aire (actividad atmosférica).
+      </label>
+
+      <div class="mt-6">
+        <button
+          class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors duration-300 ease-in-out"
+          >Iniciar</button
+        >
+
+        <button
+          class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors duration-300 ease-in-out"
+        >
+          Reiniciar
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
-
-<input type="range" min="0" max="100" value="50" id="control">
 
 <style>
   .vaso {
@@ -33,7 +96,7 @@ const { pregunta = "" } = Astro.props;
 
     backdrop-filter: blur(10px) saturate(180%);
     -webkit-backdrop-filter: blur(10px) saturate(180%);
-    }
+  }
 
   .agua {
     position: absolute;
@@ -42,121 +105,43 @@ const { pregunta = "" } = Astro.props;
     width: 100%;
     height: 50%; /* nivel inicial */
     background: #67bed9;
-    transition: height 0.8s ease; 
-  }
-
-  input[type=range] {
-    width: 200px;
+    transition: height 0.8s ease;
   }
 </style>
 
 <script>
+  let salinidad = 1000;
+  let humedad = 65;
+
   const agua = document.querySelector(".agua");
   const control = document.getElementById("control");
 
   control.addEventListener("input", () => {
     agua.style.height = control.value + "%";
   });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const sliderSalinidad = document.getElementById("salinidad");
+    const sliderHumedad = document.getElementById("humedad");
+    const salinidadValue = document.getElementById("salinidad-value");
+    const humedadValue = document.getElementById("humedad-value");
+
+    // Inicializamos sliders y spans
+    sliderSalinidad.value = salinidad;
+    sliderHumedad.value = humedad;
+
+    // Actualizamos la variable y el span al mover el slider de salinidad
+    sliderSalinidad.addEventListener("input", (event) => {
+      salinidad = Number(event.target.value);
+      salinidadValue.textContent = salinidad;
+      console.log("Salinidad:", salinidad);
+    });
+
+    // Actualizamos la variable y el span al mover el slider de humedad
+    sliderHumedad.addEventListener("input", (event) => {
+      humedad = Number(event.target.value);
+      humedadValue.textContent = humedad;
+      console.log("Humedad:", humedad);
+    });
+  });
 </script>
-
-  </div>
-</div>
-
-<!-- dibujo del canvasa-->
-<!-- <script>
-  const canvas = document.getElementById("miCanvas");
-  const ctx = canvas.getContext("2d") ;
-
-  let xAgua = 0;
-  let yAgua = 200;
-  let widthAgua = 400;
-  let heightAgua = 500;
-
-  let nivelUsuario = 0.5;
-
-  ctx.fillStyle = "#67bed9";
-  ctx.fillRect(xAgua, yAgua, widthAgua, heightAgua);
-
-  function dibujar() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Calculamos la altura real del agua según nivelUsuario
-    let alturaMax = canvas.height;
-    let alturaAgua = alturaMax * nivelUsuario;
-
-    // yAgua es la coordenada desde arriba
-    yAgua = canvas.height - alturaAgua;
-
-    ctx.fillStyle = "#67bed9";
-    ctx.fillRect(xAgua, yAgua, widthAgua, alturaAgua);
-  }
-
-  // Animación simple
-  function animar() {
-    dibujar();
-    requestAnimationFrame(animar);
-  }
-
-  animar();
-
-  // Ejemplo: simular cambios de nivel cada 2s
-  setInterval(() => {
-    nivelUsuario = Math.random(); // entre 0 y 1
-  }, 2000);
-
-</script>
-
-<style>
-  .vaso {
-  position: relative;
-  border-radius: 16px;
-  overflow: hidden;
-
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow:
-    inset 2px 2px 5px rgba(255, 255, 255, 0.4),
-    0 8px 20px rgba(0, 0, 0, 0.25);
-
-  backdrop-filter: blur(10px) saturate(180%);
-  -webkit-backdrop-filter: blur(10px) saturate(180%);
-} -->
-<!-- 
-/* esto segun es para que parezca liquid glass pero no se ve :'v' */
-/* .vaso::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.25),
-    rgba(255, 255, 255, 0.05),
-    rgba(255, 255, 255, 0.25)
-  );
-  background-size: 200% 200%;
-  animation: liquidGlassMove 8s ease-in-out infinite;
-  z-index: 1;
-  pointer-events: none;
-  border-radius: 16px;
-} */
-
-/* @keyframes liquidGlassMove {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-} */
-
-/* .vaso canvas {
-  position: relative;
-  z-index: 2;
-  border-radius: 16px;
-} */
-
-</style> -->
-

@@ -1,7 +1,7 @@
 ---
 title: Example
 author: Example
-img: Example
+img: ConjunctiveWaterManagement_Cover.png
 date: Example
 place: Example
 publisher: Example
