@@ -27,6 +27,9 @@
   /* Esta solo para el nav y el footer */
   --navfooter: #f2f2f2;
 
+  /* este es un nuevo color para el footer */
+  --footernew: #4c4f54;
+
   /* //Lo contrario por si se ocupa */
   --navfooternt: #e6e7eb;
 
@@ -61,6 +64,9 @@
 body.dark-mode {
   /* Esta solo para el nav y el footer */
   --navfooter: #131314;
+
+  /* este es un nuevo color para el footer */
+  --footernew: #f2f2f2;
 
   /* Para las rayas del sitio */
   --rayas: #16191c;
