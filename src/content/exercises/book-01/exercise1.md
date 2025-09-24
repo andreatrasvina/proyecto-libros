@@ -12,7 +12,11 @@ In the simple conceptual model, one can envision a water molecule with only a fe
 
 Thermodynamic activity is also impacted by the size and charge of ions in the water. For example, an NaCl dominated brine with a concentration of 100,000 mg/L will have a different ionic size and charge and therefore a higher thermodynamic activity than a 100,000 mg/L MgCl2 brine (Figure 3). The formation of complex ions, ion pairs, and temperature are also factors in calculating the thermodynamic activity of a brine and these factors are included in various models for calculating the numerical value of thermodynamic activity. The most commonly used equations for highly saline and brine environments are those of Pitzer (Plummer et al., 1988). The thermodynamic activity of H2O is usually provided in most geochemical computer codes such as PHREEQC (Parkhurst and Apollo, 2013). A detailed review of the activity calculation process is given by Blandamer and others (2005).
 
-![Figure 3](https://books.gw-project.org/a-conceptual-overview-of-surface-and-near-surface-brines-and-evaporite-minerals/wp-content/uploads/sites/22/2022/01/image4.png)
+<img 
+  src="https://books.gw-project.org/a-conceptual-overview-of-surface-and-near-surface-brines-and-evaporite-minerals/wp-content/uploads/sites/22/2022/01/image4.png" 
+  alt="Figure 3"
+  class="bg-white inline-block p-4 mx-auto"
+/>
 <small><b>Figure 3</b> <em> – Example of thermodynamic activity of solutes declining with increasing molality (horizontal axis) and charge and weight (modified from Freeze and Cherry, 1979).</em></small>
 
 The thermodynamic activity of average potable groundwater with less than 500 mg/L solutes is typically around 0.95 or greater. Any time the relative humidity of the atmosphere is less than 95 percent, evaporation of water can occur. In brine, the thermodynamic activity of water is commonly 0.5 to 0.6 thus, evaporation can occur only if relative humidity is less than 50 percent or 60 percent. In fact, if the relative humidity is greater than this value water will move from the atmosphere into the brine (Figure 4). Owing to the limited amount of water in a liter of atmosphere the amount of water transferred is usually small.
@@ -24,7 +28,11 @@ The rate of evaporation is a linear difference between activity of water in the 
 
 An instructive example is from the coastal sabkhas of the Emirate of Abu Dhabi, United Arab Emirates, where sabkha brine has an activity of approximately 0.5 and thus, net evaporation occurs largely during the day in March through August (Figure 5). During much of the year and at night there is little, if any, evaporation. In fact, one commonly sees small shallow puddles of rainwater (that have acquired high salinity by dissolving surficial salts) remaining on the sabkha for weeks or months after a December rainfall event. Even though these pools contain water that is denser than the aquifer water they are shallow and do not have sufficient hydraulic head to cause recharge.
 
-![Figure 5](https://books.gw-project.org/a-conceptual-overview-of-surface-and-near-surface-brines-and-evaporite-minerals/wp-content/uploads/sites/22/2022/01/image6.png)
+<img 
+  src="https://books.gw-project.org/a-conceptual-overview-of-surface-and-near-surface-brines-and-evaporite-minerals/wp-content/uploads/sites/22/2022/01/image6.png" 
+  alt="Figure 5"
+  class="bg-white inline-block p-4 mx-auto"
+/>
 <small><b>Figure 5</b> <em> – Relative humidity (thermodynamic activity) for a typical year (2016) at Abu Dhabi airport located on the coastal sabkhas. Higher relative humidity generally occurs at night such that most net evaporation must occur during the day between March and August. Maximum and minimum daily temperature are shown for reference. Thermodynamic activity of sabkha brine (0.5) is shown for reference (modified from Weather Spark).</em></small>
 
 The role of humidity in controlling evaporation is also illustrated in Figure 6. Here, the change in weight of pans containing 1) water with less than 100 mg/L total dissolved solids (TDS) which is labeled Fresh in Figure 6, and 2) coastal sabkha brine with ~250,000 mg/L TDS which is labeled Saline in Figure 6. are shown with respect to the relativity humidity over 24 hours. In this example, the saline brine with a thermodynamic activity of 0.5 loses weight (water) throughout the day. In the early evening, when the relative humidity increases beyond 50 percent, the saline pan starts to gain weight via a net water transfer from the atmosphere to the pan. The fresh water pan, with a thermodynamic activity of 0.95, continues to lose weight past 50 percent relative humidity. The evaporation rate slows owing to a decrease in the activity gradient as well as solar radiation, which controls wind in the coastal area of Abu Dhabi where this experiment was conducted. Wind is a factor in evaporation rate as it aids in mixing and removing the recently added water molecules above the evaporating surface thus maintaining the thermodynamic gradient.
