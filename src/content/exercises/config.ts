@@ -1,4 +1,3 @@
-// src/content/exercises/config.ts
 import { z, defineCollection } from 'astro:content';
 
 const exercisesCollection = defineCollection({
@@ -10,5 +9,5 @@ const exercisesCollection = defineCollection({
 });
 
 export const collections = {
-  'exercises': exercisesCollection,
+  exercises: exercisesCollection,
 };
