@@ -59,6 +59,8 @@
 
   /* color para el hover de los elementos del sidebar */
   --textoHover: #2b398a;
+
+  --pepe: #e85451;
 }
 
 body.dark-mode {
@@ -97,6 +99,8 @@ body.dark-mode {
 
   /* color para el hover de los elementos del sidebar */
   --textoHover: #fff;
+
+  --pepe: #e85451;
 }
 
 h1,
