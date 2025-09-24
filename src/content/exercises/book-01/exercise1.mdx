@@ -1,54 +1,35 @@
 ---
-title: "1. Evaporation"
+title: "Ejercicio 1"
 bookSlug: "book-01"
 ---
 import Ejercicio_1 from "../../../components/book-01/Ejercicio_1.astro";
 
-Evaporation is critical to shallow brine formation and is driven by the gradient between the thermodynamic activity (effective concentration) of the water in the atmosphere and that of the water undergoing evaporation. As we know, water molecules move from high activity to low activity. The thermodynamic activity of the atmosphere is expressed as relative humidity such that a relative humidity of 65 percent has a thermodynamic activity of 0.65. Thermodynamic activity of groundwater at a given temperature is largely a function of the mole fraction of water relative to the total moles of dissolved material, ionic charge of the solutes, and size of the ions.
+<h1>2.2 Hydraulic Head Gradient as a Manifestation of Other Variables and Conditions</h1>
 
-In the simple conceptual model, one can envision a water molecule with only a few dissolved solutes in solution. This water molecule can easily reach the surface and evaporate whereas a water molecule in a solution with many solutes will be blocked from a path to the surface and thus, not evaporated as rapidly Figure 2.
+Hydraulic gradient (Δh/ΔL) is often expressed mathematically in differential format as dh/dL. Rearrangement of Darcy’s law using this formulation shows that hydraulic gradient is a function of Q, K, and A:
 
-![Figure 2](https://books.gw-project.org/a-conceptual-overview-of-surface-and-near-surface-brines-and-evaporite-minerals/wp-content/uploads/sites/22/2022/01/image3.png)
-<small><b>Figure 2</b> <em> – Illustration of the effect of dissolved solids on evaporation. The more solutes present (lower thermodynamic activity) the lower the evaporation rate.</em></small>
+![ecuacion 4](https://books.gw-project.org/conceptual-and-visual-understanding-of-hydraulic-head-and-groundwater-flow/wp-content/ql-cache/quicklatex.com-12a2769774e707c08643bfdfd2131b65_l3.svg)
+(4)
 
-Thermodynamic activity is also impacted by the size and charge of ions in the water. For example, an NaCl dominated brine with a concentration of 100,000 mg/L will have a different ionic size and charge and therefore a higher thermodynamic activity than a 100,000 mg/L MgCl₂ brine (Figure 3). The formation of complex ions, ion pairs, and temperature are also factors in calculating the thermodynamic activity of a brine and these factors are included in various models for calculating the numerical value of thermodynamic activity. The most commonly used equations for highly saline and brine environments are those of Pitzer (Plummer et al., 1988). The thermodynamic activity of H₂O is usually provided in most geochemical computer codes such as PHREEQC (Parkhurst and Apollo, 2013). A detailed review of the activity calculation process is given by Blandamer and others (2005).
+Therefore, a change in any one of these variables will manifest as a change in hydraulic gradient:
 
-<img 
-  src="https://books.gw-project.org/a-conceptual-overview-of-surface-and-near-surface-brines-and-evaporite-minerals/wp-content/uploads/sites/22/2022/01/image4.png" 
-  alt="Figure 3"
-  class="bg-white inline-block p-4 mx-auto"
-/>
-<small><b>Figure 3</b> <em> – Example of thermodynamic activity of solutes declining with increasing molality (horizontal axis) and charge and weight (modified from Freeze and Cherry, 1979).</em></small>
+![ecuacion 5](https://books.gw-project.org/conceptual-and-visual-understanding-of-hydraulic-head-and-groundwater-flow/wp-content/ql-cache/quicklatex.com-86324db2117411fc3e461947753efd77_l3.svg)
+(5)
 
-The thermodynamic activity of average potable groundwater with less than 500 mg/L solutes is typically around 0.95 or greater. Any time the relative humidity of the atmosphere is less than 95 percent, evaporation of water can occur. In brine, the thermodynamic activity of water is commonly 0.5 to 0.6 thus, evaporation can occur only if relative humidity is less than 50 percent or 60 percent. In fact, if the relative humidity is greater than this value water will move from the atmosphere into the brine (Figure 4). Owing to the limited amount of water in a liter of atmosphere the amount of water transferred is usually small.
+![ecuacion 6](https://books.gw-project.org/conceptual-and-visual-understanding-of-hydraulic-head-and-groundwater-flow/wp-content/ql-cache/quicklatex.com-f534b9b89c86905f12601dc4c30e9f3f_l3.svg)
+(6)
 
-![Figure 4](https://books.gw-project.org/a-conceptual-overview-of-surface-and-near-surface-brines-and-evaporite-minerals/wp-content/uploads/sites/22/2022/01/image5.png)
-<small><b>Figure 4</b> <em> – Illustration of the change in water transfer from a) transport of water from the brine to the atmosphere during the day (low relative humidity) to b) transport of water from the atmosphere to the brine (high relative humidity).</em></small>
+![ecuacion 7](https://books.gw-project.org/conceptual-and-visual-understanding-of-hydraulic-head-and-groundwater-flow/wp-content/ql-cache/quicklatex.com-29b828fd9111fdac30e06fd64065b726_l3.svg)
+(7)
 
-The rate of evaporation is a linear difference between activity of water in the atmosphere and activity of water in the brine. Consequently, the rate of evaporation declines as the relative humidity approaches that of the brine; when they are equal, no evaporation of water occurs. As humidity increases, water from the atmosphere will move to the brine. As a result, evaporation from surface brine systems usually occurs only under limited daily or seasonal conditions.
+The negative sign is due to the fact that water flows in a direction from higher head to lower head, as described previously. The term –dh/dL represents the slope of the head decline in the direction of flow (the “steepness” of the hydraulic gradient).
 
-An instructive example is from the coastal sabkhas of the Emirate of Abu Dhabi, United Arab Emirates, where sabkha brine has an activity of approximately 0.5 and thus, net evaporation occurs largely during the day in March through August (Figure 5). During much of the year and at night there is little, if any, evaporation. In fact, one commonly sees small shallow puddles of rainwater (that have acquired high salinity by dissolving surficial salts) remaining on the sabkha for weeks or months after a December rainfall event. Even though these pools contain water that is denser than the aquifer water they are shallow and do not have sufficient hydraulic head to cause recharge.
+Figure 5 summarizes this concept using three different, yet spatially-uniform scenarios. The hydraulic gradient, which is commonly measured by way of water levels in wells, is not the controlling parameter that dictates flow. Rather, hydraulic gradient is a manifestation of the combined effects of the system geometry, hydrogeologic properties and the flow rate imposed on the system.
 
-<img 
-  src="https://books.gw-project.org/a-conceptual-overview-of-surface-and-near-surface-brines-and-evaporite-minerals/wp-content/uploads/sites/22/2022/01/image6.png" 
-  alt="Figure 5"
-  class="bg-white inline-block p-4 mx-auto"
-/>
-<small><b>Figure 5</b> <em> – Relative humidity (thermodynamic activity) for a typical year (2016) at Abu Dhabi airport located on the coastal sabkhas. Higher relative humidity generally occurs at night such that most net evaporation must occur during the day between March and August. Maximum and minimum daily temperature are shown for reference. Thermodynamic activity of sabkha brine (0.5) is shown for reference (modified from Weather Spark).</em></small>
+![Figure 5](https://books.gw-project.org/conceptual-and-visual-understanding-of-hydraulic-head-and-groundwater-flow/wp-content/uploads/sites/14/2020/12/image6.png)
+<small><b>Figure 5</b> <em> – Illustration of hydraulic gradient dependence on hydraulic conductivity, flow rate, and area. In each case, the gradient changes in accordance with the proportionality relationship defined by Darcy’s law (Cohen and Cherry, 2020).</em></small>
 
-The role of humidity in controlling evaporation is also illustrated in Figure 6. Here, the change in weight of pans containing 1) water with less than 100 mg/L total dissolved solids (TDS) which is labeled Fresh in Figure 6, and 2) coastal sabkha brine with ~250,000 mg/L TDS which is labeled Saline in Figure 6. are shown with respect to the relativity humidity over 24 hours. In this example, the saline brine with a thermodynamic activity of 0.5 loses weight (water) throughout the day. In the early evening, when the relative humidity increases beyond 50 percent, the saline pan starts to gain weight via a net water transfer from the atmosphere to the pan. The fresh water pan, with a thermodynamic activity of 0.95, continues to lose weight past 50 percent relative humidity. The evaporation rate slows owing to a decrease in the activity gradient as well as solar radiation, which controls wind in the coastal area of Abu Dhabi where this experiment was conducted. Wind is a factor in evaporation rate as it aids in mixing and removing the recently added water molecules above the evaporating surface thus maintaining the thermodynamic gradient.
+In the example shown in Figure 6, K2\<K1 whereas Q and A are constant. Q is the same at every location along the tube because mass is conserved. Therefore, as indicated by Darcy’s law, the gradient in the region of K2 must be steeper than in the other regions. This simple scenario is an example of a heterogeneity; in this case, hydraulic conductivity is not uniform.
 
-![Figure 6](https://books.gw-project.org/a-conceptual-overview-of-surface-and-near-surface-brines-and-evaporite-minerals/wp-content/uploads/sites/22/2022/01/image7.png)
-<small><b>Figure 6</b> <em> – Graph showing weight (left vertical axis) of two pans of evaporating Saline (red line) and Fresh (light blue line) water with respect to relative humidity (right vertical axis, green line) as a function of time (horizontal axis). Notice that the saline pan begins to gain weight (water) as the humidity exceeds 50 percent while fresh water, with an activity of 0.95, continues to lose water with increasing relative humidity. The flux of water from atmosphere to brine is low, even though the thermodynamic activity gradient is high, because of the low water content of the atmosphere.</em></small>
-
-The isotopes of ²H and ¹⁸O in water molecules are also impacted by evaporation. The more humid the environment, the lower the δ²H/δ¹⁸O ratio. That is, it is easier for the lighter hydrogen to escape by evaporation in a high humidity environment than for the heavier oxygen to escape. Consider the case of Sabkha Matti in the Emirate of Abu Dhabi. There are two areas of interest here: a low humidity environment (~100 km inland from the coast) and a high humidity (coastal) environment. Both areas receive precipitation from the same source that has a δ²H/δ¹⁸O ratio of 5.3. Surface water in the high humidity coastal environment loses more ²H relative to ¹⁸O reducing the ratio and resulting in a lower δ²H/δ¹⁸O ratio of 1.60, while the inland area maintains a higher δH/δ¹⁸O ratio of 2.25. This difference results in a different δ²H/δ¹⁸O ratio as shown by the slopes on the graph of Figure 7.
-
-![Figure 7](https://books.gw-project.org/a-conceptual-overview-of-surface-and-near-surface-brines-and-evaporite-minerals/wp-content/uploads/sites/22/2022/01/image8.png)
-<small><b>Figure 7</b> <em> – Water isotopes of inland sabkha (lower humidity, circle data points) versus coastal sabkha (higher humidity, triangle data points) in Sabkha Matti, Abu Dhabi. Both areas receive rainfall from the same source. Humidity impacts oxygen and hydrogen isotopes differently resulting in a lower slope of 1.60 for the higher humidity coastal environment versus a slope of 2.25 for the lower humidity inland environment. The input precipitation has a slope of 5.3.</em></small>
-
-Isotope analysis of elements such as carbon, sulfate, nitrate, chloride, bromide, and others can provide insight into the origin and evolution of the solutes in these environments and this subject is covered by Peter Cook in another Groundwater Project book.
-
-<Ejercicio_1 pregunta="¿Qué significa termodinámica del agua?" />
-
-
-Segundo ejercicio aqui
+![Figure 6](https://books.gw-project.org/conceptual-and-visual-understanding-of-hydraulic-head-and-groundwater-flow/wp-content/uploads/sites/14/2020/12/image7.png)
+<small><b>Figure 6</b> <em> – Change in hydraulic gradient due to variable hydraulic conductivity. In this case, the gradient is steeper in the section with lower K, since gradient is inversely proportional to K (Cohen and Cherry, 2020).</em></small>
