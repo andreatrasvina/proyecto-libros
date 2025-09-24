@@ -46,7 +46,7 @@
   --titles: #030906;
 
   /* Color de fondo del sidebar */
-  --pepe: #F0F2F6;
+  --titlesnt: #F0F2F6;
 
   /* color para el texto del sidebar */
   --sidebarText: #565c6d;
@@ -59,6 +59,8 @@
 
   /* color para el hover de los elementos del sidebar */
   --textoHover: #2b398a;
+
+  --pepe: #e85451;
 }
 
 body.dark-mode {
@@ -87,7 +89,7 @@ body.dark-mode {
   --color-primary: #ffffff;
 
   /* Color de fondo del sidebar */
-  --pepe: #131314;
+  --titlesnt: #131314;
 
   /* color para el texto del sidebar */
   --sidebarText: #fff;
@@ -97,10 +99,13 @@ body.dark-mode {
 
   /* color para el hover de los elementos del sidebar */
   --textoHover: #fff;
+
+  --pepe: #e85451;
 }
 
 h1,
 h2,
+small,
 p {
   color: var(--titles);
 }
