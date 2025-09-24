@@ -11,5 +11,152 @@ const { pregunta = "" } = Astro.props;
   >
     <h1 class="font-semibold text-lg text-[var(--titles)]">Ejercicio</h1>
     <p class="mt-2">{pregunta}</p>
+
+    <!-- aqui esta el canvas -->
+    <!-- <canvas id="miCanvas" width="400" height="500" class="vaso"></canvas> -->
+     <div class="vaso">
+  <div class="agua"></div>
+</div>
+
+<input type="range" min="0" max="100" value="50" id="control">
+
+<style>
+  .vaso {
+    width: 200px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow:
+      inset 2px 2px 5px rgba(255, 255, 255, 0.4),
+      0 8px 20px rgba(0, 0, 0, 0.25);
+
+    backdrop-filter: blur(10px) saturate(180%);
+    -webkit-backdrop-filter: blur(10px) saturate(180%);
+    }
+
+  .agua {
+    position: absolute;
+    border-radius: 16px;
+    bottom: 0;
+    width: 100%;
+    height: 50%; /* nivel inicial */
+    background: #67bed9;
+    transition: height 0.8s ease; 
+  }
+
+  input[type=range] {
+    width: 200px;
+  }
+</style>
+
+<script>
+  const agua = document.querySelector(".agua");
+  const control = document.getElementById("control");
+
+  control.addEventListener("input", () => {
+    agua.style.height = control.value + "%";
+  });
+</script>
+
   </div>
 </div>
+
+<!-- dibujo del canvasa-->
+<!-- <script>
+  const canvas = document.getElementById("miCanvas");
+  const ctx = canvas.getContext("2d") ;
+
+  let xAgua = 0;
+  let yAgua = 200;
+  let widthAgua = 400;
+  let heightAgua = 500;
+
+  let nivelUsuario = 0.5;
+
+  ctx.fillStyle = "#67bed9";
+  ctx.fillRect(xAgua, yAgua, widthAgua, heightAgua);
+
+  function dibujar() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Calculamos la altura real del agua según nivelUsuario
+    let alturaMax = canvas.height;
+    let alturaAgua = alturaMax * nivelUsuario;
+
+    // yAgua es la coordenada desde arriba
+    yAgua = canvas.height - alturaAgua;
+
+    ctx.fillStyle = "#67bed9";
+    ctx.fillRect(xAgua, yAgua, widthAgua, alturaAgua);
+  }
+
+  // Animación simple
+  function animar() {
+    dibujar();
+    requestAnimationFrame(animar);
+  }
+
+  animar();
+
+  // Ejemplo: simular cambios de nivel cada 2s
+  setInterval(() => {
+    nivelUsuario = Math.random(); // entre 0 y 1
+  }, 2000);
+
+</script>
+
+<style>
+  .vaso {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow:
+    inset 2px 2px 5px rgba(255, 255, 255, 0.4),
+    0 8px 20px rgba(0, 0, 0, 0.25);
+
+  backdrop-filter: blur(10px) saturate(180%);
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
+} -->
+<!-- 
+/* esto segun es para que parezca liquid glass pero no se ve :'v' */
+/* .vaso::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.25),
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.25)
+  );
+  background-size: 200% 200%;
+  animation: liquidGlassMove 8s ease-in-out infinite;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: 16px;
+} */
+
+/* @keyframes liquidGlassMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+} */
+
+/* .vaso canvas {
+  position: relative;
+  z-index: 2;
+  border-radius: 16px;
+} */
+
+</style> -->
+
