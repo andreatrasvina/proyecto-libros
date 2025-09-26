@@ -4,19 +4,24 @@
   <div class="inputs">
     <div class="form-group">
         <label for="elev">Elevación (z) [m]:</label>
-        <input type="number" id="elev" name="elev" placeholder="Ej. 10" />
+        <input type="number" id="elev" name="elev" placeholder="Ej. 10m" />
     </div>
 
     <div class="form-group">
         <label for="presion">Presión (p) [Pa]:</label>
-        <input type="number" id="presion" name="presion" placeholder="Ej. 10000" />
+        <input type="number" id="presion" name="presion" placeholder="Ej. 10000Pa" />
     </div>
 
     <div class="form-group">
-        <label for="gamma">Peso específico del agua (γw) [N/m³]:</label>
-        <input type="number" id="gamma" name="gamma" value="9810" disabled/>
+        <label for="pozo">Tamaño del pozo:</label>
+        <input type="number" id="pozo" name="pozo" placeholder="Ej. 10m"/>
     </div>
 
+  </div>
+
+  <!--Este es el contenedor que usare para realizar el esquema dinamico-->
+  <div class="well-container">
+    <div class="water-level" id="waterLevel"></div>
   </div>
 
   <div class="result">
@@ -29,27 +34,40 @@
     /*Inicializacion de las variables especificando el tipo de elemento que son
     elevInput - Elevacion del acuifero
     presionInput - Presion del acuifero
-    gammaInput - Peso especifico del agua
+    pozoInput - Tamaño del pozo
+    waterLevel - Es el contenedor que hace referencia al nivel del agua en el pozo
     headSpan - Es la carga hidraulica*/
   const elevInput = document.getElementById("elev") as HTMLInputElement | null;
   const presionInput = document.getElementById("presion") as HTMLInputElement | null;
-  const gammaInput = document.getElementById("gamma") as HTMLInputElement | null;
+  const pozoInput = document.getElementById("pozo") as HTMLInputElement | null;
   const headSpan = document.getElementById("headValue") as HTMLSpanElement | null;
+  const waterLevel = document.getElementById("waterLevel") as HTMLDivElement | null;
 
   function calcularHead() {
     //Uso del if para evitar valor nullos
-    if (!elevInput || !presionInput || !gammaInput || !headSpan) return;
+    if (!elevInput || !presionInput || !pozoInput || !waterLevel || !headSpan) return;
 
     const z = parseFloat(elevInput.value) || 0;
     const p = parseFloat(presionInput.value) || 0;
-    const gamma = parseFloat(gammaInput.value) || 9810;
+    const pozo = parseFloat(pozoInput.value) || 0;
+    const pesoEspecificoAgua = 9810;
 
-    const h = z + p / gamma;
+    const h = z + p / pesoEspecificoAgua;
     headSpan.textContent = h.toFixed(8);
+
+    const scaleFactor = 100; // 1 metro = 100 px en el contenedor
+    const maxHeight = pozo * scaleFactor;
+    let height = h * scaleFactor;
+
+    if(height > maxHeight) height = maxHeight;
+    waterLevel.style.height = `${height}px`;
+
+    // Cambio de color a rojo si el agua llega al tope
+    waterLevel.style.background = height >= maxHeight ? '#ff3333' : '#3399ff';
   } 
   elevInput?.addEventListener("input", calcularHead);
   presionInput?.addEventListener("input", calcularHead);
-  gammaInput?.addEventListener("input", calcularHead);
+  pozoInput?.addEventListener("input", calcularHead);
 
 </script>
 
@@ -94,9 +112,25 @@
     color: black;
   }
 
-  #gamma{
-    color: black;
-    border-color: black;
+  .well-container {
+    position: relative;
+    width: 60px;
+    height: 200px;
+    border: 2px solid #004080;
+    border-radius: 8px;
+    margin-top: 1rem;
+    background: #eee;
+    overflow: hidden;
+  }
+
+  .water-level {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height:max-content;
+    background: #3399ff;
+    transition: height 0.3s ease;
+    margin-bottom: 0;
   }
 
   .result {
