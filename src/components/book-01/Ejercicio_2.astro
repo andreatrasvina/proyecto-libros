@@ -1,0 +1,58 @@
+---
+---
+<div>
+    <div class="pms">
+        <div class="piezometer" id="pm-1">
+            <div class="water"></div>
+        </div>
+        <div class="piezometer" id="pm-2">
+            <div class="water"></div>
+        </div>
+
+    </div>
+    <input
+        id="control"
+        type="range"
+        min="10"
+        max="30"
+        value="20"
+    />
+</div>
+
+<style>
+    .pms {
+    display: flex;
+    gap: 20px;
+    }
+
+    .piezometer {
+    display: flex;
+    flex-direction: column-reverse;
+    width: 30px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .piezometer#pm-1>.water{
+        height: 70%;
+    }
+
+    .water {
+    width: 100%;
+    height: 50%;
+    background: #67bed9;
+    transition: height 0.8s ease;
+    }
+</style>
+
+<script>
+    const pms = document.querySelector(".pms");
+    const water = document.querySelector("#pm-2 .water");
+    const control = document.getElementById("control");
+
+    control.addEventListener("input", () => {
+        pms.style.gap = control.value + "px";
+        water.style.height = control.value + "px";
+    });
+</script>
