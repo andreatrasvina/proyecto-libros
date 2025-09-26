@@ -1,0 +1,111 @@
+<div class="interactive-scheme">
+  <h3>Interactive Scheme: Hydraulic Head Inputs</h3>
+  
+  <div class="inputs">
+    <div class="form-group">
+        <label for="elev">Elevación (z) [m]:</label>
+        <input type="number" id="elev" name="elev" placeholder="Ej. 10" />
+    </div>
+
+    <div class="form-group">
+        <label for="presion">Presión (p) [Pa]:</label>
+        <input type="number" id="presion" name="presion" placeholder="Ej. 10000" />
+    </div>
+
+    <div class="form-group">
+        <label for="gamma">Peso específico del agua (γw) [N/m³]:</label>
+        <input type="number" id="gamma" name="gamma" value="9810" disabled/>
+    </div>
+
+  </div>
+
+  <div class="result">
+        <strong>Carga hidráulica (h): </strong>
+        <span id="headValue">0</span> m
+    </div>
+</div>
+
+<script>
+    /*Inicializacion de las variables especificando el tipo de elemento que son
+    elevInput - Elevacion del acuifero
+    presionInput - Presion del acuifero
+    gammaInput - Peso especifico del agua
+    headSpan - Es la carga hidraulica*/
+  const elevInput = document.getElementById("elev") as HTMLInputElement | null;
+  const presionInput = document.getElementById("presion") as HTMLInputElement | null;
+  const gammaInput = document.getElementById("gamma") as HTMLInputElement | null;
+  const headSpan = document.getElementById("headValue") as HTMLSpanElement | null;
+
+  function calcularHead() {
+    //Uso del if para evitar valor nullos
+    if (!elevInput || !presionInput || !gammaInput || !headSpan) return;
+
+    const z = parseFloat(elevInput.value) || 0;
+    const p = parseFloat(presionInput.value) || 0;
+    const gamma = parseFloat(gammaInput.value) || 9810;
+
+    const h = z + p / gamma;
+    headSpan.textContent = h.toFixed(8);
+  } 
+  elevInput?.addEventListener("input", calcularHead);
+  presionInput?.addEventListener("input", calcularHead);
+  gammaInput?.addEventListener("input", calcularHead);
+
+</script>
+
+<style>
+  .interactive-scheme {
+    padding: 1rem;
+    margin: 1rem 0;
+    border: 2px solid #ccc;
+    border-radius: 12px;
+    background: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .interactive-scheme h3 {
+    margin-bottom: 1rem;
+    color: #004080;
+  }
+
+  .inputs{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .form-group {
+    margin-bottom: 0.75rem;
+  }
+
+  .form-group label {
+    display: block;
+    color: black;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .form-group input {
+    padding: 0.4rem;
+    border: 1px solid #aaa;
+    border-radius: 6px;
+    color: black;
+  }
+
+  #gamma{
+    color: black;
+    border-color: black;
+  }
+
+  .result {
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    color: black;
+  }
+
+  .result strong{
+    color: black;
+  }
+</style>
