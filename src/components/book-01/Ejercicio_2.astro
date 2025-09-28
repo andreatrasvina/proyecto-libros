@@ -1,49 +1,31 @@
----
-
----
-
-<div>
-  <div class="pms">
-    <div class="piezometer" id="pm-1">
-      <div class="water"></div>
-    </div>
-    <div class="piezometer" id="pm-2">
-      <div class="water"></div>
+<div class="layout">
+  <!-- Panel controles -->
+  <div class="panel">
+    <h2>Controles</h2>
+    <label for="control">Nivel de presión</label>
+    <input id="control" type="range" min="0" max="100" value="50" />
+  </div>
+  <!-- Panel Gráfica -->
+  <div class="visual">
+    <h2>Gráfica</h2>
+    <div class="container">
+      <div class="pms">
+        <div class="piezometer" id="pm-1">
+          <div class="water"></div>
+        </div>
+        <div class="piezometer" id="pm-2">
+          <div class="water"></div>
+        </div>
+      </div>
+      <div class="cylinder">
+        <div class="circle front"></div>
+        <div class="body"></div>
+        <div class="circle back"></div>
+      </div>
     </div>
   </div>
-  <input id="control" type="range" min="0" max="100" value="50" />
 </div>
 
-<style>
-  .pms {
-    display: flex;
-    align-items: flex-end;
-    gap: 20px;
-  }
-
-  .piezometer {
-    display: flex;
-    flex-direction: column-reverse;
-    width: 30px;
-    height: 200px;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgb(0, 0, 0);
-    transition: margin-left 0.5s ease;
-  }
-
-  .piezometer#pm-1 > .water {
-    height: 70%;
-  }
-  .piezometer#pm-2 > .water {
-    height: 50%;
-  }
-
-  .water {
-    width: 100%;
-    background: #67bed9;
-    transition: height 0.5s ease;
-  }
-</style>
 <script>
   const pm1 = document.querySelector("#pm-1");
   const pm2 = document.querySelector("#pm-2");
@@ -78,3 +60,110 @@
     control.addEventListener("input", actualizarEstado);
   }
 </script>
+
+<style>
+  .layout {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .panel,
+  .visual {
+    flex: 1;
+    border: 2px solid #333;
+    border-radius: 10px;
+    padding: 20px;
+    background: #f9f9f9;
+  }
+
+  .panel h2,
+  .visual h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  #control {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    accent-color: #0077cc;
+  }
+
+  .container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cylinder {
+    margin-top: -20px;
+    display: flex;
+    align-items: center;
+    z-index: 0;
+  }
+
+  .circle {
+    width: 30px;
+    height: 50px;
+    background: rgb(152, 231, 255);
+    border: 2px solid black;
+    border-radius: 50%;
+    position: relative;
+  }
+
+  .circle.front {
+    z-index: 3;
+  }
+
+  .body {
+    width: 280px;
+    height: 50px;
+    background: rgb(152, 231, 255);
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+    position: relative;
+    left: -15px;
+    z-index: 2;
+  }
+
+  .circle.back {
+    left: -30px;
+    z-index: 1;
+  }
+
+  .pms {
+    position: relative;
+    margin-top: 50px;
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+    z-index: 10;
+  }
+
+  .piezometer {
+    display: flex;
+    flex-direction: column-reverse;
+    width: 30px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgb(0, 0, 0);
+    transition: margin-left 0.5s ease;
+  }
+
+  .piezometer#pm-1 > .water {
+    height: 70%;
+  }
+
+  .piezometer#pm-2 > .water {
+    height: 50%;
+  }
+
+  .water {
+    width: 100%;
+    background: #67bed9;
+    transition: height 0.5s ease;
+  }
+</style>
