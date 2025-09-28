@@ -1,58 +1,80 @@
 ---
----
-<div>
-    <div class="pms">
-        <div class="piezometer" id="pm-1">
-            <div class="water"></div>
-        </div>
-        <div class="piezometer" id="pm-2">
-            <div class="water"></div>
-        </div>
 
+---
+
+<div>
+  <div class="pms">
+    <div class="piezometer" id="pm-1">
+      <div class="water"></div>
     </div>
-    <input
-        id="control"
-        type="range"
-        min="10"
-        max="30"
-        value="20"
-    />
+    <div class="piezometer" id="pm-2">
+      <div class="water"></div>
+    </div>
+  </div>
+  <input id="control" type="range" min="0" max="100" value="50" />
 </div>
 
 <style>
-    .pms {
+  .pms {
     display: flex;
+    align-items: flex-end;
     gap: 20px;
-    }
+  }
 
-    .piezometer {
+  .piezometer {
     display: flex;
     flex-direction: column-reverse;
     width: 30px;
     height: 200px;
     background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    }
+    border: 1px solid rgb(0, 0, 0);
+    transition: margin-left 0.5s ease;
+  }
 
-    .piezometer#pm-1>.water{
-        height: 70%;
-    }
-
-    .water {
-    width: 100%;
+  .piezometer#pm-1 > .water {
+    height: 70%;
+  }
+  .piezometer#pm-2 > .water {
     height: 50%;
+  }
+
+  .water {
+    width: 100%;
     background: #67bed9;
-    transition: height 0.8s ease;
-    }
+    transition: height 0.5s ease;
+  }
 </style>
-
 <script>
-    const pms = document.querySelector(".pms");
-    const water = document.querySelector("#pm-2 .water");
-    const control = document.getElementById("control");
+  const pm1 = document.querySelector("#pm-1");
+  const pm2 = document.querySelector("#pm-2");
+  const water1 = document.querySelector("#pm-1 .water");
+  const water2 = document.querySelector("#pm-2 .water");
+  const control = document.getElementById("control");
 
-    control.addEventListener("input", () => {
-        pms.style.gap = control.value + "px";
-        water.style.height = control.value + "px";
-    });
+  if (
+    pm1 instanceof HTMLElement &&
+    pm2 instanceof HTMLElement &&
+    water1 instanceof HTMLElement &&
+    water2 instanceof HTMLElement &&
+    control instanceof HTMLInputElement
+  ) {
+    const maxHeight = water1.offsetHeight;
+    const minHeight = 20;
+    const maxRange = parseInt(control.max);
+
+    function actualizarEstado() {
+      const distance = parseInt(control.value);
+
+      //Movimiento
+      pm2.style.marginLeft = distance + "px";
+
+      const newHeight =
+        maxHeight - (distance / maxRange) * (maxHeight - minHeight);
+
+      water2.style.height = newHeight + "px";
+    }
+
+    actualizarEstado();
+    control.addEventListener("input", actualizarEstado);
+  }
 </script>
