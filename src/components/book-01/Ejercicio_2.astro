@@ -2,7 +2,7 @@
   <!-- Panel controles -->
   <div class="panel">
     <h2>Controles</h2>
-    <label for="control">Nivel de presión</label>
+    <label for="control">Distacia entre piezometros</label>
     <input id="control" type="range" min="0" max="100" value="50" />
   </div>
   <!-- Panel Gráfica -->
@@ -71,7 +71,7 @@
   .panel,
   .visual {
     flex: 1;
-    border: 2px solid #333;
+    border: 1px solid #333;
     border-radius: 10px;
     padding: 20px;
     background: #f9f9f9;
@@ -109,7 +109,7 @@
     width: 30px;
     height: 50px;
     background: rgb(152, 231, 255);
-    border: 2px solid black;
+    border: 1px solid black;
     border-radius: 50%;
     position: relative;
   }
@@ -122,8 +122,8 @@
     width: 280px;
     height: 50px;
     background: rgb(152, 231, 255);
-    border-top: 2px solid black;
-    border-bottom: 2px solid black;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
     position: relative;
     left: -15px;
     z-index: 2;
@@ -135,12 +135,11 @@
   }
 
   .pms {
-    position: relative;
     margin-top: 50px;
     display: flex;
-    align-items: flex-end;
     gap: 20px;
     z-index: 10;
+    min-width: 200px;
   }
 
   .piezometer {
@@ -150,6 +149,7 @@
     height: 200px;
     background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgb(0, 0, 0);
+    border-bottom: 0px solid rgb(0, 0, 0);
     transition: margin-left 0.5s ease;
   }
 
@@ -163,7 +163,7 @@
 
   .water {
     width: 100%;
-    background: #67bed9;
+    background: rgb(152, 231, 255);
     transition: height 0.5s ease;
   }
 </style>
