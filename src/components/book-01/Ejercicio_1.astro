@@ -16,128 +16,122 @@
     </label>
 
     <!-- aqui va el canvas -->
-    <div class="canvas mt-10">
+    <div class="canvas mt-10 mb-14">
       <canvas
         id="myCanvas"
         width="600"
         height="300"
-        style="border:1px solid red; margin: 0 auto;"
+        style="border:1px solid var(--titles); margin: 0 auto;"
       >
       </canvas>
     </div>
 
     <div class="controls">
-
       <div class="section-card">
         <h3>Sección A</h3>
         <label for="kA">K (Conductividad)</label>
-        <input type="range" id="kA" min="1" max="100" value="60">
+        <input type="range" id="kA" min="1" max="100" value="60" />
         <span id="kAVal">60</span>
         <label for="aA">A (Área)</label>
-        <input type="range" id="aA" min="1" max="100" value="40">
+        <input type="range" id="aA" min="1" max="100" value="40" />
         <span id="aAVal">40</span>
       </div>
 
       <div class="section-card">
         <h3>Sección B</h3>
         <label for="kB">K (Conductividad)</label>
-        <input type="range" id="kB" min="1" max="100" value="80">
+        <input type="range" id="kB" min="1" max="100" value="80" />
         <span id="kBVal">80</span>
         <label for="aB">A (Área)</label>
-        <input type="range" id="aB" min="1" max="100" value="60">
+        <input type="range" id="aB" min="1" max="100" value="60" />
         <span id="aBVal">60</span>
       </div>
 
       <div class="section-card">
         <h3>Sección C</h3>
         <label for="kC">K (Conductividad)</label>
-        <input type="range" id="kC" min="1" max="100" value="30">
+        <input type="range" id="kC" min="1" max="100" value="30" />
         <span id="kCVal">30</span>
         <label for="aC">A (Área)</label>
-        <input type="range" id="aC" min="1" max="100" value="30">
+        <input type="range" id="aC" min="1" max="100" value="30" />
         <span id="aCVal">30</span>
       </div>
-    
+
       <div class="section-card">
         <h3>Sección Otra</h3>
         <label for="kC">ejemploooo</label>
-        <input type="range" id="kC" min="1" max="100" value="30">
+        <input type="range" id="kC" min="1" max="100" value="30" />
         <span id="kCVal">aqui van los numeros</span>
       </div>
-
     </div>
 
-      <div class="mt-6">
-        <button
-          class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors duration-300 ease-in-out"
-          >Iniciar</button
-        >
+    <div class="mt-6">
+      <button
+        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors duration-300 ease-in-out"
+        >Iniciar</button
+      >
 
-        <button
-          class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors duration-300 ease-in-out"
-        >
-          Reiniciar
-        </button>
-      </div>
+      <button
+        class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors duration-300 ease-in-out"
+      >
+        Reiniciar
+      </button>
     </div>
   </div>
 </div>
 
 <style>
+  .controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
 
-.controls {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
-  margin-top: 16px;
-}
+  .section-card {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.178);
+  }
 
-.section-card {
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 12px;
-  padding: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.178);
-}
+  .section-card h3 {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--titles);
+  }
 
-.section-card h3 {
-  margin: 0 0 12px 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--titles);
-}
+  .section-card label {
+    display: block;
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--textoCardCanvas);
+  }
 
-.section-card label {
-  display: block;
-  margin-top: 8px;
-  font-size: 13px;
-  color: #9fb4d6;
-}
+  .section-card input[type="range"] {
+    width: 100%;
+    margin-top: 4px;
+  }
 
-.section-card input[type=range] {
-  width: 100%;
-  margin-top: 4px;
-}
+  .section-card span {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--textoCardCanvas);
+    margin-left: 8px;
+  }
 
-.section-card span {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text);
-  margin-left: 8px;
-}
-
-.section-card:hover {
-  transform: scale(.99);
-  /* box-shadow: 0 10px 25px rgba(0, 0, 0, 0.55); */
-  border-color: rgba(0, 191, 255, 0.4);
-}
-
+  .section-card:hover {
+    transform: scale(0.99);
+    /* box-shadow: 0 10px 25px rgba(0, 0, 0, 0.55); */
+    border-color: rgba(0, 191, 255, 0.4);
+  }
 </style>
 
 <script>
-
   //esto es para los numeritos del span, se actualizan cuando se mueve el range
-  document.querySelectorAll("input[type=range]").forEach(slider => {
+  document.querySelectorAll("input[type=range]").forEach((slider) => {
     const span = document.getElementById(slider.id + "Val");
     if (span) {
       slider.addEventListener("input", () => {
@@ -145,11 +139,28 @@
       });
     }
   });
-  
+
   const canvas = document.getElementById("myCanvas");
   const ctx = canvas.getContext("2d");
-  ctx.fillStyle = "red";
+
+  // Obtener el valor real de la variable CSS
+  const styles = getComputedStyle(document.documentElement);
+  const borderColor = styles.getPropertyValue("--rayaTubo").trim();
+
+  // Colores y estilo
+  ctx.fillStyle = "#cbf7fc"; // azul agua
+  ctx.strokeStyle = borderColor; // gris borde
+  ctx.lineWidth = 2; // grosor del borde
+
+  // Tubo 1
   ctx.fillRect(0, 130, 200, 35);
+  ctx.strokeRect(0, 130, 200, 35);
+
+  // Tubo 2 (más grueso)
   ctx.fillRect(200, 110, 200, 75);
+  ctx.strokeRect(200, 110, 200, 75);
+
+  // Tubo 3
   ctx.fillRect(400, 130, 200, 35);
+  ctx.strokeRect(400, 130, 200, 35);
 </script>

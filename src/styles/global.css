@@ -61,6 +61,11 @@
   --textoHover: #2b398a;
 
   --pepe: #e85451;
+
+  --rayaTubo: #5D726F;
+
+
+  --textoCardCanvas: #565c6d;
 }
 
 body.dark-mode {
@@ -101,6 +106,10 @@ body.dark-mode {
   --textoHover: #fff;
 
   --pepe: #e85451;
+
+  --textoCardCanvas: #9fb4d6;
+
+  --rayaTubo: #CED0C3;
 }
 
 h1,
