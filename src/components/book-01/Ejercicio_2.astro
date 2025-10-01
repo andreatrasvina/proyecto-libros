@@ -24,6 +24,7 @@
         <div class="body"></div>
         <div class="circle back"></div>
       </div>
+
       <div class="delta-container">
         <div class="linea"></div>
         <span class="delta-text">∆L</span>
@@ -230,6 +231,7 @@
 
   .circle.front {
     z-index: 3;
+    /* círculo delantero liso */
   }
 
   .body {
@@ -241,10 +243,22 @@
     position: relative;
     left: -15px;
     z-index: 2;
+
+    background-image: radial-gradient(
+      rgba(0, 0, 0, 0.459) 1px,
+      transparent 1px
+    );
+    background-size: 10px 10px;
   }
 
   .circle.back {
     left: -30px;
     z-index: 1;
+
+    background-image: radial-gradient(
+      rgba(0, 0, 0, 0.459) 1px,
+      transparent 1px
+    );
+    background-size: 10px 10px;
   }
 </style>
