@@ -2,16 +2,28 @@
   <h3 class="text-[var(--pepe)] text-3xl lato-bold">Ejercicio interactivo</h3>
   <hr class="border-[var(--pepe)]" />
   <div
-    class="p-4 my-6 border border-[var(--rayas)] rounded-md shadow bg-[var(--titlesnt)]">
-    <h1 class="font-semibold text-lg text-[var(--titles)]">Gradiente hidráulico</h1>
+    class="p-4 my-6 border border-[var(--rayas)] rounded-md shadow bg-[var(--titlesnt)]"
+  >
+    <h1 class="font-semibold text-lg text-[var(--titles)]">
+      Gradiente hidráulico
+    </h1>
 
     <label for="humedad" class="text-[var(--titles)] mt-2">
-      <span class="lato-bold">Cómo funciona: </span> Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque esse cumque vero tempora dolores ratione, quo possimus itaque commodi ducimus consequuntur perferendis, accusantium pariatur nulla adipisci a assumenda error nesciunt?
+      <span class="lato-bold">Cómo funciona: </span> Lorem ipsum dolor sit amet consectetur
+      adipisicing elit. Doloremque esse cumque vero tempora dolores ratione, quo
+      possimus itaque commodi ducimus consequuntur perferendis, accusantium pariatur
+      nulla adipisci a assumenda error nesciunt?
     </label>
-  
+
     <!-- aqui va el canvas -->
-    <div class="canvas">
-      
+    <div class="canvas mt-10">
+      <canvas
+        id="myCanvas"
+        width="600"
+        height="300"
+        style="border:1px solid red; margin: 0 auto;"
+      >
+      </canvas>
     </div>
 
     <div class="grid">
@@ -48,12 +60,13 @@
   </div>
 </div>
 
-<style>
-  
-</style>
+<style></style>
 
 <script>
-  
-
-    
+  const canvas = document.getElementById("myCanvas");
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "red";
+  ctx.fillRect(0, 130, 200, 35);
+  ctx.fillRect(200, 110, 200, 75);
+  ctx.fillRect(400, 130, 200, 35);
 </script>
