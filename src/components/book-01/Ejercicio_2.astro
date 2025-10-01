@@ -2,9 +2,10 @@
   <!-- Panel controles -->
   <div class="panel">
     <h2>Controles</h2>
-    <label for="control">Distacia entre piezometros</label>
+    <label for="control">Distancia entre piezómetros</label>
     <input id="control" type="range" min="0" max="100" value="50" />
   </div>
+
   <!-- Panel Gráfica -->
   <div class="visual">
     <h2>Gráfica</h2>
@@ -17,10 +18,15 @@
           <div class="water"></div>
         </div>
       </div>
+
       <div class="cylinder">
         <div class="circle front"></div>
         <div class="body"></div>
         <div class="circle back"></div>
+      </div>
+      <div class="delta-container">
+        <div class="linea"></div>
+        <span class="delta-text">∆L</span>
       </div>
     </div>
   </div>
@@ -32,13 +38,17 @@
   const water1 = document.querySelector("#pm-1 .water");
   const water2 = document.querySelector("#pm-2 .water");
   const control = document.getElementById("control");
+  const linea = document.querySelector(".delta-container .linea");
+  const deltaText = document.querySelector(".delta-text");
 
   if (
     pm1 instanceof HTMLElement &&
     pm2 instanceof HTMLElement &&
     water1 instanceof HTMLElement &&
     water2 instanceof HTMLElement &&
-    control instanceof HTMLInputElement
+    control instanceof HTMLInputElement &&
+    linea instanceof HTMLElement &&
+    deltaText instanceof HTMLElement
   ) {
     const maxHeight = water1.offsetHeight;
     const minHeight = 20;
@@ -47,17 +57,48 @@
     function actualizarEstado() {
       const distance = parseInt(control.value);
 
-      //Movimiento
+      // Movimiento horizontal del pm-2
       pm2.style.marginLeft = distance + "px";
 
+      // Ajuste de altura de agua
       const newHeight =
         maxHeight - (distance / maxRange) * (maxHeight - minHeight);
-
       water2.style.height = newHeight + "px";
     }
 
-    actualizarEstado();
-    control.addEventListener("input", actualizarEstado);
+    function actualizarLinea() {
+      const rect1 = pm1.getBoundingClientRect();
+      const rect2 = pm2.getBoundingClientRect();
+      const parentRect = linea.parentElement.getBoundingClientRect();
+
+      const center1 = rect1.left + rect1.width / 2;
+      const center2 = rect2.left + rect2.width / 2;
+
+      const left = Math.min(center1, center2) - parentRect.left;
+      const width = Math.abs(center2 - center1);
+
+      linea.style.left = left + "px";
+      linea.style.width = width + "px";
+      const offset = deltaText.offsetWidth / 2;
+      deltaText.style.left = left + width / 2 - offset + "px";
+    }
+
+    function actualizarTodo() {
+      actualizarEstado();
+    }
+
+    pm2.addEventListener("transitionend", (e) => {
+      if (e.propertyName === "margin-left") {
+        actualizarLinea();
+      }
+    });
+
+    control.addEventListener("input", actualizarTodo);
+    window.addEventListener("resize", actualizarLinea);
+
+    // Estado inicial
+    actualizarTodo();
+    requestAnimationFrame(actualizarLinea);
   }
 </script>
 
@@ -98,6 +139,79 @@
     align-items: center;
   }
 
+  .pms {
+    margin-top: 50px;
+    display: flex;
+    gap: 20px;
+    z-index: 10;
+    min-width: 200px;
+  }
+
+  .piezometer {
+    display: flex;
+    flex-direction: column-reverse;
+    width: 30px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgb(0, 0, 0);
+    border-bottom: 0px solid rgb(0, 0, 0);
+    transition: margin-left 0.5s ease;
+  }
+
+  .piezometer#pm-1 > .water {
+    height: 70%;
+  }
+
+  .piezometer#pm-2 > .water {
+    height: 50%;
+  }
+
+  .water {
+    width: 100%;
+    background: rgb(152, 231, 255);
+    transition: height 0.5s ease;
+  }
+
+  .delta-container {
+    position: relative;
+    width: 100%;
+    height: 20px;
+    margin-top: -30px;
+  }
+
+  .linea {
+    position: absolute;
+    top: 50%;
+    height: 2px;
+    background: black;
+  }
+
+  .linea::before,
+  .linea::after {
+    content: "";
+    position: absolute;
+    top: -8px;
+    width: 2px;
+    height: 18px;
+    background: black;
+  }
+
+  .linea::before {
+    left: 0;
+  }
+
+  .linea::after {
+    right: 0;
+  }
+
+  .delta-text {
+    position: absolute;
+    top: -12px;
+    font-weight: bold;
+    color: #000000;
+    padding: 0 4px;
+  }
+
   .cylinder {
     margin-top: -20px;
     display: flex;
@@ -132,38 +246,5 @@
   .circle.back {
     left: -30px;
     z-index: 1;
-  }
-
-  .pms {
-    margin-top: 50px;
-    display: flex;
-    gap: 20px;
-    z-index: 10;
-    min-width: 200px;
-  }
-
-  .piezometer {
-    display: flex;
-    flex-direction: column-reverse;
-    width: 30px;
-    height: 200px;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgb(0, 0, 0);
-    border-bottom: 0px solid rgb(0, 0, 0);
-    transition: margin-left 0.5s ease;
-  }
-
-  .piezometer#pm-1 > .water {
-    height: 70%;
-  }
-
-  .piezometer#pm-2 > .water {
-    height: 50%;
-  }
-
-  .water {
-    width: 100%;
-    background: rgb(152, 231, 255);
-    transition: height 0.5s ease;
   }
 </style>
