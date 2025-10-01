@@ -26,23 +26,46 @@
       </canvas>
     </div>
 
-    <div class="grid">
-      <label for="ejemplo" class="text-[var(--titles)] mt-12"
-        >ejemplo: <span id="ejemplo">50</span>
-      </label>
-      <input
-        type="range"
-        min="0"
-        max="100"
-        value="50"
-        id="control"
-        class="mb-2"
-      />
+    <div class="controls">
 
-      <label for="salinidad" class="text-[var(--titles)] mb-8"
-        >Aumenta el nivel del agua para experimentar distintos parámetros de
-        evaporación</label
-      >
+      <div class="section-card">
+        <h3>Sección A</h3>
+        <label for="kA">K (Conductividad)</label>
+        <input type="range" id="kA" min="1" max="100" value="60">
+        <span id="kAVal">60</span>
+        <label for="aA">A (Área)</label>
+        <input type="range" id="aA" min="1" max="100" value="40">
+        <span id="aAVal">40</span>
+      </div>
+
+      <div class="section-card">
+        <h3>Sección B</h3>
+        <label for="kB">K (Conductividad)</label>
+        <input type="range" id="kB" min="1" max="100" value="80">
+        <span id="kBVal">80</span>
+        <label for="aB">A (Área)</label>
+        <input type="range" id="aB" min="1" max="100" value="60">
+        <span id="aBVal">60</span>
+      </div>
+
+      <div class="section-card">
+        <h3>Sección C</h3>
+        <label for="kC">K (Conductividad)</label>
+        <input type="range" id="kC" min="1" max="100" value="30">
+        <span id="kCVal">30</span>
+        <label for="aC">A (Área)</label>
+        <input type="range" id="aC" min="1" max="100" value="30">
+        <span id="aCVal">30</span>
+      </div>
+    
+      <div class="section-card">
+        <h3>Sección Otra</h3>
+        <label for="kC">ejemploooo</label>
+        <input type="range" id="kC" min="1" max="100" value="30">
+        <span id="kCVal">aqui van los numeros</span>
+      </div>
+
+    </div>
 
       <div class="mt-6">
         <button
@@ -60,9 +83,69 @@
   </div>
 </div>
 
-<style></style>
+<style>
+
+.controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.section-card {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.178);
+}
+
+.section-card h3 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--titles);
+}
+
+.section-card label {
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+  color: #9fb4d6;
+}
+
+.section-card input[type=range] {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.section-card span {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-left: 8px;
+}
+
+.section-card:hover {
+  transform: scale(.99);
+  /* box-shadow: 0 10px 25px rgba(0, 0, 0, 0.55); */
+  border-color: rgba(0, 191, 255, 0.4);
+}
+
+</style>
 
 <script>
+
+  //esto es para los numeritos del span, se actualizan cuando se mueve el range
+  document.querySelectorAll("input[type=range]").forEach(slider => {
+    const span = document.getElementById(slider.id + "Val");
+    if (span) {
+      slider.addEventListener("input", () => {
+        span.textContent = slider.value;
+      });
+    }
+  });
+  
   const canvas = document.getElementById("myCanvas");
   const ctx = canvas.getContext("2d");
   ctx.fillStyle = "red";
