@@ -112,11 +112,20 @@
     ctx.strokeRect(x, y, width, height);
   }
 
+  function drawTube(ctx, x, y, w, h) {
+    ctx.fillStyle = "#bef8fe";
+    ctx.strokeStyle = "#555";
+    ctx.lineWidth = 2;
+
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeRect(x, y, w, h);
+  }
+
 
   const canvas = document.getElementById("myCanvas");
   const ctx = canvas.getContext("2d");
 
-  // Obtener el valor real de la variable CSS
+  //Obtener el valor real de la variable CSS
   const styles = getComputedStyle(document.documentElement);
   const borderColor = styles.getPropertyValue("--rayaTubo").trim();
 
@@ -133,38 +142,21 @@
   console.log("Valor del tubo:", areaTubo3.value);
 
   function draw() {
-    // Limpiar el canvas antes de redibujar
+    // limpia el canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Colores y estilo
-    ctx.fillStyle = "#bef8fe"; // azul agua
-    ctx.strokeStyle = borderColor; // gris borde
-    ctx.lineWidth = 2; // grosor del borde
+    //tubo 1
+    drawTube(ctx, 100, 320, 200, parseInt(areaTubo1.value));
+    drawPiezometro(ctx, 120, 135, 20, 200, 80);  //piezometro 1, canvas, x, y, w, h, hAgua
 
-    // Tubo 1
-    ctx.fillRect(100, 320, 200, areaTubo1.value);
-    ctx.strokeRect(100, 320, 200, areaTubo1.value);
-
-    //piezometro, canvas, x, y, w, h, hAgua
-    drawPiezometro(ctx, 120, 135, 20, 200, 80);  //piezometro 1
-
-    // // Tubo 2 (más grueso)
-    ctx.fillStyle = "#bef8fe";
-    ctx.fillRect(300, 320, 200, areaTubo2.value);
-    ctx.strokeRect(300, 320, 200, areaTubo2.value);
-    
-    //piezometro, canvas, x, y, w, h, hAgua
+    //tubo 2
+    drawTube(ctx, 300, 320, 200, parseInt(areaTubo2.value));
     drawPiezometro(ctx, 290, 135, 20, 200, 30);  //piezometro 2
 
-    // // Tubo 3
-    ctx.fillStyle = "#bef8fe";
-    ctx.fillRect(500, 320, 200, areaTubo3.value);
-    ctx.strokeRect(500, 320, 200, areaTubo3.value);
+    //tubo 3
+    drawTube(ctx, 500, 320, 200, parseInt(areaTubo3.value));
 
-    //piezometro, canvas, x, y, w, h, hAgua
     drawPiezometro(ctx, 490, 135, 20, 200, 180);  //piezometro 3
-
-    //piezometro, canvas, x, y, w, h, hAgua
     drawPiezometro(ctx, 660, 135, 20, 200, 120);  //piezometro 4
   }
 
