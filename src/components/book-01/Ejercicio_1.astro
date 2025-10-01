@@ -29,12 +29,16 @@
     <div class="controls">
       <div class="section-card">
         <h3>Sección A</h3>
+
+        <!-- range de K -->
         <label for="kA">K (Conductividad)</label>
         <input type="range" id="kA" min="1" max="100" value="60" />
         <span id="kAVal">60</span>
+
+        <!-- range del area -->
         <label for="aA">A (Área)</label>
-        <input type="range" id="aA" min="1" max="100" value="40" />
-        <span id="aAVal">40</span>
+        <input type="range" id="aA" min="1" max="100" value="75" />
+        <span id="aAVal">75</span>
       </div>
 
       <div class="section-card">
@@ -42,6 +46,8 @@
         <label for="kB">K (Conductividad)</label>
         <input type="range" id="kB" min="1" max="100" value="80" />
         <span id="kBVal">80</span>
+
+        <!-- range del area tubo 2 -->
         <label for="aB">A (Área)</label>
         <input type="range" id="aB" min="1" max="100" value="60" />
         <span id="aBVal">60</span>
@@ -79,6 +85,66 @@
     </div>
   </div>
 </div>
+
+<script>
+  //esto es para los numeritos del span, se actualizan cuando se mueve el range
+  document.querySelectorAll("input[type=range]").forEach((slider) => {
+    const span = document.getElementById(slider.id + "Val");
+    if (span) {
+      slider.addEventListener("input", () => {
+        span.textContent = slider.value;
+      });
+    }
+  });
+
+  const canvas = document.getElementById("myCanvas");
+  const ctx = canvas.getContext("2d");
+
+  // Obtener el valor real de la variable CSS
+  const styles = getComputedStyle(document.documentElement);
+  const borderColor = styles.getPropertyValue("--rayaTubo").trim();
+
+  //Tubo 1
+  const areaTubo1 = document.getElementById("aA");
+  console.log("Valor del tubo:", areaTubo1.value);
+
+  //Tubo 2
+  const areaTubo2 = document.getElementById("aB");
+  console.log("Valor del tubo:", areaTubo2.value);
+
+  //Tubo 3
+  const areaTubo3 = document.getElementById("aC");
+  console.log("Valor del tubo:", areaTubo3.value);
+
+  function draw() {
+    // Limpiar el canvas antes de redibujar
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Colores y estilo
+    ctx.fillStyle = "#cbf7fc"; // azul agua
+    ctx.strokeStyle = borderColor; // gris borde
+    ctx.lineWidth = 2; // grosor del borde
+
+    // Tubo 1
+    ctx.fillRect(0, 130, 200, areaTubo1.value);
+    ctx.strokeRect(0, 130, 200, areaTubo1.value);
+
+    // Tubo 2 (más grueso)
+    ctx.fillRect(200, 130, 200, areaTubo2.value);
+    ctx.strokeRect(200, 130, 200, areaTubo2.value);
+
+    // Tubo 3
+    ctx.fillRect(400, 130, 200, areaTubo3.value);
+    ctx.strokeRect(400, 130, 200, areaTubo3.value);
+  }
+
+  draw();
+
+  // Redibujar en tiempo real cuando se mueva el range
+  areaTubo1.addEventListener("input", draw);
+  areaTubo2.addEventListener("input", draw);
+  areaTubo3.addEventListener("input", draw);
+</script>
 
 <style>
   .controls {
@@ -128,39 +194,3 @@
     border-color: rgba(0, 191, 255, 0.4);
   }
 </style>
-
-<script>
-  //esto es para los numeritos del span, se actualizan cuando se mueve el range
-  document.querySelectorAll("input[type=range]").forEach((slider) => {
-    const span = document.getElementById(slider.id + "Val");
-    if (span) {
-      slider.addEventListener("input", () => {
-        span.textContent = slider.value;
-      });
-    }
-  });
-
-  const canvas = document.getElementById("myCanvas");
-  const ctx = canvas.getContext("2d");
-
-  // Obtener el valor real de la variable CSS
-  const styles = getComputedStyle(document.documentElement);
-  const borderColor = styles.getPropertyValue("--rayaTubo").trim();
-
-  // Colores y estilo
-  ctx.fillStyle = "#cbf7fc"; // azul agua
-  ctx.strokeStyle = borderColor; // gris borde
-  ctx.lineWidth = 2; // grosor del borde
-
-  // Tubo 1
-  ctx.fillRect(0, 130, 200, 35);
-  ctx.strokeRect(0, 130, 200, 35);
-
-  // Tubo 2 (más grueso)
-  ctx.fillRect(200, 110, 200, 75);
-  ctx.strokeRect(200, 110, 200, 75);
-
-  // Tubo 3
-  ctx.fillRect(400, 130, 200, 35);
-  ctx.strokeRect(400, 130, 200, 35);
-</script>
