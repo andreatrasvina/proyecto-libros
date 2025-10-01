@@ -99,6 +99,20 @@
     }
   });
 
+  // funcionn para dibujar los piezometros
+  function drawPiezometro(ctx, x, y, width, height, hAgua) {
+
+    //agua dentro del tubo
+    ctx.fillStyle = "#4ad6ff";
+    ctx.fillRect(x, y + height - hAgua, width, hAgua);
+
+    //tubo del piezometro
+    ctx.strokeStyle = borderColor;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x, y, width, height);
+  }
+
+
   const canvas = document.getElementById("myCanvas");
   const ctx = canvas.getContext("2d");
 
@@ -123,7 +137,7 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Colores y estilo
-    ctx.fillStyle = "#cbf7fc"; // azul agua
+    ctx.fillStyle = "#bef8fe"; // azul agua
     ctx.strokeStyle = borderColor; // gris borde
     ctx.lineWidth = 2; // grosor del borde
 
@@ -131,13 +145,27 @@
     ctx.fillRect(100, 320, 200, areaTubo1.value);
     ctx.strokeRect(100, 320, 200, areaTubo1.value);
 
+    //piezometro, canvas, x, y, w, h, hAgua
+    drawPiezometro(ctx, 120, 135, 20, 200, 80);  //piezometro 1
+
     // // Tubo 2 (más grueso)
+    ctx.fillStyle = "#bef8fe";
     ctx.fillRect(300, 320, 200, areaTubo2.value);
     ctx.strokeRect(300, 320, 200, areaTubo2.value);
-    //
+    
+    //piezometro, canvas, x, y, w, h, hAgua
+    drawPiezometro(ctx, 290, 135, 20, 200, 30);  //piezometro 2
+
     // // Tubo 3
+    ctx.fillStyle = "#bef8fe";
     ctx.fillRect(500, 320, 200, areaTubo3.value);
     ctx.strokeRect(500, 320, 200, areaTubo3.value);
+
+    //piezometro, canvas, x, y, w, h, hAgua
+    drawPiezometro(ctx, 490, 135, 20, 200, 180);  //piezometro 3
+
+    //piezometro, canvas, x, y, w, h, hAgua
+    drawPiezometro(ctx, 660, 135, 20, 200, 120);  //piezometro 4
   }
 
   draw();
