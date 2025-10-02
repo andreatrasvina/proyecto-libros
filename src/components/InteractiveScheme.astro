@@ -14,7 +14,7 @@
 
     <div class="form-group">
         <label for="pozo">Tamaño del pozo:</label>
-        <input type="number" id="pozo" name="pozo" placeholder="Ej. 10m"/>
+        <input type="number" id="pozo" name="pozo" placeholder="Ej. 10m" value="1" min="0"/>
     </div>
 
   </div>
@@ -27,7 +27,7 @@
   <div class="result">
         <strong>Carga hidráulica (h): </strong>
         <span id="headValue">0</span> m
-    </div>
+  </div>
 </div>
 
 <script>
@@ -43,26 +43,42 @@
   const headSpan = document.getElementById("headValue") as HTMLSpanElement | null;
   const waterLevel = document.getElementById("waterLevel") as HTMLDivElement | null;
 
+  /*Funcion que calcula la carga hidraulica y actualiza el nivel del agua en el pozo
+    z - Elevacion
+    p - Presion
+    pozo - Tamaño del pozo
+    pesoEspecificoAgua - Peso especifico del agua en N/m3
+    h - Carga hidraulica
+    scaleFactor - Factor de escala para ajustar la altura del nivel del agua en el pozo
+    maxHeight - Altura maxima del nivel del agua en el pozo
+    height - Altura actual del nivel del agua en el pozo*/
+
   function calcularHead() {
     //Uso del if para evitar valor nullos
     if (!elevInput || !presionInput || !pozoInput || !waterLevel || !headSpan) return;
 
+    const regex = /^\d+$/;
+
+    if (!regex.test(pozoInput.value)) {
+      pozoInput.value = "0.00000001"; // Valor minimo permitido
+    }
+
     const z = parseFloat(elevInput.value) || 0;
     const p = parseFloat(presionInput.value) || 0;
-    const pozo = parseFloat(pozoInput.value) || 0;
+    const pozo = parseFloat(pozoInput.value) || 1;
     const pesoEspecificoAgua = 9810;
 
     const h = z + p / pesoEspecificoAgua;
     headSpan.textContent = h.toFixed(8);
 
-    const scaleFactor = 100; // 1 metro = 100 px en el contenedor
-    const maxHeight = pozo * scaleFactor;
+    const scaleFactor = 200 / pozo;
+    const maxHeight = pozo * scaleFactor || 0;
     let height = h * scaleFactor;
 
     if(height > maxHeight) height = maxHeight;
     waterLevel.style.height = `${height}px`;
 
-    // Cambio de color a rojo si el agua llega al tope
+    
     waterLevel.style.background = height >= maxHeight ? '#ff3333' : '#3399ff';
   } 
   elevInput?.addEventListener("input", calcularHead);
@@ -127,7 +143,6 @@
     position: absolute;
     bottom: 0;
     width: 100%;
-    height:max-content;
     background: #3399ff;
     transition: height 0.3s ease;
     margin-bottom: 0;
