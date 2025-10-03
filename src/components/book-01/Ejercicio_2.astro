@@ -76,30 +76,29 @@
       const center2 = rect2.left + rect2.width / 2;
 
       const left = Math.min(center1, center2) - parentRect.left;
-      const width = Math.abs(center2 - center1);
+      //const width = Math.abs(center2 - center1);
+      const width = parseInt(control.value) + 50
 
       linea.style.left = left + "px";
       linea.style.width = width + "px";
       const offset = deltaText.offsetWidth / 2;
       deltaText.style.left = left + width / 2 - offset + "px";
+
+      console.log(width);
+      
     }
 
     function actualizarTodo() {
       actualizarEstado();
+      actualizarLinea();
     }
 
-    pm2.addEventListener("transitionend", (e) => {
-      if (e.propertyName === "margin-left") {
-        actualizarLinea();
-      }
-    });
-
     control.addEventListener("input", actualizarTodo);
-    window.addEventListener("resize", actualizarLinea);
+    ///window.addEventListener("resize", actualizarLinea);
 
     // Estado inicial
     actualizarTodo();
-    requestAnimationFrame(actualizarLinea);
+    //requestAnimationFrame(actualizarLinea);
   }
 </script>
 
@@ -185,6 +184,7 @@
     top: 50%;
     height: 2px;
     background: black;
+    transition: width 0.5s ease;
   }
 
   .linea::before,
@@ -211,6 +211,7 @@
     font-weight: bold;
     color: #000000;
     padding: 0 4px;
+    transition: all 0.5s ease;
   }
 
   .cylinder {
