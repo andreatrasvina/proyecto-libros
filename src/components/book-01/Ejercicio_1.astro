@@ -112,10 +112,13 @@
     ctx.strokeRect(x, y, width, height);
   }
 
-  function drawTube(ctx, x, y, w, h) {
+  function drawTube(ctx, x, centroY, w, h) {
     ctx.fillStyle = "#bef8fe";
     ctx.strokeStyle = "#555";
     ctx.lineWidth = 2;
+
+    //calcular el punto superior para mantener el centro fijo jeje
+    const y = centroY - h / 2;
 
     ctx.fillRect(x, y, w, h);
     ctx.strokeRect(x, y, w, h);
