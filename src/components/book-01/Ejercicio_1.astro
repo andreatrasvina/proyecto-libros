@@ -124,6 +124,21 @@
     ctx.strokeRect(x, y, w, h);
   }
 
+  function drawGradienteHidraulico(ctx, piezometros) {
+    ctx.beginPath();
+
+    piezometros.forEach((p, i) => {
+      const xCentro = p.x + p.w / 2;
+      const yAgua = p.y + p.h - p.hAgua;
+      if (i === 0) ctx.moveTo(xCentro, yAgua);
+      else ctx.lineTo(xCentro, yAgua);
+    });
+
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+
 
   const canvas = document.getElementById("myCanvas");
   const ctx = canvas.getContext("2d");
@@ -145,23 +160,26 @@
   console.log("Valor del tubo:", areaTubo3.value);
 
   function draw() {
-    // limpia el canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    //tubo 1
-    drawTube(ctx, 100, 320, 200, parseInt(areaTubo1.value));
-    drawPiezometro(ctx, 120, 135, 20, 200, 80);  //piezometro 1, canvas, x, y, w, h, hAgua
+  //dibuja los tubos
+  drawTube(ctx, 100, 320, 200, parseInt(areaTubo1.value));
+  drawTube(ctx, 300, 320, 200, parseInt(areaTubo2.value));
+  drawTube(ctx, 500, 320, 200, parseInt(areaTubo3.value));
 
-    //tubo 2
-    drawTube(ctx, 300, 320, 200, parseInt(areaTubo2.value));
-    drawPiezometro(ctx, 290, 135, 20, 200, 30);  //piezometro 2
+  //dibuja los piezometros
+  const piezometros = [
+    { x: 120, y: 135, w: 20, h: 200, hAgua: 80 },
+    { x: 290, y: 135, w: 20, h: 200, hAgua: 120 },
+    { x: 490, y: 135, w: 20, h: 200, hAgua: 100 },
+    { x: 660, y: 135, w: 20, h: 200, hAgua: 100 },
+  ];
 
-    //tubo 3
-    drawTube(ctx, 500, 320, 200, parseInt(areaTubo3.value));
+  piezometros.forEach(p => drawPiezometro(ctx, p.x, p.y, p.w, p.h, p.hAgua));
 
-    drawPiezometro(ctx, 490, 135, 20, 200, 180);  //piezometro 3
-    drawPiezometro(ctx, 660, 135, 20, 200, 120);  //piezometro 4
-  }
+  //dibuja la linea que conecta los niveles de agua jeje
+  drawGradienteHidraulico(ctx, piezometros);
+}
 
   draw();
 
