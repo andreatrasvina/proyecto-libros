@@ -75,7 +75,7 @@
   --shadowMario: #02061714;
 
   /* Color claro para el blur del mario */
-  --blurMario: #ffffff8c;
+  /* --blurMario: #ffffff8c; */
 }
 
 body.dark-mode {
@@ -131,10 +131,9 @@ body.dark-mode {
 
   /* Color oscuro de la shadow del mario (sutil brillo blanco) */
   --shadowMario: #ffffff1a;
-  /* rgba(255, 255, 255, 0.1) */
 
-  /* Color oscuro para el blur del mario */
-  --blurMario: #0f172a8c;
+  /* /* Color oscuro para el blur del mario */
+  /* --blurMario: #0f172a8c; */
 }
 
 h1,
