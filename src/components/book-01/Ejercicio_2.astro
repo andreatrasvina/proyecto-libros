@@ -1,13 +1,13 @@
 <div class="layout">
   <!-- Panel controles -->
-  <div class="panel">
+  <div class="panel border border-[var(--bordermario)] bg-[var(--cardMario)] rounded-md shadow-[0_8px_30px_var(--shadowMario)]">
     <h2>Controles</h2>
     <label for="control">Distancia entre piezómetros</label>
     <input id="control" type="range" min="0" max="100" value="50" />
   </div>
 
   <!-- Panel Gráfica -->
-  <div class="visual">
+  <div class="visual border border-[var(--bordermario)] bg-[var(--cardMario)] rounded-md shadow-[0_8px_30px_var(--shadowMario)]">
     <h2>Gráfica</h2>
     <div class="container">
       <div class="pms">
@@ -112,10 +112,8 @@
   .panel,
   .visual {
     flex: 1;
-    border: 1px solid #333;
     border-radius: 10px;
     padding: 20px;
-    background: #f9f9f9;
   }
 
   .panel h2,
