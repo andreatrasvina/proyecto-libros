@@ -123,3 +123,15 @@ body.dark-mode .dark-mode-logo {
 body.dark-mode .light-mode-logo {
   display: none;
 }
+
+
+aside {
+  width: 320px; 
+  transition: width 0.3s ease;
+}
+
+
+aside.collapsed {
+  width: 50px; 
+}
+
