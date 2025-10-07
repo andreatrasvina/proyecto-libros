@@ -13,10 +13,30 @@ const { exercises = [], currentBookSlug } = Astro.props;
     <title>Libro interactivo</title>
   </head>
 
-  <body class="flex flex-col min-h-screen">
+  <body class="flex flex-col min-h-screen sidebar-open">
     <div class="w-full h-[2px] rainbow-bar"></div>
 
     <div class="fixed top-4 right-4 z-50 flex items-center space-x-2">
+      <button
+        id="sidebar-toggle"
+        class="flex items-center justify-center w-10 h-10 ml-1 bg-[var(--cards)] text-white rounded-md shadow-lg transition-transform transform hover:scale-110"
+        aria-label="Toggle Sidebar"
+      >
+        <svg
+          id="toggle-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6 text-[var(--titles)]"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+
       <a
         href="https://github.com/andreatrasvina/proyecto-libros"
         class="flex items-center justify-center w-10 h-10 bg-[var(--cards)] text-white rounded-md shadow-lg transition-transform transform hover:scale-110"
@@ -58,9 +78,10 @@ const { exercises = [], currentBookSlug } = Astro.props;
       </button>
     </div>
 
-    <div class="flex flex-1">
+    <div class="flex flex-1 overflow-hidden">
       <aside
-        class="flex flex-col bg-clip-border rounded-xl bg-[var(--titlesnt)] text-gray-700 w-78 p-4 shadow-xl shadow-blue-gray-900/5 fixed top-2 h-full"
+        id="sidebar"
+        class="flex flex-col bg-clip-border rounded-xl bg-[var(--titlesnt)] text-gray-700 w-78 p-4 shadow-xl shadow-blue-gray-900/5 fixed top-2 h-[calc(100vh-16px)] transition-all duration-300 ease-in-out z-40"
       >
         <div class="mb-2 p-4">
           <h5
@@ -70,12 +91,12 @@ const { exercises = [], currentBookSlug } = Astro.props;
           </h5>
         </div>
         <nav
-          class="flex flex-col gap-1 p-2 font-sans lato-regular text-gray-700"
+          class="flex flex-col gap-1 p-2 font-sans lato-regular text-gray-700 overflow-y-auto"
         >
           <a
             href={`/books/${currentBookSlug}`}
             class={`text-[var(--sidebarText)] flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-[var(--hoverSidebar)] hover:bg-opacity-80 focus:bg-[var(--hoverSidebar)] focus:bg-opacity-80 active:bg-[var(--hoverSidebar)] active:bg-opacity-80 hover:text-[var(--textoHover)] focus:text-[var(--textoHover)] active:text-[var(--textoHover)] outline-none
-  ${Astro.url.pathname === `/books/${currentBookSlug}/` ? "bg-[var(--hoverSidebar)] bg-opacity-80 !text-[var(--textoHover)]" : ""}`}
+  ${Astro.url.pathname === `/books/${currentBookSlug}/` ? "bg-[var(--hoverSidebar)] bg-opacity-80 !text-[var(--textoHover)]" : ""}`}
           >
             <div class="grid place-items-center mr-4">
               <svg
@@ -97,7 +118,7 @@ const { exercises = [], currentBookSlug } = Astro.props;
               <a
                 href={`/books/${currentBookSlug}/${ex.slug.split("/").pop()}`}
                 class={`text-[var(--sidebarText)] flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-[var(--hoverSidebar)] hover:bg-opacity-80 focus:bg-[var(--hoverSidebar)] focus:bg-opacity-80 active:bg-[var(--hoverSidebar)] active:bg-opacity-80 hover:text-[var(--textoHover)] focus:text-[var(--textoHover)] active:text-[var(--textoHover)] outline-none
-  ${Astro.url.pathname.includes(ex.slug.split("/").pop() as string) ? "bg-[var(--hoverSidebar)] bg-opacity-80 !text-[var(--textoHover)]" : ""}`}
+  ${Astro.url.pathname.includes(ex.slug.split("/").pop() as string) ? "bg-[var(--hoverSidebar)] bg-opacity-80 !text-[var(--textoHover)]" : ""}`}
               >
                 <div class="grid place-items-center mr-4">
                   <svg
@@ -149,13 +170,14 @@ const { exercises = [], currentBookSlug } = Astro.props;
         </div>
       </aside>
 
+      <!-- Aqui va el spacer -->
       <div
-        id="resizer"
-        class="w-[2px] bg-[var(--rayas)] cursor-col-resize hover:bg-gray-400"
+        id="sidebar-spacer"
+        class="w-[330px] transition-all duration-300 ease-in-out flex-shrink-0"
       >
       </div>
 
-      <main class="flex-1 overflow-y-auto ml-42">
+      <main class="flex-1 overflow-y-auto">
         <div class="max-w-4xl mx-auto p-8 prose prose-invert mt-10">
           <slot name="introduction" />
           <slot name="main" />
@@ -166,16 +188,17 @@ const { exercises = [], currentBookSlug } = Astro.props;
 </html>
 
 <script>
+  // Script para el tema
   const themeToggle = document.getElementById("theme-toggle");
   const body = document.body;
 
-  //Preferencia por localstorage
+  // Preferencia por localstorage
   const currentTheme = localStorage.getItem("theme");
   if (currentTheme) {
     body.classList.add(currentTheme);
   }
 
-  // Agrega el "listener" para el clic en el botón
+  // Agrega el "listener" para el clic en el botón del tema
   themeToggle.addEventListener("click", (e) => {
     e.preventDefault();
     body.classList.toggle("dark-mode");
@@ -186,12 +209,61 @@ const { exercises = [], currentBookSlug } = Astro.props;
       localStorage.removeItem("theme");
     }
   });
+
+  // Script para el Sidebar Abatible
+  const sidebarToggle = document.getElementById("sidebar-toggle");
+  const sidebar = document.getElementById("sidebar");
+  const sidebarSpacer = document.getElementById("sidebar-spacer");
+  const toggleIcon = document.getElementById("toggle-icon");
+
+  // Definir el ancho del sidebar para las transiciones
+  const SIDEBAR_WIDTH = "330px";
+  const COLLAPSED_MARGIN = "0px";
+
+  // Clase de utilidad para ocultar/mostrar elementos
+  // vamos a usar esta en el CSS para un mejor manejo de la transición del ancho del espaciador y la posición del sidebar fijo.
+
+  // Establecer el estado inicial del sidebar
+  let isSidebarOpen = true;
+
+  const toggleSidebar = () => {
+    isSidebarOpen = !isSidebarOpen;
+
+    // Toggle class en el body para aplicar estilos CSS
+    body.classList.toggle("sidebar-collapsed");
+
+    // Actualizar el estado del espaciador
+    sidebarSpacer.style.width = isSidebarOpen
+      ? SIDEBAR_WIDTH
+      : COLLAPSED_MARGIN;
+
+    // Esta parte del codigo si me la robe de internet
+    // Abierto: flecha apuntando a la izquierda (ocultar)
+    // Cerrado: flecha apuntando a la derecha (mostrar)
+    if (isSidebarOpen) {
+      toggleIcon.innerHTML = `<path d="M15 18l-6-6 6-6"></path>`;
+      // Asegurarse de que el sidebar está visible
+      sidebar.style.left = "0";
+    } else {
+      toggleIcon.innerHTML = `<path d="M9 18l6-6-6-6"></path>`;
+      // Mover el sidebar fuera de la vista
+      sidebar.style.left = `-${SIDEBAR_WIDTH}`;
+    }
+  };
+
+  // Inicializar el ancho del espaciador en la carga de la página
+  sidebarSpacer.style.width = SIDEBAR_WIDTH;
+
+  // Listener para el botón de alternancia
+  sidebarToggle.addEventListener("click", toggleSidebar);
 </script>
+
 <style>
   .centrar {
     margin: 0 auto;
   }
 
+  /* Animación Rainbow (existente) */
   @keyframes rainbow {
     0% {
       background-position: 0% 50%;
@@ -214,5 +286,42 @@ const { exercises = [], currentBookSlug } = Astro.props;
     );
     background-size: 200% 200%;
     animation: rainbow 4s linear infinite;
+  }
+
+  /* Estilos del Sidebar */
+
+  /* Sidebar: Usamos fixed y left: 0 para la posición inicial. */
+  #sidebar {
+    width: 312px;
+    left: 0;
+  }
+
+  /* Es importante que el espaciador refleje el ancho real de la barra lateral */
+  #sidebar-spacer {
+    width: 312px;
+  }
+
+  /* Ajuste para el botón de alternancia para que no se mueva con el scroll */
+  #sidebar-toggle {
+    position: fixed;
+    left: 312px; /* esta es la posicion que tendra al final del sidebar jeje */
+    transition: left 0.3s ease-in-out;
+    z-index: 50;
+    margin-bottom: 14px;
+  }
+
+  /* Estado cuando el sidebar está colapsado en el body */
+  .sidebar-collapsed #sidebar {
+    left: -312px; /* Mueve el sidebar completamente fuera de la pantalla */
+  }
+
+  /* Mueve el botón de alternancia al borde izquierdo cuando está colapsado */
+  .sidebar-collapsed #sidebar-toggle {
+    left: 0.5rem;
+  }
+
+  /* Esto ya se maneja con js, pero por si acaso ponemos la referencia */
+  .sidebar-collapsed #sidebar-spacer {
+    width: 0px !important; /*El espaciador no ocupa espacio */
   }
 </style>
