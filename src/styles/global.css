@@ -124,12 +124,14 @@ body.dark-mode .light-mode-logo {
   display: none;
 }
 
+main {
+  transition: margin-left 0.3s ease;
+}
 
 aside {
   width: 320px; 
   transition: width 0.3s ease;
 }
-
 
 aside.collapsed {
   width: 50px; 
