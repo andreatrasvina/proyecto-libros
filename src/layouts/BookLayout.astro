@@ -62,6 +62,7 @@ const { exercises = [], currentBookSlug } = Astro.props;
       <aside
         class="flex flex-col bg-clip-border rounded-xl bg-[var(--pepe)] text-gray-700 w-78 p-4 shadow-xl shadow-blue-gray-900/5 fixed top-2 h-full"
       >
+      <!-- Botón para colapsar/expandir el sidebar -->
         <button
           id="sidebar-toggle"
           class="absolute top-4 right-[-10px] h-10 rounded-md shadow-lg transition-transform transform hover:scale-110 bg-[var(--cards)] p-2"
@@ -75,7 +76,41 @@ const { exercises = [], currentBookSlug } = Astro.props;
             <path d="M8 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5M0 8a.5.5 0 0 1 .5-.5h3.793L3.146 6.354a.5.5 0 1 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L4.293 8.5H.5A.5.5 0 0 1 0 8m11.707.5 1.147 1.146a.5.5 0 0 1-.708.708l-2-2a.5.5 0 0 1 0-.708l2-2a.5.5 0 0 1 .708.708L11.707 7.5H15.5a.5.5 0 0 1 0 1z"/>
           </svg>
         </button>
-  
+
+        
+        <script>
+          // Lógica para el botón de colapsar/expandir el sidebar
+          const sidebar = document.querySelector("aside");
+          const sidebarToggle = document.getElementById("sidebar-toggle");
+          const main = document.querySelector("main");
+          const contentSidebar = document.querySelectorAll(".content-sidebar");
+          const svg = document.querySelector(".svg-sidebar");
+
+          const svgClose = `<path d="M8 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5M.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8"/>`;
+
+          const svgOpen = `<path d="M8 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5M0 8a.5.5 0 0 1 .5-.5h3.793L3.146 6.354a.5.5 0 1 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L4.293 8.5H.5A.5.5 0 0 1 0 8m11.707.5 1.147 1.146a.5.5 0 0 1-.708.708l-2-2a.5.5 0 0 1 0-.708l2-2a.5.5 0 0 1 .708.708L11.707 7.5H15.5a.5.5 0 0 1 0 1z"/>`;
+
+          if(sidebarToggle && sidebar && main && contentSidebar && svg){ 
+            sidebarToggle.addEventListener("click", () => {
+            sidebar.classList.toggle("collapsed");
+
+            if(sidebar.classList.contains("collapsed")){
+              svg.innerHTML = svgClose;
+              main.style.marginLeft = "0px";
+              contentSidebar.forEach((element) => {
+                (element as HTMLElement).style.display = "none";
+              });
+            } else {
+              svg.innerHTML = svgOpen;
+              main.style.marginLeft = "320px";
+              contentSidebar.forEach((element) => {
+                (element as HTMLElement).style.display = "flex";
+              });
+            }
+          });
+          }
+        </script>
+
         <div class="mb-2 p-4 content-sidebar">
           <h5
             class="block antialiased tracking-normal font-sans text-xl font-semibold leading-snug text-[var(--titles)]"
@@ -166,38 +201,6 @@ const { exercises = [], currentBookSlug } = Astro.props;
     </div>
   </body>
 </html>
-
-<script>
-  const sidebar = document.querySelector("aside");
-  const sidebarToggle = document.getElementById("sidebar-toggle");
-  const main = document.querySelector("main");
-  const contentSidebar = document.querySelectorAll(".content-sidebar");
-  const svg = document.querySelector(".svg-sidebar");
-
-  const svgClose = `<path d="M8 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5M.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8"/>`;
-
-  const svgOpen = `<path d="M8 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5M0 8a.5.5 0 0 1 .5-.5h3.793L3.146 6.354a.5.5 0 1 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L4.293 8.5H.5A.5.5 0 0 1 0 8m11.707.5 1.147 1.146a.5.5 0 0 1-.708.708l-2-2a.5.5 0 0 1 0-.708l2-2a.5.5 0 0 1 .708.708L11.707 7.5H15.5a.5.5 0 0 1 0 1z"/>`;
-
-  if(sidebarToggle && sidebar && main && contentSidebar && svg){ 
-    sidebarToggle.addEventListener("click", () => {
-    sidebar.classList.toggle("collapsed");
-
-    if(sidebar.classList.contains("collapsed")){
-      svg.innerHTML = svgClose;
-      main.style.marginLeft = "50px";
-      contentSidebar.forEach((element) => {
-        (element as HTMLElement).style.display = "none";
-      });
-    } else {
-      svg.innerHTML = svgOpen;
-      main.style.marginLeft = "320px";
-      contentSidebar.forEach((element) => {
-        (element as HTMLElement).style.display = "flex";
-      });
-    }
-  });
-  }
-</script>
 
 <script>
   const themeToggle = document.getElementById("theme-toggle");
