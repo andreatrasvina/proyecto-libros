@@ -1,8 +1,10 @@
 <div>
-  <h3 class="text-[var(--pepe)] text-3xl lato-bold">Ejercicio interactivo</h3>
-  <hr class="border-[var(--pepe)]" />
+  <h3 class="text-[var(--titlesMd)] text-3xl lato-bold">
+    Ejercicio interactivo
+  </h3>
+  <hr class="border-[var(--titlesMd)]" />
   <div
-    class="p-4 my-6 border border-[var(--rayas)] rounded-md shadow bg-[var(--titlesnt)]"
+    class="p-4 my-6 border border-[var(--borderMario)] rounded-md shadow-[0_8px_30px_var(--shadowMario)] bg-[var(--cardMario)]"
   >
     <h1 class="font-semibold text-lg text-[var(--titles)]">
       Gradiente hidráulico
@@ -21,7 +23,8 @@
         id="myCanvas"
         width="800"
         height="400"
-        style="border:1px solid var(--titles); margin: 0 auto;"
+        style="border:1px solid var(--borderMario); margin: 0 auto;"
+        class="rounded"
       >
       </canvas>
     </div>
@@ -101,7 +104,6 @@
 
   // funcionn para dibujar los piezometros
   function drawPiezometro(ctx, x, y, width, height, hAgua) {
-
     //agua dentro del tubo
     ctx.fillStyle = "#4ad6ff";
     ctx.fillRect(x, y + height - hAgua, width, hAgua);
@@ -139,7 +141,6 @@
     ctx.stroke();
   }
 
-
   const canvas = document.getElementById("myCanvas");
   const ctx = canvas.getContext("2d");
 
@@ -160,26 +161,28 @@
   console.log("Valor del tubo:", areaTubo3.value);
 
   function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  //dibuja los tubos
-  drawTube(ctx, 100, 320, 200, parseInt(areaTubo1.value));
-  drawTube(ctx, 300, 320, 200, parseInt(areaTubo2.value));
-  drawTube(ctx, 500, 320, 200, parseInt(areaTubo3.value));
+    //dibuja los tubos
+    drawTube(ctx, 100, 320, 200, parseInt(areaTubo1.value));
+    drawTube(ctx, 300, 320, 200, parseInt(areaTubo2.value));
+    drawTube(ctx, 500, 320, 200, parseInt(areaTubo3.value));
 
-  //dibuja los piezometros
-  const piezometros = [
-    { x: 120, y: 135, w: 20, h: 200, hAgua: 80 },
-    { x: 290, y: 135, w: 20, h: 200, hAgua: 120 },
-    { x: 490, y: 135, w: 20, h: 200, hAgua: 100 },
-    { x: 660, y: 135, w: 20, h: 200, hAgua: 100 },
-  ];
+    //dibuja los piezometros
+    const piezometros = [
+      { x: 120, y: 135, w: 20, h: 200, hAgua: 80 },
+      { x: 290, y: 135, w: 20, h: 200, hAgua: 120 },
+      { x: 490, y: 135, w: 20, h: 200, hAgua: 100 },
+      { x: 660, y: 135, w: 20, h: 200, hAgua: 100 },
+    ];
 
-  piezometros.forEach(p => drawPiezometro(ctx, p.x, p.y, p.w, p.h, p.hAgua));
+    piezometros.forEach((p) =>
+      drawPiezometro(ctx, p.x, p.y, p.w, p.h, p.hAgua),
+    );
 
-  //dibuja la linea que conecta los niveles de agua jeje
-  drawGradienteHidraulico(ctx, piezometros);
-}
+    //dibuja la linea que conecta los niveles de agua jeje
+    drawGradienteHidraulico(ctx, piezometros);
+  }
 
   draw();
 
