@@ -44,43 +44,43 @@
         <!-- range de K -->
         <label for="kA">K (Conductividad)</label>
         <input type="range" id="kA" min="1" max="50" value="25" />
-        <span id="kAVal">25</span><span>m/d</span>
+        <span class="removeSpan" id="kAVal">25</span><span class="removeSpan">m/d</span>
 
         <!-- range del area -->
         <label for="aA">A (Área)</label>
         <input type="range" id="aA" min="1" max="100" value="30" />
-        <span id="aAVal">30</span>
+        <span class="removeSpan" id="aAVal">30</span>
       </div>
 
       <div class="section-card">
         <h3>Sección B</h3>
         <label for="kB">K (Conductividad)</label>
         <input type="range" id="kB" min="1" max="50" value="25" />
-        <span id="kBVal">25</span><span>m/d</span>
+        <span class="removeSpan" id="kBVal">25</span><span class="removeSpan">m/d</span>
 
         <!-- range del area tubo 2 -->
         <label for="aB">A (Área)</label>
         <input type="range" id="aB" min="1" max="100" value="30" />
-        <span id="aBVal">30</span>
+        <span class="removeSpan" id="aBVal">30</span>
       </div>
 
       <div class="section-card">
         <h3>Sección C</h3>
         <label for="kC">K (Conductividad)</label>
         <input type="range" id="kC" min="1" max="50" value="25" />
-        <span id="kCVal">25</span><span>m/d</span>
+        <span class="removeSpan" id="kCVal">25</span><span class="removeSpan">m/d</span>
 
         <!-- range del area tubo 3 -->
         <label for="aC">A (Área)</label>
         <input type="range" id="aC" min="1" max="100" value="30" />
-        <span id="aCVal">30</span>
+        <span class="removeSpan" id="aCVal">30</span>
       </div>
 
       <div class="section-card">
         <h3>Sección Otra</h3>
         <label for="ejemplo">ejemploooo</label>
         <input type="range" id="ejemplo" min="1" max="100" value="30" />
-        <span id="ejemploVal">aqui van los numeros</span>
+        <span class="removeSpan" id="ejemploVal">aqui van los numeros</span>
       </div>
     </div>
 
@@ -109,9 +109,11 @@
       });
     }
   });
-
+  
   //convertir el tipo slider a manual equis de
   document.getElementById("manual").addEventListener("change", (e) => {
+    const isManual = e.target.checked;
+
     const type = e.target.checked ? "number" : "range";
 
     //seccion a
@@ -128,6 +130,11 @@
 
     //seccion ejemplo
     document.getElementById("ejemplo").type = type;
+
+    document.querySelectorAll(".removeSpan").forEach(span => {
+      span.style.display = isManual ? "none" : "inline";
+    });
+
   });
 
   // funcionn para dibujar los piezometros
