@@ -1,46 +1,78 @@
 <div class="layout">
-  <!-- Panel controles -->
-  <div class="panel border border-[var(--bordermario)] bg-[var(--cardMario)] rounded-md shadow-[0_8px_30px_var(--shadowMario)]">
-    <h2>Controles</h2>
-    <label for="control">Distancia entre piezómetros</label>
-    <input id="control" type="range" min="0" max="100" value="50" />
-  </div>
-
   <!-- Panel Gráfica -->
-  <div class="visual border border-[var(--bordermario)] bg-[var(--cardMario)] rounded-md shadow-[0_8px_30px_var(--shadowMario)]">
+  <div class="visual border border-[var(--borderMario)] bg-[var(--cardMario)] rounded-md shadow-[0_8px_30px_var(--shadowMario)]">
     <h2>Gráfica</h2>
-    <div class="container">
-      <div class="pms">
-        <div class="piezometer" id="pm-1">
-          <div class="water"></div>
-        </div>
-        <div class="piezometer" id="pm-2">
-          <div class="water"></div>
-        </div>
+
+    <div class="graph">
+
+      <div class="height-line bg-[var(--color-primary)]">
       </div>
 
-      <div class="cylinder">
-        <div class="circle front"></div>
-        <div class="body"></div>
-        <div class="circle back"></div>
-      </div>
+      <div class="container">
 
-      <div class="delta-container">
-        <div class="linea"></div>
-        <span class="delta-text">∆L</span>
+        <div class="pms">
+          <div class="piezometer" id="pm-1">
+            <div class="water"><h3>h₁</h3></div>
+          </div>
+          <div class="piezometer" id="pm-2">
+            <div class="water"><h3>h₂</h3></div>
+          </div>
+        </div>
+
+        <div class="cylinder">
+          <div class="circle front"></div>
+          <div class="body"></div>
+          <div class="circle back"></div>
+        </div>
+
+        <div class="delta-container">
+          <div class="linea"></div>
+          <span class="delta-text">∆L</span>
+        </div>
+
       </div>
     </div>
+  </div>
+
+  <!-- Panel datos-->
+  <div class="data border border-[var(--borderMario)] bg-[var(--cardMario)] rounded-md shadow-[0_8px_30px_var(--shadowMario)]">
+    <h2>Datos</h2>
+    <div><h3 class="data-name">h₁:</h3><label id="data-1"></div>
+    <div><h3 class="data-name">h₂:</h3><label id="data-2"></div>
+    <div><h3 class="data-name">∆L:</h3><label id="data-3"></div>
+    <div><h3 class="data-name">∆h/∆L:</h3><label id="data-4"></label></div>
+    <div><h3 class="data-name">data:</h3><label id="data-5"></label></div>
+
+  </div>
+
+  <!-- Panel controles -->
+  <div class="panel border border-[var(--borderMario)] bg-[var(--cardMario)] rounded-md shadow-[0_8px_30px_var(--shadowMario)]">
+    <h2>Controles</h2>
+    <label for="control">Distancia entre piezómetros</label>
+    <br>
+    <label for="checkbox">Tipo de input</label>
+    <input type="checkbox" id="input-type">
+    <input id="control" type="range" min="0" max="100" value="50" />
+    <input id="number-control" type="number" min="0" max="100" value="50">
   </div>
 </div>
 
 <script>
+
   const pm1 = document.querySelector("#pm-1");
   const pm2 = document.querySelector("#pm-2");
   const water1 = document.querySelector("#pm-1 .water");
   const water2 = document.querySelector("#pm-2 .water");
+  const type = document.getElementById("input-type");
   const control = document.getElementById("control");
+  const numberControl = document.getElementById("number-control");
   const linea = document.querySelector(".delta-container .linea");
   const deltaText = document.querySelector(".delta-text");
+  const data1 = document.querySelector("#data-1");
+  const data2 = document.querySelector("#data-2");
+  const data3 = document.querySelector("#data-3");
+  const data4 = document.querySelector("#data-4");
+  const data5 = document.querySelector("#data-5");
 
   if (
     pm1 instanceof HTMLElement &&
@@ -48,15 +80,35 @@
     water1 instanceof HTMLElement &&
     water2 instanceof HTMLElement &&
     control instanceof HTMLInputElement &&
+    type instanceof HTMLInputElement &&
+    numberControl instanceof HTMLInputElement &&
     linea instanceof HTMLElement &&
-    deltaText instanceof HTMLElement
+    deltaText instanceof HTMLElement &&
+    data1 instanceof HTMLElement &&
+    data2 instanceof HTMLElement &&
+    data3 instanceof HTMLElement &&
+    data4 instanceof HTMLElement &&
+    data5 instanceof HTMLElement
   ) {
     const maxHeight = water1.offsetHeight;
     const minHeight = 20;
     const maxRange = parseInt(control.max);
+    let distance = 0
+
+    function actualizarInputType() {
+      if (type.checked) {
+        distance = parseInt(control.value);
+        numberControl!.style.display = 'none';
+        control!.style.display = 'flex';
+      } else {
+        distance = parseInt(numberControl.value);
+        numberControl!.style.display = 'flex';
+        control!.style.display = 'none';
+      }
+
+    }
 
     function actualizarEstado() {
-      const distance = parseInt(control.value);
 
       // Movimiento horizontal del pm-2
       pm2.style.marginLeft = distance + "px";
@@ -65,6 +117,16 @@
       const newHeight =
         maxHeight - (distance / maxRange) * (maxHeight - minHeight);
       water2.style.height = newHeight + "px";
+
+      // actualizar division data
+      data1!.textContent = maxHeight + "m"
+      data2!.textContent = newHeight.toFixed(2) + "m"
+      data3!.textContent = distance + "m"
+      
+      //∆h/∆L = (h2-1)/∆L
+      let slope = ((newHeight - maxHeight) / distance).toFixed(2)
+      data4!.textContent = slope + "m"
+       
     }
 
     function actualizarLinea() {
@@ -77,23 +139,23 @@
 
       const left = Math.min(center1, center2) - parentRect.left;
       //const width = Math.abs(center2 - center1);
-      const width = parseInt(control.value) + 50
+      const width = distance + 55
 
       linea.style.left = left + "px";
       linea.style.width = width + "px";
       const offset = deltaText.offsetWidth / 2;
       deltaText.style.left = left + width / 2 - offset + "px";
-
-      console.log(width);
-      
     }
 
     function actualizarTodo() {
+      actualizarInputType();
       actualizarEstado();
       actualizarLinea();
     }
 
     control.addEventListener("input", actualizarTodo);
+    numberControl.addEventListener("input", actualizarTodo);
+    type.addEventListener("input", actualizarTodo);
     ///window.addEventListener("resize", actualizarLinea);
 
     // Estado inicial
@@ -110,17 +172,25 @@
   }
 
   .panel,
-  .visual {
+  .visual,
+  .data {
     flex: 1;
     border-radius: 10px;
     padding: 20px;
   }
 
   .panel h2,
-  .visual h2 {
+  .visual h2,
+  .data h2 {
     margin-top: 0;
     margin-bottom: 15px;
     text-align: center;
+  }
+
+  .graph {
+    display: flex;
+    flex-direction: row;
+    height: 50vh;
   }
 
   #control {
@@ -131,16 +201,22 @@
   }
 
   .container {
-    position: relative;
     display: flex;
+    flex: 1;
     flex-direction: column;
     align-items: center;
+    justify-content: flex-end;
+    margin-bottom: 2vh;
+  }
+
+  .height-line {
+    width: 4px;
+    margin-right: 20px;
   }
 
   .pms {
-    margin-top: 50px;
     display: flex;
-    gap: 20px;
+    gap: 25px;
     z-index: 10;
     min-width: 200px;
   }
@@ -153,6 +229,7 @@
     background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgb(0, 0, 0);
     border-bottom: 0px solid rgb(0, 0, 0);
+    border-top: 0px solid rgb(0, 0, 0);
     transition: margin-left 0.5s ease;
   }
 
@@ -168,6 +245,11 @@
     width: 100%;
     background: rgba(74, 214, 255);
     transition: height 0.5s ease;
+  }
+
+  .water h3 {
+    margin-top: -1em;
+    margin-left: 1.8em;
   }
 
   .delta-container {
@@ -260,4 +342,16 @@
     );
     background-size: 10px 10px;
   }
+
+  .data div {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .data h3 {
+    margin: 0;
+    margin-right: 0.4em;
+  }
+
+
 </style>
