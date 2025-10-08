@@ -143,6 +143,9 @@ p {
   color: var(--titles);
 }
 
+strong {
+  color: var(--titles);
+}
 /* Aplica las variables a los elementos */
 body {
   background-color: var(--color-background);
