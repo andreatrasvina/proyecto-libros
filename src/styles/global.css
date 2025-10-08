@@ -46,7 +46,7 @@
   --titles: #030906;
 
   /* Color de fondo del sidebar */
-  --pepe: #F0F2F6;
+  --titlesnt: #F0F2F6;
 
   /* color para el texto del sidebar */
   --sidebarText: #565c6d;
@@ -59,6 +59,25 @@
 
   /* color para el hover de los elementos del sidebar */
   --textoHover: #2b398a;
+  --titlesMd: #e85451;
+  --rayaTubo: #5D726F;
+  --textoCardCanvas: #565c6d;
+
+  /* COLORES AGREGADOS PARA LA ESTETICA DE LAS CAJAS DE LOS EJERCICIOS, ASI COMO SUS ELEMENTOS, ESTE APARTADO ES SOLO PARA LOS MARKDOWNS DE LOS EJERCICIOS */
+
+  --cardEjercicio: #ffffffb3;
+
+  /* Color oscuro de los bordes (se quedara el mismo de momento)*/
+  --borderEjercicio: #e2e8f0;
+
+  /* Color claro de la shadow del ejercicio */
+  --shadowEjercicio: #02061714;
+
+  /* Color del agua */
+  --water: #a4d8f2;
+
+  /* Color claro para el blur del ejercicio */
+  /* --blurMario: #ffffff8c; */
 }
 
 body.dark-mode {
@@ -87,7 +106,7 @@ body.dark-mode {
   --color-primary: #ffffff;
 
   /* Color de fondo del sidebar */
-  --pepe: #131314;
+  --titlesnt: #131314;
 
   /* color para el texto del sidebar */
   --sidebarText: #fff;
@@ -97,6 +116,25 @@ body.dark-mode {
 
   /* color para el hover de los elementos del sidebar */
   --textoHover: #fff;
+  --titlesMd: #e85451;
+  --textoCardCanvas: #9fb4d6;
+  --rayaTubo: #CED0C3;
+
+  /* COLORES AGREGADOS PARA LA ESTETICA DE LAS CAJAS DE LOS EJERCICIOS, ASI COMO SUS ELEMENTOS, ESTE APARTADO ES SOLO PARA LOS MARKDOWNS DE LOS EJERCICIOS */
+  --cardEjercicio: #131314;
+
+  /* Color oscuro de los bordes (ligeramente más claros que el fondo) */
+  --borderEjercicio: #1e293b;
+  /* similar a slate-800 */
+
+  /* Color oscuro de la shadow del mario (sutil brillo blanco) */
+  --shadowEjercicio: #ffffff1a;
+
+  /* Color del agua */
+  --water: #a4d8f2;
+
+  /* /* Color oscuro para el blur del mario */
+  /* --blurMario: #0f172a8c; */
 }
 
 h1,
