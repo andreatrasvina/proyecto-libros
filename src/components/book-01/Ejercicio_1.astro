@@ -4,7 +4,7 @@
   </h3>
   <hr class="border-[var(--titlesMd)]" />
   <div
-    class="p-4 my-6 border border-[var(--borderMario)] rounded-md shadow-[0_8px_30px_var(--shadowMario)] bg-[var(--cardMario)]"
+    class="p-4 my-6 border border-[var(--borderEjercicio)] rounded-md shadow-[0_8px_30px_var(--shadowEjercicio)] bg-[var(--cardEjercicio)]"
   >
     <h1 class="font-semibold text-lg text-[var(--titles)]">
       Gradiente hidráulico
@@ -23,7 +23,7 @@
         id="myCanvas"
         width="800"
         height="400"
-        style="border:1px solid var(--borderMario); margin: 0 auto;"
+        style="border:1px solid var(--borderEjercicio); margin: 0 auto;"
         class="rounded"
       >
       </canvas>
@@ -44,7 +44,9 @@
         <!-- range de K -->
         <label for="kA">K (Conductividad)</label>
         <input type="range" id="kA" min="1" max="50" value="25" />
-        <span class="removeSpan" id="kAVal">25</span><span class="removeSpan">m/d</span>
+        <span class="removeSpan" id="kAVal">25</span><span class="removeSpan"
+          >m/d</span
+        >
 
         <!-- range del area -->
         <label for="aA">A (Área)</label>
@@ -56,7 +58,9 @@
         <h3>Sección B</h3>
         <label for="kB">K (Conductividad)</label>
         <input type="range" id="kB" min="1" max="50" value="25" />
-        <span class="removeSpan" id="kBVal">25</span><span class="removeSpan">m/d</span>
+        <span class="removeSpan" id="kBVal">25</span><span class="removeSpan"
+          >m/d</span
+        >
 
         <!-- range del area tubo 2 -->
         <label for="aB">A (Área)</label>
@@ -68,7 +72,9 @@
         <h3>Sección C</h3>
         <label for="kC">K (Conductividad)</label>
         <input type="range" id="kC" min="1" max="50" value="25" />
-        <span class="removeSpan" id="kCVal">25</span><span class="removeSpan">m/d</span>
+        <span class="removeSpan" id="kCVal">25</span><span class="removeSpan"
+          >m/d</span
+        >
 
         <!-- range del area tubo 3 -->
         <label for="aC">A (Área)</label>
@@ -109,7 +115,7 @@
       });
     }
   });
-  
+
   //convertir el tipo slider a manual equis de
   document.getElementById("manual").addEventListener("change", (e) => {
     const isManual = e.target.checked;
@@ -131,10 +137,9 @@
     //seccion ejemplo
     document.getElementById("ejemplo").type = type;
 
-    document.querySelectorAll(".removeSpan").forEach(span => {
+    document.querySelectorAll(".removeSpan").forEach((span) => {
       span.style.display = isManual ? "none" : "inline";
     });
-
   });
 
   // funcionn para dibujar los piezometros
@@ -266,8 +271,8 @@
     width: 100%;
     margin-top: 4px;
     outline: none;
-    color: var(--titles);
-    background-color: var(--cardMario);
+    color: var(--textoHover);
+    background-color: var(--hoverSidebar);
     padding-left: 12px;
     border-radius: 5px;
   }
@@ -328,9 +333,5 @@
 
   .switch input:checked + .slider-toggle:before {
     transform: translateX(18px);
-  }
-
-  .pepe {
-    display: flex;
   }
 </style>
