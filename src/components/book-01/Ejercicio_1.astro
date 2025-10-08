@@ -29,6 +29,11 @@
       </canvas>
     </div>
 
+    <label class="switch">
+      <input type="checkbox" id="manual">
+      <span class="slider-toggle">Datos manuales</span>
+    </label>
+
     <div class="controls">
       <div class="section-card">
         <h3>Sección A</h3>
@@ -102,6 +107,26 @@
     }
   });
 
+  //convertir el tipo slider a manual equis de
+  document.getElementById("manual").addEventListener("change", (e) => {
+    const type = e.target.checked ? "number" : "range";
+
+    //seccion a
+    document.getElementById("kA").type = type;
+    document.getElementById("aA").type = type;
+
+    //seccion b
+    document.getElementById("kB").type = type;
+    document.getElementById("aB").type = type;
+
+    //seccion c
+    document.getElementById("kC").type = type;
+    document.getElementById("aC").type = type;
+
+    //seccion ejemplo
+    document.getElementById("ejemplo").type = type;
+  });
+
   // funcionn para dibujar los piezometros
   function drawPiezometro(ctx, x, y, width, height, hAgua) {
     //agua dentro del tubo
@@ -136,7 +161,7 @@
       else ctx.lineTo(xCentro, yAgua);
     });
 
-    ctx.strokeStyle = "red";
+    ctx.strokeStyle = "brown";
     ctx.lineWidth = 2;
     ctx.stroke();
   }
