@@ -73,6 +73,9 @@
   /* Color claro de la shadow del ejercicio */
   --shadowEjercicio: #02061714;
 
+  /* Color del agua */
+  --water: #a4d8f2;
+
   /* Color claro para el blur del ejercicio */
   /* --blurMario: #ffffff8c; */
 }
@@ -128,6 +131,9 @@ body.dark-mode {
 
   /* Color oscuro de la shadow del mario (sutil brillo blanco) */
   --shadowEjercicio: #ffffff1a;
+
+  /* Color del agua */
+  --water: #a4d8f2;
 
   /* /* Color oscuro para el blur del mario */
   /* --blurMario: #0f172a8c; */
