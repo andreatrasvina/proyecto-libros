@@ -3,8 +3,186 @@
     <div class="headSimulationArea flex flex-col w-full p-6 gap-2">
       <h2 class="tittle" class="text">Simulation area</h2>
     </div>
-    
-    
+    <div class="schemeArea w-full p-6">
+      <div class="schemeContent w-full aspect-square">
+        <svg width="100%" height="100%" viewBox="0 0 130 130">
+          <path
+            id="water"
+            d="
+              M 0 130
+              C 1 10, 0 9, 0 10
+              C 10 11, 15 10, 18 11
+              C 50 19, 60 11.5, 130 60
+              C 130 61, 150 100, 130 130
+              L 130 130 Z"
+            stroke="black"
+            stroke-width="1"
+            fill="transparent"></path>
+
+          <path
+            d="
+              M 1 0 
+              C 20 1 40 6, 50 8.2
+              C 60 12.5, 80 10, 130 58"
+            stroke="black"
+            stroke-width="1"
+            fill="transparent"></path>
+          <path
+            d="
+              M 1 10.5 
+              C 20 11, 40 14, 50 18
+              C 60 22, 80 24, 130 61"
+            stroke="black"
+            stroke-width="1"
+            fill="transparent"></path>
+
+          <path
+            id="120m"
+            d="
+              M 5 19 
+              C 10 19, 12 18, 14 18
+              C 16 18, 18 17, 26 13"
+            stroke="black"
+            stroke-dasharray="5,5"
+            stroke-width="1"
+            fill="transparent"></path>
+          <text
+            font-size="5"
+            font-family="sans-serif"
+            fill="black"
+            font-weight="bold"
+            dy="5"
+          >
+            <textPath href="#120m" startOffset="50%" text-anchor="middle">
+              120 m
+            </textPath>
+          </text>
+
+          <path
+            id="110m"
+            d="
+              M 9 49.5 
+              C 14 48, 24 46, 30 43.5
+              C 45 39, 55 26, 61 23"
+            stroke="black"
+            stroke-dasharray="5,5"
+            stroke-width="1"
+            fill="transparent"></path>
+          <text
+            font-size="5"
+            font-family="sans-serif"
+            fill="black"
+            font-weight="bold"
+            dy="5"
+          >
+            <textPath href="#110m" startOffset="50%" text-anchor="middle">
+              110 m
+            </textPath>
+          </text>
+
+          <path
+            id="100m"
+            d="
+              M 9 97 
+              C 14 94, 24 90, 30 84
+              C 45 76, 60 52, 80 30"
+            stroke="black"
+            stroke-dasharray="5,5"
+            stroke-width="1"
+            fill="transparent"></path>
+          <text
+            font-size="5"
+            font-family="sans-serif"
+            fill="black"
+            font-weight="bold"
+            dy="5"
+          >
+            <textPath href="#100m" startOffset="50%" text-anchor="middle">
+              100 m
+            </textPath>
+          </text>
+
+          <path
+            id="90m"
+            d="
+              M 76 108 
+              C 75 94, 74 90, 75 84
+              C 75 76, 81 52, 95 38"
+            stroke="black"
+            stroke-dasharray="5,5"
+            stroke-width="1"
+            fill="transparent"></path>
+          <text
+            font-size="5"
+            font-family="sans-serif"
+            fill="black"
+            font-weight="bold"
+            dy="5"
+          >
+            <textPath href="#90m" startOffset="50%" text-anchor="middle">
+              90 m
+            </textPath>
+          </text>
+
+          <path
+            id="80m"
+            d="
+              M 108 108 
+              C 98 94, 96 90, 95 84
+              C 92 76, 102 48, 109 45"
+            stroke="black"
+            stroke-dasharray="5,5"
+            stroke-width="1"
+            fill="transparent"></path>
+          <text
+            font-size="5"
+            font-family="sans-serif"
+            fill="black"
+            font-weight="bold"
+            dy="5"
+          >
+            <textPath href="#80m" startOffset="50%" text-anchor="middle">
+              80 m
+            </textPath>
+          </text>
+
+          <path
+            id="70m"
+            d="
+              M 129 89 
+              C 126 85, 118 80, 119 76
+              C 110 60, 122 55, 120 53"
+            stroke="black"
+            stroke-dasharray="5,5"
+            stroke-width="1"
+            fill="transparent"></path>
+          <text
+            font-size="5"
+            font-family="sans-serif"
+            fill="black"
+            font-weight="bold"
+            dy="5"
+          >
+            <textPath href="#70m" startOffset="50%" text-anchor="middle">
+              70 m
+            </textPath>
+          </text>
+        </svg>
+      </div>
+    </div>
+    <div
+      class="indicators w-full p-2 flex flex-row items-center justify-around"
+    >
+      <div class="flex flex-row gap-2 items-center">
+        <div class="circle w-5 h-5 bg-yellow-950 rounded-full"></div>
+        <p class="mt-0 mb-0">Superficie del terreno</p>
+      </div>
+
+      <div class="flex flex-row gap-2 items-center">
+        <div class="circle w-5 h-5 bg-blue-400 rounded-full"></div>
+        <p class="mt-0 mb-0">Nivel freatico</p>
+      </div>
+    </div>
   </div>
   <div class="controls">
     <div class="headControls flex flex-row w-full p-6 gap-2">
@@ -99,7 +277,7 @@
           </div>
         </label>
 
-        <label class="h-auto w-1/1"
+        <label class="h-auto w-1/1 mb-4"
           >x coordinate of the well exit:
           <div class="flex flex-row w-full gap-4">
             <input
@@ -117,7 +295,7 @@
             <p class="mt-0 mb-0 dinamicInput">0</p>
           </div>
         </label>
-        <br>
+
         <button
           class="manualInput text-white bg-blue-400 hover:bg-blue-500 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-400 dark:hover:bg-blue-300 dark:focus:ring-blue-300 dark:border-blue-300 cursor-pointer hidden"
           >Confirm values</button
@@ -203,10 +381,22 @@
     border: 1px solid var(--titles);
     border-radius: 12px;
   }
-  .headSimulationArea{
+  .headSimulationArea {
     border-bottom: 1px solid var(--titles);
     justify-content: space-between;
   }
+
+  .schemeContent {
+    border: 1px solid var(--titles);
+    border-radius: 8px;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+
+  #water {
+    fill: var(--water);
+  }
+
   .headControls {
     border-bottom: 1px solid var(--titles);
     justify-content: space-between;
