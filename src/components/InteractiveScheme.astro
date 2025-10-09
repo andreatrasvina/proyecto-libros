@@ -4,37 +4,76 @@
       <h2 class="tittle" class="text">Simulation area</h2>
     </div>
     <div class="schemeArea w-full p-6">
-      <div class="schemeContent w-full aspect-square">
+      <div class="schemeContent w-full aspect-square overflow-hidden">
         <svg width="100%" height="100%" viewBox="0 0 130 130">
+          <defs>
+            <pattern
+              id="brownDots"
+              x="0"
+              y="0"
+              width="7"
+              height="5"
+              patternUnits="userSpaceOnUse"
+              patternTransform="rotate(38) scale(1.2)"
+            >
+              <circle cx="2" cy="2" r="0.5" fill="saddlebrown"></circle>
+            </pattern>
+          </defs>
+
           <path
             id="water"
             d="
-              M 0 130
+              M -15 130
               C 1 10, 0 9, 0 10
               C 10 11, 15 10, 18 11
               C 50 19, 60 11.5, 130 60
               C 130 61, 150 100, 130 130
-              L 130 130 Z"
+              L 130 134 Z"
             stroke="black"
             stroke-width="1"
             fill="transparent"></path>
 
           <path
+            id="terrain"
             d="
               M 1 0 
               C 20 1 40 6, 50 8.2
               C 60 12.5, 80 10, 130 58"
-            stroke="black"
             stroke-width="1"
             fill="transparent"></path>
           <path
+            id="freatico"
             d="
               M 1 10.5 
               C 20 11, 40 14, 50 18
               C 60 22, 80 24, 130 61"
-            stroke="black"
             stroke-width="1"
             fill="transparent"></path>
+
+          <path
+            d="
+              M -1 160 
+              C -1 0, -1 0, -1 0
+              C 80 10 , 80 20, 80 20
+              C 120 40, 120 52, 120 48
+              C 130 58, 130 58, 130 58
+              C 160 160, 160 160, 160 160"
+            fill="url(#brownDots)"></path>
+
+          <!-- InfIzq|InfDer|SupDer|SupIzq-->
+          <path class="well"
+            d="M70 120 L80 120 L80 100 L70 100 Z"
+            fill="white"
+            stroke="black"
+            stroke-width="1"
+           ></path>
+
+          <path class="cantidad"
+            d="M70 120 L80 120 L80 110 L70 110 Z"
+            fill="blue"
+            stroke="black"
+            stroke-width="1"
+            ></path>
 
           <path
             id="120m"
@@ -169,18 +208,18 @@
           </text>
         </svg>
       </div>
-    </div>
-    <div
-      class="indicators w-full p-2 flex flex-row items-center justify-around"
-    >
-      <div class="flex flex-row gap-2 items-center">
-        <div class="circle w-5 h-5 bg-yellow-950 rounded-full"></div>
-        <p class="mt-0 mb-0">Superficie del terreno</p>
-      </div>
+      <div
+        class="indicators w-full p-2 flex flex-row items-center justify-around"
+      >
+        <div class="flex flex-row gap-2 items-center">
+          <div class="circle w-5 h-5 bg-yellow-950 rounded-full"></div>
+          <p class="mt-0 mb-0">Superficie del terreno</p>
+        </div>
 
-      <div class="flex flex-row gap-2 items-center">
-        <div class="circle w-5 h-5 bg-blue-400 rounded-full"></div>
-        <p class="mt-0 mb-0">Nivel freatico</p>
+        <div class="flex flex-row gap-2 items-center">
+          <div class="circle w-5 h-5 bg-blue-400 rounded-full"></div>
+          <p class="mt-0 mb-0">Nivel freatico</p>
+        </div>
       </div>
     </div>
   </div>
@@ -388,13 +427,23 @@
 
   .schemeContent {
     border: 1px solid var(--titles);
+    background-color: white;
     border-radius: 8px;
     background-repeat: no-repeat;
     background-size: contain;
   }
 
+  #terrain {
+    stroke: oklch(28.6% 0.066 53.813);
+  }
+
+  #freatic {
+    stroke: oklch(70.7% 0.165 254.624);
+  }
+
   #water {
     fill: var(--water);
+    stroke: oklch(70.7% 0.165 254.624);
   }
 
   .headControls {
