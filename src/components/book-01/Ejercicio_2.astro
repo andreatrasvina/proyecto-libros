@@ -110,493 +110,492 @@ const initA = 5;
       </div>
     </div>
   </div>
+</div>
 
-  <script>
-    //elements for distance (∆L) control
-    const type = document.getElementById("input-type") as HTMLInputElement;
-    const rangeDistanceIn = document.getElementById(
-      "range-distance"
-    ) as HTMLInputElement;
-    const numberDistanceIn = document.getElementById(
-      "number-distance"
-    ) as HTMLInputElement;
+<script>
+  //elements for distance (∆L) control
+  const type = document.getElementById("input-type");
+  const rangeDistanceIn = document.getElementById("range-distance");
+  const numberDistanceIn = document.getElementById("number-distance");
 
-    //elements for flow rate (Q) control
-    const rangeQIn = document.getElementById("range-Q") as HTMLInputElement;
-    const numberQIn = document.getElementById("number-Q") as HTMLInputElement;
+  //elements for flow rate (Q) control
+  const rangeQIn = document.getElementById("range-Q");
+  const numberQIn = document.getElementById("number-Q");
 
-    //elements for conductivity (K) control
-    const rangeKIn = document.getElementById("range-K") as HTMLInputElement;
-    const numberKIn = document.getElementById("number-K") as HTMLInputElement;
+  //elements for conductivity (K) control
+  const rangeKIn = document.getElementById("range-K");
+  const numberKIn = document.getElementById("number-K");
 
-    //elements for area (A) control
-    const rangeAIn = document.getElementById("range-A") as HTMLInputElement;
-    const numberAIn = document.getElementById("number-A") as HTMLInputElement;
+  //elements for area (A) control
+  const rangeAIn = document.getElementById("range-A");
+  const numberAIn = document.getElementById("number-A");
 
-    //elementes for piezometer and water level
-    const pm1 = document.getElementById("pm-1") as HTMLDivElement;
-    const pm2 = document.getElementById("pm-2") as HTMLDivElement;
-    const water1 = document.querySelector("#pm-1 .water") as HTMLDivElement;
-    const water2 = document.querySelector("#pm-2 .water") as HTMLDivElement;
+  //elementes for piezometer and water level
+  const pm1 = document.getElementById("pm-1");
+  const pm2 = document.getElementById("pm-2");
+  const water1 = document.querySelector("#pm-1 .water");
+  const water2 = document.querySelector("#pm-2 .water");
 
-    //elements for ∆L visualization
-    const deltaContainer = document.querySelector(
-      ".delta-container"
-    ) as HTMLDivElement;
-    const linea = document.querySelector(".linea") as HTMLDivElement;
-    const deltaText = document.querySelector(".delta-text") as HTMLDivElement;
+  //elements for ∆L visualization
+  const deltaContainer = document.querySelector(".delta-container");
+  const linea = document.querySelector(".linea");
+  const deltaText = document.querySelector(".delta-text");
 
-    //data values
-    const data1 = document.getElementById("data-1") as HTMLLabelElement;
-    const data2 = document.getElementById("data-2") as HTMLLabelElement;
-    const data3 = document.getElementById("data-3") as HTMLLabelElement;
-    const data4 = document.getElementById("data-4") as HTMLLabelElement;
-    const data5 = document.getElementById("data-5") as HTMLLabelElement;
-    const data6 = document.getElementById("data-6") as HTMLLabelElement;
-    const data7 = document.getElementById("data-7") as HTMLLabelElement;
-    const data8 = document.getElementById("data-8") as HTMLLabelElement;
+  //data values
+  const data1 = document.getElementById("data-1");
+  const data2 = document.getElementById("data-2");
+  const data3 = document.getElementById("data-3");
+  const data4 = document.getElementById("data-4");
+  const data5 = document.getElementById("data-5");
+  const data6 = document.getElementById("data-6");
+  const data7 = document.getElementById("data-7");
+  const data8 = document.getElementById("data-8");
 
-    const water1Height = water1.offsetHeight;
+  const water1Height = water1.offsetHeight;
 
-    //∆L
-    let distance = 50;
-    let flowRate = 2;
-    let conductivity = 0.5;
-    let area = 4;
+  //∆L
+  let distance = 50;
+  let flowRate = 2;
+  let conductivity = 0.5;
+  let area = 4;
 
-    function actualizarInputType() {
-      if (type.checked) {
-        distance = parseInt(rangeDistanceIn.value);
-        flowRate = parseInt(rangeQIn.value);
-        conductivity = parseInt(rangeKIn.value);
-        area = parseInt(rangeAIn.value);
+  function actualizarInputType() {
+    if (type.checked) {
+      distance = parseInt(rangeDistanceIn.value);
+      flowRate = parseInt(rangeQIn.value);
+      conductivity = parseFloat(rangeKIn.value);
+      area = parseFloat(rangeAIn.value);
 
-        numberDistanceIn.style.display = "none";
-        numberQIn.style.display = "none";
-        numberKIn.style.display = "none";
-        numberAIn.style.display = "none";
+      numberDistanceIn.style.display = "none";
+      numberQIn.style.display = "none";
+      numberKIn.style.display = "none";
+      numberAIn.style.display = "none";
 
-        rangeDistanceIn.style.display = "flex";
-        rangeQIn.style.display = "flex";
-        rangeKIn.style.display = "flex";
-        rangeAIn.style.display = "flex";
-      } else {
-        distance = parseInt(numberDistanceIn.value);
-        flowRate = parseInt(numberQIn.value);
-        flowRate = parseInt(numberKIn.value);
-        flowRate = parseInt(numberAIn.value);
+      rangeDistanceIn.style.display = "flex";
+      rangeQIn.style.display = "flex";
+      rangeKIn.style.display = "flex";
+      rangeAIn.style.display = "flex";
+    } else {
+      distance = parseInt(numberDistanceIn.value);
+      flowRate = parseInt(numberQIn.value);
+      conductivity = parseFloat(numberKIn.value);
+      area = parseFloat(numberAIn.value);
 
-        numberDistanceIn.style.display = "flex";
-        numberQIn.style.display = "flex";
-        numberKIn.style.display = "flex";
-        numberAIn.style.display = "flex";
+      numberDistanceIn.style.display = "flex";
+      numberQIn.style.display = "flex";
+      numberKIn.style.display = "flex";
+      numberAIn.style.display = "flex";
 
-        rangeDistanceIn.style.display = "none";
-        rangeQIn.style.display = "none";
-        rangeKIn.style.display = "none";
-        rangeAIn.style.display = "none";
-      }
+      rangeDistanceIn.style.display = "none";
+      rangeQIn.style.display = "none";
+      rangeKIn.style.display = "none";
+      rangeAIn.style.display = "none";
     }
+  }
 
-    function actualizarEstado() {
-      // Movimiento horizontal del pm-2
-      pm2.style.marginLeft = distance + "px";
+  function actualizarEstado() {
+    // Movimiento horizontal del pm-2
+    pm2.style.marginLeft = distance + "px";
 
-      // h2 = h1 - ((Q * ∆L) / (K * A))
-      const water2Height =
-        water1Height - (flowRate * distance) / (conductivity * area);
-      // Ajuste de altura de agua
-      water2.style.height = water2Height + "px";
+    // h2 = h1 - ((Q * ∆L) / (K * A))
+    const water2Height =
+      water1Height - (flowRate * distance) / (conductivity * area);
 
-      // actualizar division data
-      // h1
-      data1.textContent = water1Height.toFixed(2) + "m";
-      // h2
-      data2.textContent = water2Height.toFixed(2) + "m";
-      // ∆L
-      data3.textContent = distance.toFixed(2) + "m";
-      //∆h/∆L = (h2-1)/∆L
-      let slope = ((water2Height - water1Height) / distance).toFixed(2);
-      data4.textContent = slope + "m";
-      // Q (flow rate)
-      data5.textContent = flowRate.toFixed(2) + "m³";
-      // K (conductivity)
-      data6.textContent = conductivity.toFixed(2) + "m/día";
-      // A (area)
-      data7.textContent = area.toFixed(2) + "m²";
-    }
+    // Ajuste de altura de agua
+    water2.style.height = water2Height + "px";
 
-    function actualizarLinea() {
-      const rect1 = pm1.getBoundingClientRect();
-      const rect2 = pm2.getBoundingClientRect();
-      const parentRect = deltaContainer.getBoundingClientRect();
+    // actualizar división de datos
+    data1.textContent = water1Height.toFixed(2) + "m";
+    data2.textContent = water2Height.toFixed(2) + "m";
+    data3.textContent = distance.toFixed(2) + "m";
+    let slope = ((water2Height - water1Height) / distance).toFixed(2);
+    data4.textContent = slope + "m";
+    data5.textContent = flowRate.toFixed(2) + "m³";
+    data6.textContent = conductivity.toFixed(2) + "m/día";
+    data7.textContent = area.toFixed(2) + "m²";
+  }
 
-      const center1 = rect1.left + rect1.width / 2;
-      const center2 = rect2.left + rect2.width / 2;
+  function actualizarLinea() {
+    const rect1 = pm1.getBoundingClientRect();
+    const rect2 = pm2.getBoundingClientRect();
+    const parentRect = deltaContainer.getBoundingClientRect();
 
-      const left = Math.min(center1, center2) - parentRect.left;
-      //const width = Math.abs(center2 - center1);
-      const width = distance + 55;
+    const center1 = rect1.left + rect1.width / 2;
+    const center2 = rect2.left + rect2.width / 2;
 
-      linea.style.left = left + "px";
-      linea.style.width = width + "px";
-      const offset = deltaText.offsetWidth / 2;
-      deltaText.style.left = left + width / 2 - offset + "px";
-    }
+    const left = Math.min(center1, center2) - parentRect.left;
+    const width = distance + 55;
 
-    function actualizarTodo() {
-      actualizarInputType();
-      actualizarEstado();
-      actualizarLinea();
-    }
+    linea.style.left = left + "px";
+    linea.style.width = width + "px";
+    const offset = deltaText.offsetWidth / 2;
+    deltaText.style.left = left + width / 2 - offset + "px";
+  }
 
-    rangeDistanceIn.addEventListener("input", actualizarTodo);
-    numberDistanceIn.addEventListener("input", actualizarTodo);
+  function actualizarTodo() {
+    actualizarInputType();
+    actualizarEstado();
+    actualizarLinea();
+  }
 
-    rangeQIn.addEventListener("input", actualizarTodo);
-    numberQIn.addEventListener("input", actualizarTodo);
+  // 🔧 Inicialización explícita de valores de los inputs
+  function inicializarInputs() {
+    rangeDistanceIn.value = distance.toString();
+    numberDistanceIn.value = distance.toString();
+    rangeQIn.value = flowRate.toString();
+    numberQIn.value = flowRate.toString();
+    rangeKIn.value = conductivity.toString();
+    numberKIn.value = conductivity.toString();
+    rangeAIn.value = area.toString();
+    numberAIn.value = area.toString();
+  }
 
-    rangeKIn.addEventListener("input", actualizarTodo);
-    numberKIn.addEventListener("input", actualizarTodo);
+  // eventos
+  rangeDistanceIn.addEventListener("input", actualizarTodo);
+  numberDistanceIn.addEventListener("input", actualizarTodo);
+  rangeQIn.addEventListener("input", actualizarTodo);
+  numberQIn.addEventListener("input", actualizarTodo);
+  rangeKIn.addEventListener("input", actualizarTodo);
+  numberKIn.addEventListener("input", actualizarTodo);
+  rangeAIn.addEventListener("input", actualizarTodo);
+  numberAIn.addEventListener("input", actualizarTodo);
+  type.addEventListener("input", actualizarTodo);
 
-    rangeAIn.addEventListener("input", actualizarTodo);
-    numberAIn.addEventListener("input", actualizarTodo);
-
-    type.addEventListener("input", actualizarTodo);
-    ///window.addEventListener("resize", actualizarLinea);
-
-    // Estado inicial
+  // Estado inicial corregido
+  window.addEventListener("load", () => {
+    inicializarInputs();
     actualizarTodo();
-  </script>
+    requestAnimationFrame(() => actualizarLinea());
+  });
+</script>
 
-  <style>
-    /* === LAYOUT PRINCIPAL === */
+<style>
+  /* === LAYOUT PRINCIPAL === */
+  .layout {
+    display: flex;
+    gap: 20px;
+    padding: 20px 0;
+    align-items: flex-start;
+  }
+
+  /* Igual tamaño horizontal para gráfica y panel derecho */
+  .visual,
+  .right-column {
+    flex: 1; /* Ambos ocupan el mismo ancho */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .visual {
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .right-column {
+    gap: 20px;
+  }
+
+  .visual h2,
+  .data h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  /* === GRÁFICA === */
+  .graph {
+    display: flex;
+    flex-direction: row;
+    height: auto;
+    min-height: 50vh;
+  }
+
+  .height-line {
+    width: 4px;
+    margin-right: 20px;
+  }
+
+  /* Contenedor general de la gráfica */
+  .container {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    margin-bottom: 2vh;
+  }
+
+  /* Piezómetros */
+  .pms {
+    display: flex;
+    gap: 25px;
+    z-index: 10;
+    min-width: 200px;
+  }
+
+  .piezometer {
+    display: flex;
+    flex-direction: column-reverse;
+    width: 30px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgb(0, 0, 0);
+    border-bottom: 0px solid rgb(0, 0, 0);
+    border-top: 0px solid rgb(0, 0, 0);
+    transition: margin-left 0.5s ease;
+  }
+
+  .piezometer#pm-1 > .water {
+    height: 70%;
+  }
+
+  .piezometer#pm-2 > .water {
+    height: 50%;
+  }
+
+  /* Agua dentro de piezómetro */
+  .water {
+    width: 100%;
+    background: rgba(74, 214, 255);
+    transition: height 0.5s ease;
+  }
+
+  .water h3 {
+    margin-top: -1em;
+    margin-left: 1.8em;
+  }
+
+  /* Línea ∆L */
+  .delta-container {
+    position: relative;
+    width: 100%;
+    height: 20px;
+    margin-top: -30px;
+  }
+
+  .linea {
+    position: absolute;
+    top: 50%;
+    height: 2px;
+    background: black;
+    transition: width 0.5s ease;
+  }
+
+  .linea::before,
+  .linea::after {
+    content: "";
+    position: absolute;
+    top: -8px;
+    width: 2px;
+    height: 18px;
+    background: black;
+  }
+
+  .linea::before {
+    left: 0;
+  }
+
+  .linea::after {
+    right: 0;
+  }
+
+  .delta-text {
+    position: absolute;
+    top: -12px;
+    font-weight: bold;
+    color: #000000;
+    padding: 0 4px;
+    transition: all 0.5s ease;
+  }
+
+  /* Cilindro */
+  .cylinder {
+    margin-top: -20px;
+    display: flex;
+    align-items: center;
+    z-index: 0;
+  }
+
+  .circle {
+    width: 30px;
+    height: 50px;
+    background: rgba(190, 247, 255);
+    border: 1px solid black;
+    border-radius: 50%;
+    position: relative;
+  }
+
+  .circle.front {
+    z-index: 3;
+  }
+
+  .body {
+    width: 280px;
+    height: 50px;
+    background: rgba(190, 247, 255);
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    position: relative;
+    left: -15px;
+    z-index: 2;
+    background-image: radial-gradient(
+      rgba(0, 0, 0, 0.459) 1px,
+      transparent 1px
+    );
+    background-size: 10px 10px;
+  }
+
+  .circle.back {
+    left: -30px;
+    z-index: 1;
+    background-image: radial-gradient(
+      rgba(0, 0, 0, 0.459) 1px,
+      transparent 1px
+    );
+    background-size: 10px 10px;
+  }
+
+  /* === PANEL DE DATOS === */
+  .data {
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .data-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* dos columnas */
+    gap: 10px 20px;
+  }
+
+  .data-grid div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+    transition: background 0.2s ease;
+  }
+
+  .data-grid div:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .data-grid h3 {
+    margin: 0;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .data-grid label {
+    font-weight: bold;
+    color: #ffffff;
+    font-size: 0.95rem;
+  }
+
+  /* === PANEL DE CONTROLES (NUEVO ESTILO) === */
+  .panel {
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .panel h2 {
+    margin-top: 0;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  .panel label {
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .panel-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* dos columnas */
+    gap: 12px 20px;
+  }
+
+  /* Estilo general de cada control */
+  .panel-grid .control {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    padding: 2px 2px;
+    border-radius: 6px;
+    transition: background 0.2s ease;
+  }
+
+  /* Caso especial: el control del tipo de input (checkbox) */
+  .panel-grid .control:first-child {
+    flex-direction: row; /* horizontal */
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .panel-grid .control:first-child label {
+    margin-right: 10px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .panel-grid .control:first-child input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #0077cc;
+    cursor: pointer;
+  }
+
+  /* Resto de inputs */
+  .panel-grid input[type="range"] {
+    width: 100%;
+    accent-color: #0077cc;
+    margin-top: 6px;
+  }
+
+  .panel-grid input[type="number"] {
+    width: 100%;
+    margin-top: 6px;
+    padding: 5px;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+
+  /* === SOMBRAS Y BORDES === */
+  .border {
+    border: 1px solid var(--borderMario);
+  }
+
+  .rounded-md {
+    border-radius: 10px;
+  }
+
+  .shadow {
+    box-shadow: 0 8px 30px var(--shadowMario);
+  }
+
+  /* === ADAPTACIÓN RESPONSIVA === */
+  @media (max-width: 900px) {
     .layout {
-      display: flex;
-      gap: 20px;
-      padding: 20px 0;
-      align-items: flex-start;
+      flex-direction: column;
     }
 
-    /* Igual tamaño horizontal para gráfica y panel derecho */
     .visual,
     .right-column {
-      flex: 1; /* Ambos ocupan el mismo ancho */
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-    }
-
-    .visual {
-      border-radius: 10px;
-      padding: 20px;
-    }
-
-    .right-column {
-      gap: 20px;
-    }
-
-    .visual h2,
-    .data h2 {
-      margin-top: 0;
-      margin-bottom: 15px;
-      text-align: center;
-    }
-
-    /* === GRÁFICA === */
-    .graph {
-      display: flex;
-      flex-direction: row;
-      height: auto;
-      min-height: 30vh;
-    }
-
-    .height-line {
-      width: 4px;
-      margin-right: 20px;
-    }
-
-    /* Contenedor general de la gráfica */
-    .container {
-      display: flex;
-      flex: 1;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
-      margin-bottom: 2vh;
-    }
-
-    /* Piezómetros */
-    .pms {
-      display: flex;
-      gap: 25px;
-      z-index: 10;
-      min-width: 200px;
-    }
-
-    .piezometer {
-      display: flex;
-      flex-direction: column-reverse;
-      width: 30px;
-      height: 200px;
-      background: rgba(255, 255, 255, 0.15);
-      border: 1px solid rgb(0, 0, 0);
-      border-bottom: 0px solid rgb(0, 0, 0);
-      border-top: 0px solid rgb(0, 0, 0);
-      transition: margin-left 0.5s ease;
-    }
-
-    .piezometer#pm-1 > .water {
-      height: 70%;
-    }
-
-    .piezometer#pm-2 > .water {
-      height: 50%;
-    }
-
-    /* Agua dentro de piezómetro */
-    .water {
       width: 100%;
-      background: rgba(74, 214, 255);
-      transition: height 0.5s ease;
-    }
-
-    .water h3 {
-      margin-top: -1em;
-      margin-left: 1.8em;
-    }
-
-    /* Línea ∆L */
-    .delta-container {
-      position: relative;
-      width: 100%;
-      height: 20px;
-      margin-top: -30px;
-    }
-
-    .linea {
-      position: absolute;
-      top: 50%;
-      height: 2px;
-      background: black;
-      transition: width 0.5s ease;
-    }
-
-    .linea::before,
-    .linea::after {
-      content: "";
-      position: absolute;
-      top: -8px;
-      width: 2px;
-      height: 18px;
-      background: black;
-    }
-
-    .linea::before {
-      left: 0;
-    }
-
-    .linea::after {
-      right: 0;
-    }
-
-    .delta-text {
-      position: absolute;
-      top: -12px;
-      font-weight: bold;
-      color: #000000;
-      padding: 0 4px;
-      transition: all 0.5s ease;
-    }
-
-    /* Cilindro */
-    .cylinder {
-      margin-top: -20px;
-      display: flex;
-      align-items: center;
-      z-index: 0;
-    }
-
-    .circle {
-      width: 30px;
-      height: 50px;
-      background: rgba(190, 247, 255);
-      border: 1px solid black;
-      border-radius: 50%;
-      position: relative;
-    }
-
-    .circle.front {
-      z-index: 3;
-    }
-
-    .body {
-      width: 280px;
-      height: 50px;
-      background: rgba(190, 247, 255);
-      border-top: 1px solid black;
-      border-bottom: 1px solid black;
-      position: relative;
-      left: -15px;
-      z-index: 2;
-      background-image: radial-gradient(
-        rgba(0, 0, 0, 0.459) 1px,
-        transparent 1px
-      );
-      background-size: 10px 10px;
-    }
-
-    .circle.back {
-      left: -30px;
-      z-index: 1;
-      background-image: radial-gradient(
-        rgba(0, 0, 0, 0.459) 1px,
-        transparent 1px
-      );
-      background-size: 10px 10px;
-    }
-
-    /* === PANEL DE DATOS === */
-    .data {
-      border-radius: 10px;
-      padding: 20px;
-    }
-
-    .data-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr; /* dos columnas */
-      gap: 10px 20px;
-    }
-
-    .data-grid div {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 6px;
-      transition: background 0.2s ease;
-    }
-
-    .data-grid div:hover {
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    .data-grid h3 {
-      margin: 0;
-      font-weight: 500;
-      font-size: 0.95rem;
-      color: rgba(255, 255, 255, 0.8);
-    }
-
-    .data-grid label {
-      font-weight: bold;
-      color: #ffffff;
-      font-size: 0.95rem;
-    }
-
-    /* === PANEL DE CONTROLES (NUEVO ESTILO) === */
-    .panel {
-      border-radius: 10px;
-      padding: 20px;
-    }
-
-    .panel h2 {
-      margin-top: 0;
-      text-align: center;
-      margin-bottom: 15px;
-    }
-
-    .panel label {
-      font-weight: 500;
-      color: rgba(255, 255, 255, 0.8);
     }
 
     .panel-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr; /* dos columnas */
-      gap: 12px 20px;
+      grid-template-columns: 1fr; /* en móviles una sola columna */
     }
 
-    /* Estilo general de cada control */
-    .panel-grid .control {
-      display: flex;
-      flex-direction: column;
-      justify-content: end;
-      padding: 2px 2px;
-      border-radius: 6px;
-      transition: background 0.2s ease;
+    .data-grid {
+      grid-template-columns: 1fr; /* también una columna en pantallas pequeñas */
     }
-
-    /* Caso especial: el control del tipo de input (checkbox) */
-    .panel-grid .control:first-child {
-      flex-direction: row; /* horizontal */
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .panel-grid .control:first-child label {
-      margin-right: 10px;
-      font-weight: 600;
-      color: rgba(255, 255, 255, 0.85);
-    }
-
-    .panel-grid .control:first-child input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      accent-color: #0077cc;
-      cursor: pointer;
-    }
-
-    /* Resto de inputs */
-    .panel-grid input[type="range"] {
-      width: 100%;
-      accent-color: #0077cc;
-      margin-top: 6px;
-    }
-
-    .panel-grid input[type="number"] {
-      width: 100%;
-      margin-top: 6px;
-      padding: 5px;
-      border: 1px solid #aaa;
-      border-radius: 5px;
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-    }
-
-    /* === SOMBRAS Y BORDES === */
-    .border {
-      border: 1px solid var(--borderMario);
-    }
-
-    .rounded-md {
-      border-radius: 10px;
-    }
-
-    .shadow {
-      box-shadow: 0 8px 30px var(--shadowMario);
-    }
-
-    /* === ADAPTACIÓN RESPONSIVA === */
-    @media (max-width: 900px) {
-      .layout {
-        flex-direction: column;
-      }
-
-      .visual,
-      .right-column {
-        width: 100%;
-      }
-
-      .panel-grid {
-        grid-template-columns: 1fr; /* en móviles una sola columna */
-      }
-
-      .data-grid {
-        grid-template-columns: 1fr; /* también una columna en pantallas pequeñas */
-      }
-    }
-  </style>
-</div>
+  }
+</style>
