@@ -198,8 +198,13 @@ const initA = 5;
     pm2.style.marginLeft = distance + "px";
 
     // h2 = h1 - ((Q * ∆L) / (K * A))
-    const water2Height =
+    let water2Height =
       water1Height - (flowRate * distance) / (conductivity * area);
+
+    // Evita valores negativos o cero
+    if (water2Height <= 0) {
+      water2Height = 0;
+    }
 
     // Ajuste de altura de agua
     water2.style.height = water2Height + "px";
