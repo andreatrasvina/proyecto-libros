@@ -1,38 +1,36 @@
 ---
 //distance ∆L
-const minDistance = 10
-const maxDistance = 100
-const initDistance = 50
+const minDistance = 10;
+const maxDistance = 100;
+const initDistance = 50;
 
 //flow rate Q
-const minQ = 1 
-const maxQ = 10
-const initQ = 5
+const minQ = 1;
+const maxQ = 10;
+const initQ = 5;
 
 //conductivity K
-const minK = 3
-const maxK = 10
-const initK = 5 
+const minK = 3;
+const maxK = 10;
+const initK = 5;
 
 //area A
-const minA = 1
-const maxA = 10
-const initA = 5
-
+const minA = 1;
+const maxA = 10;
+const initA = 5;
 ---
 
 <div class="layout">
   <!-- Panel Gráfica -->
-  <div class="visual border border-[var(--borderMario)] bg-[var(--cardMario)] rounded-md shadow-[0_8px_30px_var(--shadowMario)]">
+  <div
+    class="visual border border-[var(--borderMario)] bg-[var(--cardMario)] rounded-md shadow-[0_8px_30px_var(--shadowMario)]"
+  >
     <h2>Gráfica</h2>
 
     <div class="graph">
-
-      <div class="height-line bg-[var(--color-primary)]">
-      </div>
+      <div class="height-line bg-[var(--color-primary)]"></div>
 
       <div class="container">
-
         <div class="pms">
           <div class="piezometer" id="pm-1">
             <div class="water"><h3>h₁</h3></div>
@@ -52,392 +50,536 @@ const initA = 5
           <div class="linea"></div>
           <span class="delta-text">∆L</span>
         </div>
-
       </div>
     </div>
   </div>
 
-  <!-- Panel datos-->
-  <div class="data border border-[var(--borderMario)] bg-[var(--cardMario)] rounded-md shadow-[0_8px_30px_var(--shadowMario)]">
-    <h2>Datos</h2>
-    <div><h3 class="data-name">h₁:</h3><label id="data-1"></div>
-    <div><h3 class="data-name">h₂:</h3><label id="data-2"></div>
-    <div><h3 class="data-name">∆L:</h3><label id="data-3"></div>
-    <div><h3 class="data-name">∆h/∆L:</h3><label id="data-4"></label></div>
-    <div><h3 class="data-name">Q:</h3><label id="data-5"></label></div>
-    <div><h3 class="data-name">K:</h3><label id="data-6"></label></div>
-    <div><h3 class="data-name">A:</h3><label id="data-7"></label></div>
-    <div><h3 class="data-name">data:</h3><label id="data-8"></label></div>
+  <!-- Panel derecho -->
+  <div class="right-column">
+    <!-- Panel datos-->
+    <div
+      class="data border border-[var(--borderMario)] bg-[var(--cardMario)] rounded-md shadow-[0_8px_30px_var(--shadowMario)]"
+    >
+      <h2>Datos</h2>
+      <div class="data-grid">
+        <div><h3>h₁:</h3><label id="data-1"></label></div>
+        <div><h3>h₂:</h3><label id="data-2"></label></div>
+        <div><h3>∆L:</h3><label id="data-3"></label></div>
+        <div><h3>∆h/∆L:</h3><label id="data-4"></label></div>
+        <div><h3>Q:</h3><label id="data-5"></label></div>
+        <div><h3>K:</h3><label id="data-6"></label></div>
+        <div><h3>A:</h3><label id="data-7"></label></div>
+      </div>
+    </div>
 
+    <!-- Panel controles -->
+    <div
+      class="panel border border-[var(--borderMario)] bg-[var(--cardMario)] rounded-md shadow-[0_8px_30px_var(--shadowMario)]"
+    >
+      <h2>Controles</h2>
+      <div class="panel-grid">
+        <div class="control">
+          <label>Tipo de input</label>
+          <input type="checkbox" id="input-type" value="true" />
+        </div>
+        <div class="control"></div>
+
+        <div class="control">
+          <label>Distancia entre piezómetros</label>
+          <input id="range-distance" type="range" />
+          <input id="number-distance" type="number" />
+        </div>
+
+        <div class="control">
+          <label>Ratio de flujo</label>
+          <input id="range-Q" type="range" />
+          <input id="number-Q" type="number" />
+        </div>
+
+        <div class="control">
+          <label>Conductividad</label>
+          <input id="range-K" type="range" />
+          <input id="number-K" type="number" />
+        </div>
+
+        <div class="control">
+          <label>Área</label>
+          <input id="range-A" type="range" />
+          <input id="number-A" type="number" />
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- Panel controles -->
-  <div class="panel border border-[var(--borderMario)] bg-[var(--cardMario)] rounded-md shadow-[0_8px_30px_var(--shadowMario)]">
-    <h2>Controles</h2>
-    <label>Tipo de input</label>
-    <input type="checkbox" id="input-type" value="true"/>
-    <br><br>
-    <label>Distancia entre piezómetros</label>
-    <input id="range-distance" type="range" min={minDistance} max={maxDistance} value={initDistance} />
-    <input id="number-distance" type="number" min={minDistance} max={maxDistance} value={initDistance} />
-    <br><br>
-    <label>Ratio de flujo</label>
-    <input id="range-Q" type="range" min={minQ} max={maxQ} value={initQ} />
-    <input id="number-Q" type="number" min={minQ} max={maxQ} value={initQ} />
-    <br><br>
-    <label>Conductividad</label>
-    <input id="range-K" type="range" min={minK} max={maxK} value={initK} />
-    <input id="number-K" type="number" min={minK} max={maxK} value={initK} />
-    <br><br>
-    <label>Area</label>
-    <input id="range-A" type="range" min={minA} max={maxA} value={initA} />
-    <input id="number-A" type="number" min={minA} max={maxA} value={initA} />
-  </div>
-</div>
+  <script>
+    //elements for distance (∆L) control
+    const type = document.getElementById("input-type") as HTMLInputElement;
+    const rangeDistanceIn = document.getElementById(
+      "range-distance"
+    ) as HTMLInputElement;
+    const numberDistanceIn = document.getElementById(
+      "number-distance"
+    ) as HTMLInputElement;
 
-<script>
+    //elements for flow rate (Q) control
+    const rangeQIn = document.getElementById("range-Q") as HTMLInputElement;
+    const numberQIn = document.getElementById("number-Q") as HTMLInputElement;
 
-  //elements for distance (∆L) control
-  const type = document.getElementById("input-type") as HTMLInputElement;
-  const rangeDistanceIn = document.getElementById("range-distance") as HTMLInputElement;
-  const numberDistanceIn = document.getElementById("number-distance") as HTMLInputElement;
+    //elements for conductivity (K) control
+    const rangeKIn = document.getElementById("range-K") as HTMLInputElement;
+    const numberKIn = document.getElementById("number-K") as HTMLInputElement;
 
-  //elements for flow rate (Q) control
-  const rangeQIn = document.getElementById("range-Q") as HTMLInputElement;
-  const numberQIn = document.getElementById("number-Q") as HTMLInputElement;
+    //elements for area (A) control
+    const rangeAIn = document.getElementById("range-A") as HTMLInputElement;
+    const numberAIn = document.getElementById("number-A") as HTMLInputElement;
 
-  //elements for conductivity (K) control
-  const rangeKIn = document.getElementById("range-K") as HTMLInputElement;
-  const numberKIn = document.getElementById("number-K") as HTMLInputElement;
+    //elementes for piezometer and water level
+    const pm1 = document.getElementById("pm-1") as HTMLDivElement;
+    const pm2 = document.getElementById("pm-2") as HTMLDivElement;
+    const water1 = document.querySelector("#pm-1 .water") as HTMLDivElement;
+    const water2 = document.querySelector("#pm-2 .water") as HTMLDivElement;
 
-  //elements for area (A) control
-  const rangeAIn = document.getElementById("range-A") as HTMLInputElement;
-  const numberAIn = document.getElementById("number-A") as HTMLInputElement;
+    //elements for ∆L visualization
+    const deltaContainer = document.querySelector(
+      ".delta-container"
+    ) as HTMLDivElement;
+    const linea = document.querySelector(".linea") as HTMLDivElement;
+    const deltaText = document.querySelector(".delta-text") as HTMLDivElement;
 
-  //elementes for piezometer and water level
-  const pm1 = document.getElementById("pm-1") as HTMLDivElement;
-  const pm2 = document.getElementById("pm-2") as HTMLDivElement;
-  const water1 = document.querySelector("#pm-1 .water") as HTMLDivElement;
-  const water2 = document.querySelector("#pm-2 .water") as HTMLDivElement;
+    //data values
+    const data1 = document.getElementById("data-1") as HTMLLabelElement;
+    const data2 = document.getElementById("data-2") as HTMLLabelElement;
+    const data3 = document.getElementById("data-3") as HTMLLabelElement;
+    const data4 = document.getElementById("data-4") as HTMLLabelElement;
+    const data5 = document.getElementById("data-5") as HTMLLabelElement;
+    const data6 = document.getElementById("data-6") as HTMLLabelElement;
+    const data7 = document.getElementById("data-7") as HTMLLabelElement;
+    const data8 = document.getElementById("data-8") as HTMLLabelElement;
 
-  //elements for ∆L visualization
-  const deltaContainer = document.querySelector(".delta-container") as HTMLDivElement;
-  const linea = document.querySelector(".linea") as HTMLDivElement;
-  const deltaText = document.querySelector(".delta-text") as HTMLDivElement;
+    const water1Height = water1.offsetHeight;
 
-  //data values
-  const data1 = document.getElementById("data-1") as HTMLLabelElement;
-  const data2 = document.getElementById("data-2") as HTMLLabelElement;
-  const data3 = document.getElementById("data-3") as HTMLLabelElement;
-  const data4 = document.getElementById("data-4") as HTMLLabelElement;
-  const data5 = document.getElementById("data-5") as HTMLLabelElement;
-  const data6 = document.getElementById("data-6") as HTMLLabelElement;
-  const data7 = document.getElementById("data-7") as HTMLLabelElement;
-  const data8 = document.getElementById("data-8") as HTMLLabelElement;
+    //∆L
+    let distance = 50;
+    let flowRate = 2;
+    let conductivity = 0.5;
+    let area = 4;
 
-  const water1Height = water1.offsetHeight;
+    function actualizarInputType() {
+      if (type.checked) {
+        distance = parseInt(rangeDistanceIn.value);
+        flowRate = parseInt(rangeQIn.value);
+        conductivity = parseInt(rangeKIn.value);
+        area = parseInt(rangeAIn.value);
 
-  //∆L
-  let distance = 50
-  let flowRate = 2
-  let conductivity = 0.5
-  let area = 4
+        numberDistanceIn.style.display = "none";
+        numberQIn.style.display = "none";
+        numberKIn.style.display = "none";
+        numberAIn.style.display = "none";
 
-  function actualizarInputType() {
-    if (type.checked) {
-      distance = parseInt(rangeDistanceIn.value);
-      flowRate = parseInt(rangeQIn.value);
-      conductivity = parseInt(rangeKIn.value);
-      area = parseInt(rangeAIn.value);
+        rangeDistanceIn.style.display = "flex";
+        rangeQIn.style.display = "flex";
+        rangeKIn.style.display = "flex";
+        rangeAIn.style.display = "flex";
+      } else {
+        distance = parseInt(numberDistanceIn.value);
+        flowRate = parseInt(numberQIn.value);
+        flowRate = parseInt(numberKIn.value);
+        flowRate = parseInt(numberAIn.value);
 
-      numberDistanceIn.style.display = 'none';
-      numberQIn.style.display = 'none';
-      numberKIn.style.display = 'none';
-      numberAIn.style.display = 'none';
+        numberDistanceIn.style.display = "flex";
+        numberQIn.style.display = "flex";
+        numberKIn.style.display = "flex";
+        numberAIn.style.display = "flex";
 
-      rangeDistanceIn.style.display = 'flex';
-      rangeQIn.style.display = 'flex';
-      rangeKIn.style.display = 'flex';
-      rangeAIn.style.display = 'flex';
-    } else {
-      distance = parseInt(numberDistanceIn.value);
-      flowRate = parseInt(numberQIn.value);
-      flowRate = parseInt(numberKIn.value);
-      flowRate = parseInt(numberAIn.value);
-
-      numberDistanceIn.style.display = 'flex';
-      numberQIn.style.display = 'flex';
-      numberKIn.style.display = 'flex';
-      numberAIn.style.display = 'flex';
-      
-      rangeDistanceIn.style.display = 'none';
-      rangeQIn.style.display = 'none';
-      rangeKIn.style.display = 'none';
-      rangeAIn.style.display = 'none';
+        rangeDistanceIn.style.display = "none";
+        rangeQIn.style.display = "none";
+        rangeKIn.style.display = "none";
+        rangeAIn.style.display = "none";
+      }
     }
 
-  }
+    function actualizarEstado() {
+      // Movimiento horizontal del pm-2
+      pm2.style.marginLeft = distance + "px";
 
-  function actualizarEstado() {
+      // h2 = h1 - ((Q * ∆L) / (K * A))
+      const water2Height =
+        water1Height - (flowRate * distance) / (conductivity * area);
+      // Ajuste de altura de agua
+      water2.style.height = water2Height + "px";
 
-    // Movimiento horizontal del pm-2
-    pm2.style.marginLeft = distance + "px";
+      // actualizar division data
+      // h1
+      data1.textContent = water1Height.toFixed(2) + "m";
+      // h2
+      data2.textContent = water2Height.toFixed(2) + "m";
+      // ∆L
+      data3.textContent = distance.toFixed(2) + "m";
+      //∆h/∆L = (h2-1)/∆L
+      let slope = ((water2Height - water1Height) / distance).toFixed(2);
+      data4.textContent = slope + "m";
+      // Q (flow rate)
+      data5.textContent = flowRate.toFixed(2) + "m³";
+      // K (conductivity)
+      data6.textContent = conductivity.toFixed(2) + "m/día";
+      // A (area)
+      data7.textContent = area.toFixed(2) + "m²";
+    }
 
-    // h2 = h1 - ((Q * ∆L) / (K * A))
-    const water2Height = water1Height - ((flowRate * distance) / (conductivity * area))
-    // Ajuste de altura de agua
-    water2.style.height = water2Height + "px"
+    function actualizarLinea() {
+      const rect1 = pm1.getBoundingClientRect();
+      const rect2 = pm2.getBoundingClientRect();
+      const parentRect = deltaContainer.getBoundingClientRect();
 
-    // actualizar division data
-    // h1
-    data1.textContent = water1Height.toFixed(2) + "m"
-    // h2
-    data2.textContent = water2Height.toFixed(2) + "m"
-    // ∆L
-    data3.textContent = distance.toFixed(2) + "m"
-    //∆h/∆L = (h2-1)/∆L
-    let slope = ((water2Height - water1Height) / distance).toFixed(2)
-    data4.textContent = slope + "m"
-    // Q (flow rate)
-    data5.textContent = flowRate.toFixed(2) + "m³"
-    // K (conductivity)
-    data6.textContent = conductivity.toFixed(2) + "m/día"
-    // A (area)
-    data7.textContent = area.toFixed(2) + "m²"
-       
-  }
+      const center1 = rect1.left + rect1.width / 2;
+      const center2 = rect2.left + rect2.width / 2;
 
-  function actualizarLinea() {
-    const rect1 = pm1.getBoundingClientRect();
-    const rect2 = pm2.getBoundingClientRect();
-    const parentRect = deltaContainer.getBoundingClientRect();
+      const left = Math.min(center1, center2) - parentRect.left;
+      //const width = Math.abs(center2 - center1);
+      const width = distance + 55;
 
-    const center1 = rect1.left + rect1.width / 2;
-    const center2 = rect2.left + rect2.width / 2;
+      linea.style.left = left + "px";
+      linea.style.width = width + "px";
+      const offset = deltaText.offsetWidth / 2;
+      deltaText.style.left = left + width / 2 - offset + "px";
+    }
 
-    const left = Math.min(center1, center2) - parentRect.left;
-    //const width = Math.abs(center2 - center1);
-    const width = distance + 55
+    function actualizarTodo() {
+      actualizarInputType();
+      actualizarEstado();
+      actualizarLinea();
+    }
 
-    linea.style.left = left + "px";
-    linea.style.width = width + "px";
-    const offset = deltaText.offsetWidth / 2;
-    deltaText.style.left = left + width / 2 - offset + "px";
-  }
+    rangeDistanceIn.addEventListener("input", actualizarTodo);
+    numberDistanceIn.addEventListener("input", actualizarTodo);
 
-  function actualizarTodo() {
-    actualizarInputType();
-    actualizarEstado();
-    actualizarLinea();
-  }
+    rangeQIn.addEventListener("input", actualizarTodo);
+    numberQIn.addEventListener("input", actualizarTodo);
 
-  rangeDistanceIn.addEventListener("input", actualizarTodo);
-  numberDistanceIn.addEventListener("input", actualizarTodo);
+    rangeKIn.addEventListener("input", actualizarTodo);
+    numberKIn.addEventListener("input", actualizarTodo);
 
-  rangeQIn.addEventListener("input", actualizarTodo);
-  numberQIn.addEventListener("input", actualizarTodo);
+    rangeAIn.addEventListener("input", actualizarTodo);
+    numberAIn.addEventListener("input", actualizarTodo);
 
-  rangeKIn.addEventListener("input", actualizarTodo);
-  numberKIn.addEventListener("input", actualizarTodo);
+    type.addEventListener("input", actualizarTodo);
+    ///window.addEventListener("resize", actualizarLinea);
 
-  rangeAIn.addEventListener("input", actualizarTodo);
-  numberAIn.addEventListener("input", actualizarTodo);
+    // Estado inicial
+    actualizarTodo();
+  </script>
 
-  type.addEventListener("input", actualizarTodo);
-  ///window.addEventListener("resize", actualizarLinea);
+  <style>
+    /* === LAYOUT PRINCIPAL === */
+    .layout {
+      display: flex;
+      gap: 20px;
+      padding: 20px 0;
+      align-items: flex-start;
+    }
 
-  // Estado inicial
-  actualizarTodo();
-</script>
+    /* Igual tamaño horizontal para gráfica y panel derecho */
+    .visual,
+    .right-column {
+      flex: 1; /* Ambos ocupan el mismo ancho */
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
 
-<style>
-  .layout {
-    display: flex;
-    gap: 20px;
-    padding: 20px;
-  }
+    .visual {
+      border-radius: 10px;
+      padding: 20px;
+    }
 
-  .panel,
-  .visual,
-  .data {
-    flex: 1;
-    border-radius: 10px;
-    padding: 20px;
-  }
+    .right-column {
+      gap: 20px;
+    }
 
-  .panel h2,
-  .visual h2,
-  .data h2 {
-    margin-top: 0;
-    margin-bottom: 15px;
-    text-align: center;
-  }
+    .panel {
+      border-radius: 10px;
+      padding: 20px;
+    }
 
-  .graph {
-    display: flex;
-    flex-direction: row;
-    height: 50vh;
-  }
+    .panel h2,
+    .visual h2,
+    .data h2 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      text-align: center;
+    }
 
-  .panel input[type="range"]{
-    display: block;
-    width: 100%;
-    margin-top: 10px;
-    accent-color: #0077cc;
-  }
+    /* === GRÁFICA === */
+    .graph {
+      display: flex;
+      flex-direction: row;
+      height: auto;
+      min-height: 30vh;
+    }
 
-  .container {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-    margin-bottom: 2vh;
-  }
+    .height-line {
+      width: 4px;
+      margin-right: 20px;
+    }
 
-  .height-line {
-    width: 4px;
-    margin-right: 20px;
-  }
+    /* Contenedor general de la gráfica */
+    .container {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      margin-bottom: 2vh;
+    }
 
-  .pms {
-    display: flex;
-    gap: 25px;
-    z-index: 10;
-    min-width: 200px;
-  }
+    /* Piezómetros */
+    .pms {
+      display: flex;
+      gap: 25px;
+      z-index: 10;
+      min-width: 200px;
+    }
 
-  .piezometer {
-    display: flex;
-    flex-direction: column-reverse;
-    width: 30px;
-    height: 200px;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgb(0, 0, 0);
-    border-bottom: 0px solid rgb(0, 0, 0);
-    border-top: 0px solid rgb(0, 0, 0);
-    transition: margin-left 0.5s ease;
-  }
+    .piezometer {
+      display: flex;
+      flex-direction: column-reverse;
+      width: 30px;
+      height: 200px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgb(0, 0, 0);
+      border-bottom: 0px solid rgb(0, 0, 0);
+      border-top: 0px solid rgb(0, 0, 0);
+      transition: margin-left 0.5s ease;
+    }
 
-  .piezometer#pm-1 > .water {
-    height: 70%;
-  }
+    .piezometer#pm-1 > .water {
+      height: 70%;
+    }
 
-  .piezometer#pm-2 > .water {
-    height: 50%;
-  }
+    .piezometer#pm-2 > .water {
+      height: 50%;
+    }
 
-  .water {
-    width: 100%;
-    background: rgba(74, 214, 255);
-    transition: height 0.5s ease;
-  }
+    /* Agua dentro de piezómetro */
+    .water {
+      width: 100%;
+      background: rgba(74, 214, 255);
+      transition: height 0.5s ease;
+    }
 
-  .water h3 {
-    margin-top: -1em;
-    margin-left: 1.8em;
-  }
+    .water h3 {
+      margin-top: -1em;
+      margin-left: 1.8em;
+    }
 
-  .delta-container {
-    position: relative;
-    width: 100%;
-    height: 20px;
-    margin-top: -30px;
-  }
+    /* Línea ∆L */
+    .delta-container {
+      position: relative;
+      width: 100%;
+      height: 20px;
+      margin-top: -30px;
+    }
 
-  .linea {
-    position: absolute;
-    top: 50%;
-    height: 2px;
-    background: black;
-    transition: width 0.5s ease;
-  }
+    .linea {
+      position: absolute;
+      top: 50%;
+      height: 2px;
+      background: black;
+      transition: width 0.5s ease;
+    }
 
-  .linea::before,
-  .linea::after {
-    content: "";
-    position: absolute;
-    top: -8px;
-    width: 2px;
-    height: 18px;
-    background: black;
-  }
+    .linea::before,
+    .linea::after {
+      content: "";
+      position: absolute;
+      top: -8px;
+      width: 2px;
+      height: 18px;
+      background: black;
+    }
 
-  .linea::before {
-    left: 0;
-  }
+    .linea::before {
+      left: 0;
+    }
 
-  .linea::after {
-    right: 0;
-  }
+    .linea::after {
+      right: 0;
+    }
 
-  .delta-text {
-    position: absolute;
-    top: -12px;
-    font-weight: bold;
-    color: #000000;
-    padding: 0 4px;
-    transition: all 0.5s ease;
-  }
+    .delta-text {
+      position: absolute;
+      top: -12px;
+      font-weight: bold;
+      color: #000000;
+      padding: 0 4px;
+      transition: all 0.5s ease;
+    }
 
-  .cylinder {
-    margin-top: -20px;
-    display: flex;
-    align-items: center;
-    z-index: 0;
-  }
+    /* Cilindro */
+    .cylinder {
+      margin-top: -20px;
+      display: flex;
+      align-items: center;
+      z-index: 0;
+    }
 
-  .circle {
-    width: 30px;
-    height: 50px;
-    background: rgba(190, 247, 255);
-    border: 1px solid black;
-    border-radius: 50%;
-    position: relative;
-  }
+    .circle {
+      width: 30px;
+      height: 50px;
+      background: rgba(190, 247, 255);
+      border: 1px solid black;
+      border-radius: 50%;
+      position: relative;
+    }
 
-  .circle.front {
-    z-index: 3;
-    /* círculo delantero liso */
-  }
+    .circle.front {
+      z-index: 3;
+    }
 
-  .body {
-    width: 280px;
-    height: 50px;
-    background: rgba(190, 247, 255);
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
-    position: relative;
-    left: -15px;
-    z-index: 2;
+    .body {
+      width: 280px;
+      height: 50px;
+      background: rgba(190, 247, 255);
+      border-top: 1px solid black;
+      border-bottom: 1px solid black;
+      position: relative;
+      left: -15px;
+      z-index: 2;
+      background-image: radial-gradient(
+        rgba(0, 0, 0, 0.459) 1px,
+        transparent 1px
+      );
+      background-size: 10px 10px;
+    }
 
-    background-image: radial-gradient(
-      rgba(0, 0, 0, 0.459) 1px,
-      transparent 1px
-    );
-    background-size: 10px 10px;
-  }
+    .circle.back {
+      left: -30px;
+      z-index: 1;
+      background-image: radial-gradient(
+        rgba(0, 0, 0, 0.459) 1px,
+        transparent 1px
+      );
+      background-size: 10px 10px;
+    }
 
-  .circle.back {
-    left: -30px;
-    z-index: 1;
+    /* === PANEL DE DATOS === */
+    .data {
+      border-radius: 10px;
+      padding: 20px;
+    }
 
-    background-image: radial-gradient(
-      rgba(0, 0, 0, 0.459) 1px,
-      transparent 1px
-    );
-    background-size: 10px 10px;
-  }
+    .data-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr; /* dos columnas */
+      gap: 10px 20px;
+    }
 
-  .data div {
-    display: flex;
-    flex-direction: row;
-  }
+    .data-grid div {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 6px;
+      transition: background 0.2s ease;
+    }
 
-  .data h3 {
-    margin: 0;
-    margin-right: 0.4em;
-  }
+    .data-grid div:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
 
+    .data-grid h3 {
+      margin: 0;
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
 
-</style>
+    .data-grid label {
+      font-weight: bold;
+      color: #ffffff;
+      font-size: 0.95rem;
+    }
+
+    /* === PANEL DE CONTROLES (NUEVO ESTILO) === */
+    .panel {
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .panel h2 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .panel label {
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .panel-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr; /* dos columnas */
+      gap: 12px 20px;
+    }
+
+    .panel-grid .control {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8px 10px;
+      border-radius: 6px;
+      transition: background 0.2s ease;
+    }
+
+    .panel-grid input[type="range"] {
+      width: 100%;
+      accent-color: #0077cc;
+      margin-top: 6px;
+    }
+
+    .panel-grid input[type="number"] {
+      width: 100%;
+      margin-top: 6px;
+      padding: 5px;
+      border: 1px solid #aaa;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    /* === SOMBRAS Y BORDES === */
+    .border {
+      border: 1px solid var(--borderMario);
+    }
+
+    .rounded-md {
+      border-radius: 10px;
+    }
+
+    .shadow {
+      box-shadow: 0 8px 30px var(--shadowMario);
+    }
+
+    /* === ADAPTACIÓN RESPONSIVA === */
+    @media (max-width: 900px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      .visual,
+      .right-column {
+        width: 100%;
+      }
+
+      .panel-grid {
+        grid-template-columns: 1fr; /* en móviles una sola columna */
+      }
+
+      .data-grid {
+        grid-template-columns: 1fr; /* también una columna en pantallas pequeñas */
+      }
+    }
+  </style>
+</div>
