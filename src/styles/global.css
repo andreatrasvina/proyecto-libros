@@ -139,6 +139,8 @@ body.dark-mode {
 
 h1,
 h2,
+span,
+label,
 p {
   color: var(--titles);
 }
