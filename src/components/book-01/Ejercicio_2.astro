@@ -1,3 +1,26 @@
+---
+//distance ∆L
+const minDistance = 10
+const maxDistance = 100
+const initDistance = 50
+
+//flow rate Q
+const minQ = 1 
+const maxQ = 10
+const initQ = 5
+
+//conductivity K
+const minK = 3
+const maxK = 10
+const initK = 5 
+
+//area A
+const minA = 1
+const maxA = 10
+const initA = 5
+
+---
+
 <div class="layout">
   <!-- Panel Gráfica -->
   <div class="visual border border-[var(--borderMario)] bg-[var(--cardMario)] rounded-md shadow-[0_8px_30px_var(--shadowMario)]">
@@ -41,127 +64,190 @@
     <div><h3 class="data-name">h₂:</h3><label id="data-2"></div>
     <div><h3 class="data-name">∆L:</h3><label id="data-3"></div>
     <div><h3 class="data-name">∆h/∆L:</h3><label id="data-4"></label></div>
-    <div><h3 class="data-name">data:</h3><label id="data-5"></label></div>
+    <div><h3 class="data-name">Q:</h3><label id="data-5"></label></div>
+    <div><h3 class="data-name">K:</h3><label id="data-6"></label></div>
+    <div><h3 class="data-name">A:</h3><label id="data-7"></label></div>
+    <div><h3 class="data-name">data:</h3><label id="data-8"></label></div>
 
   </div>
 
   <!-- Panel controles -->
   <div class="panel border border-[var(--borderMario)] bg-[var(--cardMario)] rounded-md shadow-[0_8px_30px_var(--shadowMario)]">
     <h2>Controles</h2>
-    <label for="control">Distancia entre piezómetros</label>
-    <br>
-    <label for="checkbox">Tipo de input</label>
-    <input type="checkbox" id="input-type">
-    <input id="control" type="range" min="0" max="100" value="50" />
-    <input id="number-control" type="number" min="0" max="100" value="50">
+    <label>Tipo de input</label>
+    <input type="checkbox" id="input-type" value="true"/>
+    <br><br>
+    <label>Distancia entre piezómetros</label>
+    <input id="range-distance" type="range" min={minDistance} max={maxDistance} value={initDistance} />
+    <input id="number-distance" type="number" min={minDistance} max={maxDistance} value={initDistance} />
+    <br><br>
+    <label>Ratio de flujo</label>
+    <input id="range-Q" type="range" min={minQ} max={maxQ} value={initQ} />
+    <input id="number-Q" type="number" min={minQ} max={maxQ} value={initQ} />
+    <br><br>
+    <label>Conductividad</label>
+    <input id="range-K" type="range" min={minK} max={maxK} value={initK} />
+    <input id="number-K" type="number" min={minK} max={maxK} value={initK} />
+    <br><br>
+    <label>Area</label>
+    <input id="range-A" type="range" min={minA} max={maxA} value={initA} />
+    <input id="number-A" type="number" min={minA} max={maxA} value={initA} />
   </div>
 </div>
 
 <script>
 
-  const pm1 = document.querySelector("#pm-1");
-  const pm2 = document.querySelector("#pm-2");
-  const water1 = document.querySelector("#pm-1 .water");
-  const water2 = document.querySelector("#pm-2 .water");
-  const type = document.getElementById("input-type");
-  const control = document.getElementById("control");
-  const numberControl = document.getElementById("number-control");
-  const linea = document.querySelector(".delta-container .linea");
-  const deltaText = document.querySelector(".delta-text");
-  const data1 = document.querySelector("#data-1");
-  const data2 = document.querySelector("#data-2");
-  const data3 = document.querySelector("#data-3");
-  const data4 = document.querySelector("#data-4");
-  const data5 = document.querySelector("#data-5");
+  //elements for distance (∆L) control
+  const type = document.getElementById("input-type") as HTMLInputElement;
+  const rangeDistanceIn = document.getElementById("range-distance") as HTMLInputElement;
+  const numberDistanceIn = document.getElementById("number-distance") as HTMLInputElement;
 
-  if (
-    pm1 instanceof HTMLElement &&
-    pm2 instanceof HTMLElement &&
-    water1 instanceof HTMLElement &&
-    water2 instanceof HTMLElement &&
-    control instanceof HTMLInputElement &&
-    type instanceof HTMLInputElement &&
-    numberControl instanceof HTMLInputElement &&
-    linea instanceof HTMLElement &&
-    deltaText instanceof HTMLElement &&
-    data1 instanceof HTMLElement &&
-    data2 instanceof HTMLElement &&
-    data3 instanceof HTMLElement &&
-    data4 instanceof HTMLElement &&
-    data5 instanceof HTMLElement
-  ) {
-    const maxHeight = water1.offsetHeight;
-    const minHeight = 20;
-    const maxRange = parseInt(control.max);
-    let distance = 0
+  //elements for flow rate (Q) control
+  const rangeQIn = document.getElementById("range-Q") as HTMLInputElement;
+  const numberQIn = document.getElementById("number-Q") as HTMLInputElement;
 
-    function actualizarInputType() {
-      if (type.checked) {
-        distance = parseInt(control.value);
-        numberControl!.style.display = 'none';
-        control!.style.display = 'flex';
-      } else {
-        distance = parseInt(numberControl.value);
-        numberControl!.style.display = 'flex';
-        control!.style.display = 'none';
-      }
+  //elements for conductivity (K) control
+  const rangeKIn = document.getElementById("range-K") as HTMLInputElement;
+  const numberKIn = document.getElementById("number-K") as HTMLInputElement;
 
-    }
+  //elements for area (A) control
+  const rangeAIn = document.getElementById("range-A") as HTMLInputElement;
+  const numberAIn = document.getElementById("number-A") as HTMLInputElement;
 
-    function actualizarEstado() {
+  //elementes for piezometer and water level
+  const pm1 = document.getElementById("pm-1") as HTMLDivElement;
+  const pm2 = document.getElementById("pm-2") as HTMLDivElement;
+  const water1 = document.querySelector("#pm-1 .water") as HTMLDivElement;
+  const water2 = document.querySelector("#pm-2 .water") as HTMLDivElement;
 
-      // Movimiento horizontal del pm-2
-      pm2.style.marginLeft = distance + "px";
+  //elements for ∆L visualization
+  const deltaContainer = document.querySelector(".delta-container") as HTMLDivElement;
+  const linea = document.querySelector(".linea") as HTMLDivElement;
+  const deltaText = document.querySelector(".delta-text") as HTMLDivElement;
 
-      // Ajuste de altura de agua
-      const newHeight =
-        maxHeight - (distance / maxRange) * (maxHeight - minHeight);
-      water2.style.height = newHeight + "px";
+  //data values
+  const data1 = document.getElementById("data-1") as HTMLLabelElement;
+  const data2 = document.getElementById("data-2") as HTMLLabelElement;
+  const data3 = document.getElementById("data-3") as HTMLLabelElement;
+  const data4 = document.getElementById("data-4") as HTMLLabelElement;
+  const data5 = document.getElementById("data-5") as HTMLLabelElement;
+  const data6 = document.getElementById("data-6") as HTMLLabelElement;
+  const data7 = document.getElementById("data-7") as HTMLLabelElement;
+  const data8 = document.getElementById("data-8") as HTMLLabelElement;
 
-      // actualizar division data
-      data1!.textContent = maxHeight + "m"
-      data2!.textContent = newHeight.toFixed(2) + "m"
-      data3!.textContent = distance + "m"
+  const water1Height = water1.offsetHeight;
+
+  //∆L
+  let distance = 50
+  let flowRate = 2
+  let conductivity = 0.5
+  let area = 4
+
+  function actualizarInputType() {
+    if (type.checked) {
+      distance = parseInt(rangeDistanceIn.value);
+      flowRate = parseInt(rangeQIn.value);
+      conductivity = parseInt(rangeKIn.value);
+      area = parseInt(rangeAIn.value);
+
+      numberDistanceIn.style.display = 'none';
+      numberQIn.style.display = 'none';
+      numberKIn.style.display = 'none';
+      numberAIn.style.display = 'none';
+
+      rangeDistanceIn.style.display = 'flex';
+      rangeQIn.style.display = 'flex';
+      rangeKIn.style.display = 'flex';
+      rangeAIn.style.display = 'flex';
+    } else {
+      distance = parseInt(numberDistanceIn.value);
+      flowRate = parseInt(numberQIn.value);
+      flowRate = parseInt(numberKIn.value);
+      flowRate = parseInt(numberAIn.value);
+
+      numberDistanceIn.style.display = 'flex';
+      numberQIn.style.display = 'flex';
+      numberKIn.style.display = 'flex';
+      numberAIn.style.display = 'flex';
       
-      //∆h/∆L = (h2-1)/∆L
-      let slope = ((newHeight - maxHeight) / distance).toFixed(2)
-      data4!.textContent = slope + "m"
-       
+      rangeDistanceIn.style.display = 'none';
+      rangeQIn.style.display = 'none';
+      rangeKIn.style.display = 'none';
+      rangeAIn.style.display = 'none';
     }
 
-    function actualizarLinea() {
-      const rect1 = pm1.getBoundingClientRect();
-      const rect2 = pm2.getBoundingClientRect();
-      const parentRect = linea.parentElement.getBoundingClientRect();
-
-      const center1 = rect1.left + rect1.width / 2;
-      const center2 = rect2.left + rect2.width / 2;
-
-      const left = Math.min(center1, center2) - parentRect.left;
-      //const width = Math.abs(center2 - center1);
-      const width = distance + 55
-
-      linea.style.left = left + "px";
-      linea.style.width = width + "px";
-      const offset = deltaText.offsetWidth / 2;
-      deltaText.style.left = left + width / 2 - offset + "px";
-    }
-
-    function actualizarTodo() {
-      actualizarInputType();
-      actualizarEstado();
-      actualizarLinea();
-    }
-
-    control.addEventListener("input", actualizarTodo);
-    numberControl.addEventListener("input", actualizarTodo);
-    type.addEventListener("input", actualizarTodo);
-    ///window.addEventListener("resize", actualizarLinea);
-
-    // Estado inicial
-    actualizarTodo();
-    //requestAnimationFrame(actualizarLinea);
   }
+
+  function actualizarEstado() {
+
+    // Movimiento horizontal del pm-2
+    pm2.style.marginLeft = distance + "px";
+
+    // h2 = h1 - ((Q * ∆L) / (K * A))
+    const water2Height = water1Height - ((flowRate * distance) / (conductivity * area))
+    // Ajuste de altura de agua
+    water2.style.height = water2Height + "px"
+
+    // actualizar division data
+    // h1
+    data1.textContent = water1Height.toFixed(2) + "m"
+    // h2
+    data2.textContent = water2Height.toFixed(2) + "m"
+    // ∆L
+    data3.textContent = distance.toFixed(2) + "m"
+    //∆h/∆L = (h2-1)/∆L
+    let slope = ((water2Height - water1Height) / distance).toFixed(2)
+    data4.textContent = slope + "m"
+    // Q (flow rate)
+    data5.textContent = flowRate.toFixed(2) + "m³"
+    // K (conductivity)
+    data6.textContent = conductivity.toFixed(2) + "m/día"
+    // A (area)
+    data7.textContent = area.toFixed(2) + "m²"
+       
+  }
+
+  function actualizarLinea() {
+    const rect1 = pm1.getBoundingClientRect();
+    const rect2 = pm2.getBoundingClientRect();
+    const parentRect = deltaContainer.getBoundingClientRect();
+
+    const center1 = rect1.left + rect1.width / 2;
+    const center2 = rect2.left + rect2.width / 2;
+
+    const left = Math.min(center1, center2) - parentRect.left;
+    //const width = Math.abs(center2 - center1);
+    const width = distance + 55
+
+    linea.style.left = left + "px";
+    linea.style.width = width + "px";
+    const offset = deltaText.offsetWidth / 2;
+    deltaText.style.left = left + width / 2 - offset + "px";
+  }
+
+  function actualizarTodo() {
+    actualizarInputType();
+    actualizarEstado();
+    actualizarLinea();
+  }
+
+  rangeDistanceIn.addEventListener("input", actualizarTodo);
+  numberDistanceIn.addEventListener("input", actualizarTodo);
+
+  rangeQIn.addEventListener("input", actualizarTodo);
+  numberQIn.addEventListener("input", actualizarTodo);
+
+  rangeKIn.addEventListener("input", actualizarTodo);
+  numberKIn.addEventListener("input", actualizarTodo);
+
+  rangeAIn.addEventListener("input", actualizarTodo);
+  numberAIn.addEventListener("input", actualizarTodo);
+
+  type.addEventListener("input", actualizarTodo);
+  ///window.addEventListener("resize", actualizarLinea);
+
+  // Estado inicial
+  actualizarTodo();
 </script>
 
 <style>
@@ -193,7 +279,7 @@
     height: 50vh;
   }
 
-  #control {
+  .panel input[type="range"]{
     display: block;
     width: 100%;
     margin-top: 10px;
