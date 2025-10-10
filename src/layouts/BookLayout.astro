@@ -62,7 +62,7 @@ const { exercises = [], currentBookSlug } = Astro.props;
     <div class="flex flex-1">
       <aside
         id="resizable-sidebar"
-        class="relative flex flex-col bg-clip-border rounded-xl bg-[var(--pepe)] text-gray-700 w-64 min-w-[200px] max-w-[500px] p-4 shadow-xl shadow-blue-gray-900/5 sticky top-0"
+        class="flex flex-col bg-clip-border rounded-xl bg-[var(--pepe)] text-gray-700 w-64 min-w-[200px] max-w-[500px] p-4 shadow-xl shadow-blue-gray-900/5 sticky top-0"
       >
         <div class="mb-2 p-4">
           <h5
@@ -156,8 +156,8 @@ const { exercises = [], currentBookSlug } = Astro.props;
 </html>
 
 <script>
-  const sidebar = document.getElementById("resizable-sidebar");
-  const handle = document.getElementById("resizer");
+  const sidebar = document.getElementById("resizable-sidebar")!;
+  const handle = document.getElementById("resizer")!;
 
   let isResizing = false;
 
@@ -184,10 +184,10 @@ const { exercises = [], currentBookSlug } = Astro.props;
     isResizing = false;
     document.body.style.cursor = "default";
     // Guardar el ancho final en el localStorage al soltar
-    localStorage.setItem("sidebarWidth", sidebar.offsetWidth);
+    localStorage.setItem("sidebarWidth", sidebar.offsetWidth.toString());
   });
 
-  const themeToggle = document.getElementById("theme-toggle");
+  const themeToggle = document.getElementById("theme-toggle")!;
   const body = document.body;
 
   //Preferencia por localstorage
