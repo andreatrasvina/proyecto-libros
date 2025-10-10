@@ -1,3 +1,9 @@
+.note{
+    background-color: var(--rayas);
+    border: 1px solid var(--titles);
+    border-radius: 12px;
+}
+
 .scheme {
     background-color: var(--cardEjercicio);
     width: 55%;
@@ -60,5 +66,5 @@
   }
 
   .inputRange{
-    accent-color: var(--sidebarText);
+    accent-color: var(--titles);
   }

@@ -131,6 +131,7 @@ let valoresIniciales = {};
 
     // Actualizar el pozo con los valores restaurados
     updateWell(valoresIniciales);
+    animateWater();
   }
 
   // Función para extraer los valores actuales de los inputs
@@ -295,9 +296,16 @@ let valoresIniciales = {};
     // Ajuste altura salida
     const terrainY = getTerrainY(x1);
     if (y2 > terrainY) {
-        heightWell = (y0 - terrainY) / Math.cos(angleRad);
+      heightWell = (y0 - terrainY) / Math.cos(angleRad) + 10;
     }
-
+    else if (y2 <= terrainY) {
+      heightWell = (y0 - terrainY) / Math.cos(angleRad) + 10;
+    }
+    else if(y0 < currentWaterY){
+      heightWell = (y0 - terrainY) / Math.cos(angleRad) - 1;
+    }
+    else if(y1 < 0)y1 = 0;
+    if(heightWell < 10) heightWell = 10;
     if (!isManualMode) {
         heightInput.value = heightWell.toFixed(2);
         const p = heightInput.parentElement.querySelector("p.dinamicInput");
@@ -314,6 +322,7 @@ let valoresIniciales = {};
 
     function animateWater() {
         const velocidad = 5;
+        cantidad.setAttribute("fill", "blue")
         // Ajuste gradual del nivel del agua
         if (currentWaterY > nivelFreaticoY) {
             currentWaterY -= velocidad;

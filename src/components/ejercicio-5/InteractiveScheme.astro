@@ -1,4 +1,11 @@
-<div class="interactive-scheme flex flex-row gap-4 w-full">
+<div class="flex w-full h-auto note mb-2 p-2">
+  <p class="mt-0 mb-0">
+    <strong>Note:</strong> The water level is equal to the hydraulic head at the
+    point of measurement (the screen interval), which is indicated by the potentiometric
+    contour line. The orientation of the piezometer is of no consequence.
+  </p>
+</div>
+<div class="interactive-scheme flex flex-row gap-4 w-full h-auto">
   <div class="scheme">
     <div class="headSimulationArea flex flex-col w-full p-6 gap-2">
       <h2 class="tittle" class="text">Simulation area</h2>
@@ -100,7 +107,7 @@
             dy="5"
           >
             <textPath href="#110m" startOffset="50%" text-anchor="middle">
-              110 m
+              106 m
             </textPath>
           </text>
 
@@ -144,7 +151,7 @@
             dy="5"
           >
             <textPath href="#90m" startOffset="50%" text-anchor="middle">
-              90 m
+              94 m
             </textPath>
           </text>
 
@@ -166,7 +173,7 @@
             dy="5"
           >
             <textPath href="#80m" startOffset="50%" text-anchor="middle">
-              80 m
+              90 m
             </textPath>
           </text>
 
@@ -188,15 +195,12 @@
             dy="5"
           >
             <textPath href="#70m" startOffset="50%" text-anchor="middle">
-              70 m
+              84 m
             </textPath>
           </text>
 
-          
-
-
           <!-- InfIzq|InfDer|SupDer|SupIzq-->
-           <polygon class="cantidad" fill="blue" stroke="transparent"/>
+          <polygon class="cantidad" fill="blue" stroke="transparent"></polygon>
           <path
             class="well"
             d="M70 120 L80 120 L80 100 L70 100 Z"
@@ -204,28 +208,23 @@
             stroke="black"
             stroke-width="1"></path>
 
-          
-
-
-            <line
+          <line
             id="freaticoToWater"
             stroke="black"
             stroke-width="1"
-            stroke-dasharray="4,2"
-          />
+            stroke-dasharray="4,2"></line>
 
           <text
             id="headCharge"
-            x="55" 
+            x="55"
             y="80"
             font-size="5"
             font-family="sans-serif"
             fill="black"
             font-weight="bold"
           >
-              h = 0
+            h = 0
           </text>
-
         </svg>
       </div>
       <div
@@ -243,7 +242,7 @@
       </div>
     </div>
   </div>
-  <div class="controls">
+  <div class="controls h-auto">
     <div class="headControls flex flex-row w-full p-6 gap-2">
       <h2 class="tittle" class="text">Scheme controls</h2>
 
@@ -258,9 +257,9 @@
         </label>
       </div>
     </div>
-    <div class="flex flex-col w-full p-6 gap-2">
-      <form class="flex flex-col w-full p-0">
-        <label class="h-auto w-1/1"
+    <div class="flex flex-col flex-1 w-full p-6 gap-2">
+      <form class="flex flex-col w-full p-0 h-auto">
+        <label class="h-auto w-1/1 hidden"
           >Well heigth (m):
           <div class="inputCont flex flex-row w-full gap-4">
             <input
@@ -283,7 +282,7 @@
           </div>
         </label>
 
-        <label class="h-auto w-1/1"
+        <label class="h-auto w-1/1 hidden"
           >Well width (m):
           <div class="inputCont flex flex-row w-full gap-4">
             <input
@@ -307,13 +306,13 @@
         </label>
 
         <label class="h-auto w-1/1"
-          >x coordinate of the base of the well (0 - 110):
+          >x coordinate of the base of the well (0 - 120):
           <div class="inputCont flex flex-row w-full gap-4">
             <input
               id="xPosWell"
               type="range"
               min="0"
-              max="110"
+              max="120"
               value="45"
               class="inputRange dinamicInput w-3/4 h-auto cursor-pointer"
             />
@@ -323,19 +322,19 @@
               type="number"
               class="manualInput manualInputs w-1/1 mt-1 h-6 cursor-pointer p-2 hidden"
               min="0"
-              max="110"
+              max="120"
             />
             <p class="mt-0 mb-0 dinamicInput dinamicText">45</p>
           </div>
         </label>
 
         <label class="h-auto w-1/1"
-          >y coordinate of the base of the well (0 - 80):
+          >y coordinate of the base of the well (10 - 80):
           <div class="inputCont flex flex-row w-full gap-4">
             <input
               id="yPosWell"
               type="range"
-              min="0"
+              min="10"
               max="80"
               value="30"
               class="inputRange dinamicInput w-3/4 h-auto cursor-pointer"
@@ -343,7 +342,7 @@
 
             <input
               type="number"
-              min="0"
+              min="10"
               max="80"
               class="manualInput manualInputs w-1/1 mt-1 h-6 cursor-pointer p-2 hidden"
             />
@@ -373,20 +372,22 @@
             <p class="mt-0 mb-0 dinamicInput dinamicText">0</p>
           </div>
         </label>
-
-        <button
-          id="confirmButton"
-          type="button"
-          class="manualInput text-white bg-blue-400 hover:bg-blue-500 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-400 dark:hover:bg-blue-300 dark:focus:ring-blue-300 dark:border-blue-300 cursor-pointer hidden"
-          >Confirm values</button
-        >
-        <button
-          type="button"
-          id="reset-btn"
-          class="text-white bg-gray-800 hover:bg-gray-900 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 cursor-pointer"
-          >Reset values</button
-        >
       </form>
+    </div>
+    <div class="flex flex-col p-6 h-2/5">
+      <p class="w-0 h-0 mt-auto"></p>
+      <button
+        id="confirmButton"
+        type="button"
+        class="manualInput text-white bg-blue-400 hover:bg-blue-500 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-400 dark:hover:bg-blue-300 dark:focus:ring-blue-300 dark:border-blue-300 cursor-pointer hidden"
+        >Confirm values</button
+      >
+      <button
+        type="button"
+        id="reset-btn"
+        class="text-white bg-gray-800 hover:bg-gray-900 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 cursor-pointer"
+        >Reset values</button
+      >
     </div>
   </div>
 </div>
