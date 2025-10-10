@@ -7,22 +7,22 @@
 .scheme {
     background-color: var(--cardEjercicio);
     width: 55%;
-    border: 1px solid var(--titles);
+    border: 1px solid var(--borderEjercicio);
     border-radius: 12px;
   }
   .controls {
     background-color: var(--cardEjercicio);
     width: 45%;
-    border: 1px solid var(--titles);
+    border: 1px solid var(--borderEjercicio);
     border-radius: 12px;
   }
   .headSimulationArea {
-    border-bottom: 1px solid var(--titles);
+    border-bottom: 1px solid var(--borderEjercicio);
     justify-content: space-between;
   }
 
   .schemeContent {
-    border: 1px solid var(--titles);
+    border: 1px solid var(--borderEjercicio);
     background-color: white;
     border-radius: 8px;
     background-repeat: no-repeat;
@@ -47,10 +47,10 @@
   }
 
   .cantidad{
-    fill: #a4d8f2;
+    fill: rgb(51, 153, 255);
   }
   .headControls {
-    border-bottom: 1px solid var(--titles);
+    border-bottom: 1px solid var(--borderEjercicio);
     justify-content: space-between;
   }
 

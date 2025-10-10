@@ -317,12 +317,12 @@ let valoresIniciales = {};
     well.setAttribute("d", dWell);
 
     // 🔹 Nivel de agua
-    const nivelFreaticoY = getFreaticoY(x0); // altura del agua según x0
+    const nivelFreaticoY = getFreaticoY(x0);
     if (currentWaterY === null) currentWaterY = y0;
 
     function animateWater() {
-        const velocidad = 5;
-        cantidad.setAttribute("fill", "blue")
+        const velocidad = 10;
+        cantidad.setAttribute("fill", "rgb(51, 153, 255)")
         // Ajuste gradual del nivel del agua
         if (currentWaterY > nivelFreaticoY) {
             currentWaterY -= velocidad;
