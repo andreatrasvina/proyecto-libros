@@ -58,3 +58,7 @@
     border: 1px solid var(--titles);
     border-radius: 8px;
   }
+
+  .inputRange{
+    accent-color: var(--sidebarText);
+  }
