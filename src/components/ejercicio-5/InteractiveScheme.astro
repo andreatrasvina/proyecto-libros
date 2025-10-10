@@ -196,14 +196,15 @@
 
 
           <!-- InfIzq|InfDer|SupDer|SupIzq-->
+           <polygon class="cantidad" fill="blue" stroke="transparent"/>
           <path
             class="well"
             d="M70 120 L80 120 L80 100 L70 100 Z"
-            fill="white"
+            fill="transparent"
             stroke="black"
             stroke-width="1"></path>
 
-          <polygon class="cantidad" fill="blue" stroke="transparent"/>
+          
 
 
             <line
@@ -212,6 +213,18 @@
             stroke-width="1"
             stroke-dasharray="4,2"
           />
+
+          <text
+            id="headCharge"
+            x="55" 
+            y="80"
+            font-size="5"
+            font-family="sans-serif"
+            fill="black"
+            font-weight="bold"
+          >
+              h = 0
+          </text>
 
         </svg>
       </div>
@@ -254,17 +267,19 @@
               id="heigthWell"
               type="range"
               min="0"
-              max="130"
+              max="80"
               value="25"
               class="inputRange dinamicInput w-3/4 h-auto cursor-pointer"
             />
 
             <input
               id="heigthWell"
-              type="text"
+              type="number"
+              min="0"
+              max="80"
               class="manualInput manualInputs w-1/1 mt-1 h-6 cursor-pointer p-2 hidden"
             />
-            <p class="mt-0 mb-0 dinamicInput">25 m</p>
+            <p class="mt-0 mb-0 dinamicInput dinamicText">25 m</p>
           </div>
         </label>
 
@@ -274,7 +289,7 @@
             <input
               id="widthWell"
               type="range"
-              min="0"
+              min="2"
               max="20"
               value="10"
               class="inputRange dinamicInput w-3/4 h-auto cursor-pointer"
@@ -282,51 +297,57 @@
 
             <input
               id="widthWell"
-              type="text"
+              type="number"
+              min="2"
+              max="20"
               class="manualInput manualInputs w-1/1 mt-1 h-6 cursor-pointer p-2 hidden"
             />
-            <p class="mt-0 mb-0 dinamicInput">10 m</p>
+            <p class="mt-0 mb-0 dinamicInput dinamicText">10 m</p>
           </div>
         </label>
 
         <label class="h-auto w-1/1"
-          >x coordinate of the base of the well (0 - 130):
+          >x coordinate of the base of the well (0 - 110):
           <div class="inputCont flex flex-row w-full gap-4">
             <input
               id="xPosWell"
               type="range"
               min="0"
-              max="130"
+              max="110"
               value="45"
               class="inputRange dinamicInput w-3/4 h-auto cursor-pointer"
             />
 
             <input
               id="xPosWell"
-              type="text"
+              type="number"
               class="manualInput manualInputs w-1/1 mt-1 h-6 cursor-pointer p-2 hidden"
+              min="0"
+              max="110"
             />
-            <p class="mt-0 mb-0 dinamicInput">45</p>
+            <p class="mt-0 mb-0 dinamicInput dinamicText">45</p>
           </div>
         </label>
 
         <label class="h-auto w-1/1"
-          >y coordinate of the base of the well (0 - 130):
+          >y coordinate of the base of the well (0 - 80):
           <div class="inputCont flex flex-row w-full gap-4">
             <input
               id="yPosWell"
               type="range"
               min="0"
-              max="130"
+              max="80"
               value="30"
               class="inputRange dinamicInput w-3/4 h-auto cursor-pointer"
             />
 
             <input
-              type="text"
+              type="number"
+              min="0"
+              max="80"
               class="manualInput manualInputs w-1/1 mt-1 h-6 cursor-pointer p-2 hidden"
             />
-            <p class="mt-0 mb-0 dinamicInput">30</p>
+            <p class="mt-0 mb-0 dinamicInput dinamicText">30</p>
           </div>
         </label>
 
@@ -344,10 +365,12 @@
 
             <input
               id="xExitWell"
-              type="text"
+              type="number"
+              min="0"
+              max="15"
               class="manualInput manualInputs w-1/1 mt-1 h-6 cursor-pointer p-2 hidden"
             />
-            <p class="mt-0 mb-0 dinamicInput">0</p>
+            <p class="mt-0 mb-0 dinamicInput dinamicText">0</p>
           </div>
         </label>
 

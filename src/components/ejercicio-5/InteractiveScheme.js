@@ -1,3 +1,6 @@
+let valoresIniciales = {};
+
+
 //scrip para el funcionamiento del switch
   const switchInput = document.getElementById(
     "switchInput"
@@ -10,32 +13,33 @@
     const grupos = document.querySelectorAll(".inputCont");
 
     grupos.forEach((grupo) => {
-      const rangeInput = grupo.querySelector(
-        'input[type="range"]'
-      );
-      const manualInput = grupo.querySelector(
-        ".manualInputs"
-      );
-      const p = grupo.querySelector("p");
+    const rangeInput = grupo.querySelector('input[type="range"]');
+    const manualInput = grupo.querySelector(".manualInputs");
+    const p = grupo.querySelector("p");
 
-      if (rangeInput && manualInput) {
-        if (switchInput.checked) {
-          manualInput.value = rangeInput.value;
-        } else {
-          const manualValue = parseFloat(manualInput.value);
-          if (!isNaN(manualValue) && manualValue >= 0 && manualValue <= 20) {
-            rangeInput.value = manualInput.value;
-            if (p) {
-              const tieneUnidad = p.textContent.trim().endsWith("m");
-              p.textContent = tieneUnidad
-                ? `${rangeInput.value} m`
-                : rangeInput.value;
-            }
+    if (rangeInput && manualInput) {
+      if (switchInput.checked) {
+        // Modo manual activado: pasar de range a manual
+        manualInput.value = rangeInput.value;
+      } else {
+        // Modo manual desactivado: pasar de manual a range
+        const manualValue = parseFloat(manualInput.value);
+        if (!isNaN(manualValue) && manualValue >= 0 && manualValue <= 120) {
+          rangeInput.value = manualInput.value;
+
+          // Actualizar el contenido del <p> con o sin unidad
+          if (p) {
+            const tieneUnidad = p.textContent.trim().endsWith("m");
+            p.textContent = tieneUnidad
+              ? `${rangeInput.value} m`
+              : rangeInput.value;
           }
         }
       }
-    });
+    }
+  });
   }
+
 
   switchInput?.addEventListener("change", () => {
     transferValues();
@@ -83,22 +87,50 @@
   if (resetButton) resetButton.addEventListener("click", resetValues);
 
   function resetValues() {
-    const grupos = document.querySelectorAll(".inputCont");
+    const isManualMode = switchInput.checked;
 
-    grupos.forEach((grupo) => {
-      const input = grupo.querySelector(
-        'input[type="range"]'
-      );
-      const p = grupo.querySelector("p");
+    const {
+      heightWell,
+      widthWell,
+      xPosWell,
+      yPosWell,
+      xExitWell,
+    } = valoresIniciales;
 
-      if (input && p) {
-        input.value = "0";
-        const tieneUnidad = p.textContent.trim().endsWith("m");
-        p.textContent = tieneUnidad ? "0 m" : "0";
-      }
-    });
-    const values = getWellValues();
-    updateWell(values);
+    // Inputs manuales y dinámicos
+    const manualInputs = document.querySelectorAll(".manualInputs");
+    const rangeInputs = {
+      heightWell: document.getElementById("heigthWell"),
+      widthWell: document.getElementById("widthWell"),
+      xPosWell: document.getElementById("xPosWell"),
+      yPosWell: document.getElementById("yPosWell"),
+      xExitWell: document.getElementById("xExitWell"),
+    };
+    // Restaurar valores según el modo
+    if (isManualMode) {
+      manualInputs[0].value = heightWell;
+      manualInputs[1].value = widthWell;
+      manualInputs[2].value = xPosWell;
+      manualInputs[3].value = yPosWell;
+      manualInputs[4].value = xExitWell;
+    } else {
+      rangeInputs.heightWell.value = heightWell;
+      rangeInputs.widthWell.value = widthWell;
+      rangeInputs.xPosWell.value = xPosWell;
+      rangeInputs.yPosWell.value = yPosWell;
+      rangeInputs.xExitWell.value = xExitWell;
+
+      // Actualizar los <p> con los valores
+      const pText = document.querySelectorAll(".dinamicText");
+      pText[0].textContent = `${heightWell} m`;
+      pText[1].textContent = `${widthWell} m`;
+      pText[2].textContent = `${xPosWell}`;
+      pText[3].textContent = `${yPosWell}`;
+      pText[4].textContent = `${xExitWell}`;
+    }
+
+    // Actualizar el pozo con los valores restaurados
+    updateWell(valoresIniciales);
   }
 
   // Función para extraer los valores actuales de los inputs
@@ -181,6 +213,14 @@
   if (confirmButton) {
     confirmButton.addEventListener("click", function (e) {
       e.preventDefault();
+
+      const form = document.querySelector("form");
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
       console.log("Botón confirmar presionado");
       const valores = getWellValues();
       updateWell(valores);
@@ -198,6 +238,8 @@
     const freatico = document.getElementById("freatico");
     const heightInput = document.getElementById("heigthWell");
     const isManualMode = switchInput.checked;
+
+    cantidad.setAttribute("fill", "blue")
 
     if (!well || !cantidad || !terrain || !heightInput || !freatico) return;
 
@@ -259,7 +301,7 @@
     if (!isManualMode) {
         heightInput.value = heightWell.toFixed(2);
         const p = heightInput.parentElement.querySelector("p.dinamicInput");
-        if (p) p.textContent = `${heightWell.toFixed(2)} m`;
+        if (p) p.textContent = `${Math.round(heightWell)} m`;
     }
 
     // Actualiza el pozo
@@ -271,8 +313,7 @@
     if (currentWaterY === null) currentWaterY = y0;
 
     function animateWater() {
-        const velocidad = 1;
-
+        const velocidad = 5;
         // Ajuste gradual del nivel del agua
         if (currentWaterY > nivelFreaticoY) {
             currentWaterY -= velocidad;
@@ -295,9 +336,13 @@
         const dx = waterHeight * Math.sin(angleRad);
 
         // Esquinas superiores del agua siguiendo la inclinación del pozo
-        const xt0 = xb0 - dx;
+        const xt0 = xb0 - dx - angleRad * 3;
         const xt1 = xb1 - dx - compensacion;
 
+        if (yb0 < currentWaterY || yb1 < currentWaterY) {
+        cantidad.setAttribute("fill", "transparent")
+        return;
+    }
         // Actualiza línea que conecta nivel freatico con el agua
         const freaticoLine = document.getElementById("freaticoToWater");
         if (freaticoLine) {
@@ -321,6 +366,19 @@
 
         // Animación continua hasta alcanzar el nivel freatico
         if (currentWaterY > nivelFreaticoY) requestAnimationFrame(animateWater);
+
+        const headChargeText = document.getElementById("headCharge");
+
+        if (headChargeText) {
+
+            let offsetX = xb0 < 30 ? -15 : 20;
+            const hValue = 130 - (50 / 130) * x0;
+
+            headChargeText.setAttribute("x", xb0 - offsetX);
+            headChargeText.setAttribute("y", currentWaterY);
+            headChargeText.textContent = `h = ${Math.round(hValue)}`;
+          }
+        
     }
 
     animateWater();
@@ -332,7 +390,7 @@
   document.addEventListener(
     "DOMContentLoaded",
     function () {
-      const valoresIniciales = getWellValues();
+      valoresIniciales = getWellValues();
       updateWell(valoresIniciales);
     },
     { passive: true }
