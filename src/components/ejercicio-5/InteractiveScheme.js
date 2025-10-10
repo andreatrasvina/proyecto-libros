@@ -302,7 +302,7 @@ let valoresIniciales = {};
       heightWell = (y0 - terrainY) / Math.cos(angleRad) + 10;
     }
     else if(y0 < currentWaterY){
-      heightWell = (y0 - terrainY) / Math.cos(angleRad) - 1;
+      heightWell = heightWell - currentWaterY;
     }
     else if(y1 < 0)y1 = 0;
     if(heightWell < 10) heightWell = 10;

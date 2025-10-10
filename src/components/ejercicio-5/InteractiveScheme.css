@@ -38,10 +38,17 @@
   }
 
   #water {
-    fill: var(--water);
+    fill: rgb(222, 251, 254);
     stroke: oklch(70.7% 0.165 254.624);
   }
 
+  #brownDot{
+    fill: rgb(90, 89, 89);
+  }
+
+  .cantidad{
+    fill: #a4d8f2;
+  }
   .headControls {
     border-bottom: 1px solid var(--titles);
     justify-content: space-between;
