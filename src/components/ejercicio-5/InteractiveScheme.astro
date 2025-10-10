@@ -60,21 +60,6 @@
               C 160 160, 160 160, 160 160"
             fill="url(#brownDots)"></path>
 
-          <!-- InfIzq|InfDer|SupDer|SupIzq-->
-          <path class="well"
-            d="M70 120 L80 120 L80 100 L70 100 Z"
-            fill="white"
-            stroke="black"
-            stroke-width="1"
-           ></path>
-
-          <path class="cantidad"
-            d="M70 120 L80 120 L80 110 L70 110 Z"
-            fill="blue"
-            stroke="black"
-            stroke-width="1"
-            ></path>
-
           <path
             id="120m"
             d="
@@ -206,6 +191,28 @@
               70 m
             </textPath>
           </text>
+
+          
+
+
+          <!-- InfIzq|InfDer|SupDer|SupIzq-->
+          <path
+            class="well"
+            d="M70 120 L80 120 L80 100 L70 100 Z"
+            fill="white"
+            stroke="black"
+            stroke-width="1"></path>
+
+          <polygon class="cantidad" fill="blue" stroke="transparent"/>
+
+
+            <line
+            id="freaticoToWater"
+            stroke="black"
+            stroke-width="1"
+            stroke-dasharray="4,2"
+          />
+
         </svg>
       </div>
       <div
@@ -242,92 +249,101 @@
       <form class="flex flex-col w-full p-0">
         <label class="h-auto w-1/1"
           >Well heigth (m):
-          <div class="flex flex-row w-full gap-4">
+          <div class="inputCont flex flex-row w-full gap-4">
             <input
+              id="heigthWell"
               type="range"
               min="0"
-              max="20"
-              value="0"
-              class="accent-blue-400 dinamicInput w-3/4 h-auto cursor-pointer"
+              max="130"
+              value="25"
+              class="inputRange dinamicInput w-3/4 h-auto cursor-pointer"
             />
 
             <input
+              id="heigthWell"
               type="text"
               class="manualInput manualInputs w-1/1 mt-1 h-6 cursor-pointer p-2 hidden"
             />
-            <p class="mt-0 mb-0 dinamicInput">0 m</p>
+            <p class="mt-0 mb-0 dinamicInput">25 m</p>
           </div>
         </label>
 
         <label class="h-auto w-1/1"
           >Well width (m):
-          <div class="flex flex-row w-full gap-4">
+          <div class="inputCont flex flex-row w-full gap-4">
             <input
+              id="widthWell"
               type="range"
               min="0"
               max="20"
-              value="0"
-              class="accent-blue-400 dinamicInput w-3/4 h-auto cursor-pointer"
+              value="10"
+              class="inputRange dinamicInput w-3/4 h-auto cursor-pointer"
             />
 
             <input
+              id="widthWell"
               type="text"
               class="manualInput manualInputs w-1/1 mt-1 h-6 cursor-pointer p-2 hidden"
             />
-            <p class="mt-0 mb-0 dinamicInput">0 m</p>
+            <p class="mt-0 mb-0 dinamicInput">10 m</p>
           </div>
         </label>
 
         <label class="h-auto w-1/1"
-          >x coordinate of the base of the well:
-          <div class="flex flex-row w-full gap-4">
+          >x coordinate of the base of the well (0 - 130):
+          <div class="inputCont flex flex-row w-full gap-4">
             <input
+              id="xPosWell"
               type="range"
               min="0"
-              max="20"
-              value="0"
-              class="accent-blue-400 dinamicInput w-3/4 h-auto cursor-pointer"
+              max="130"
+              value="45"
+              class="inputRange dinamicInput w-3/4 h-auto cursor-pointer"
             />
 
             <input
+              id="xPosWell"
               type="text"
               class="manualInput manualInputs w-1/1 mt-1 h-6 cursor-pointer p-2 hidden"
             />
-            <p class="mt-0 mb-0 dinamicInput">0</p>
+            <p class="mt-0 mb-0 dinamicInput">45</p>
           </div>
         </label>
 
         <label class="h-auto w-1/1"
-          >y coordinate of the base of the well:
-          <div class="flex flex-row w-full gap-4">
+          >y coordinate of the base of the well (0 - 130):
+          <div class="inputCont flex flex-row w-full gap-4">
             <input
+              id="yPosWell"
               type="range"
               min="0"
-              max="20"
-              value="0"
-              class="accent-blue-400 dinamicInput w-3/4 h-auto cursor-pointer"
+              max="130"
+              value="30"
+              class="inputRange dinamicInput w-3/4 h-auto cursor-pointer"
             />
 
             <input
               type="text"
               class="manualInput manualInputs w-1/1 mt-1 h-6 cursor-pointer p-2 hidden"
             />
-            <p class="mt-0 mb-0 dinamicInput">0</p>
+            <p class="mt-0 mb-0 dinamicInput">30</p>
           </div>
         </label>
 
         <label class="h-auto w-1/1 mb-4"
-          >x coordinate of the well exit:
-          <div class="flex flex-row w-full gap-4">
+          >degrees of inclination (0° - 15°):
+          <div class="inputCont flex flex-row w-full gap-4">
             <input
+              id="xExitWell"
               type="range"
               min="0"
-              max="20"
+              max="15"
               value="0"
-              class="accent-blue-400 dinamicInput w-3/4 h-auto cursor-pointer"
+              class="inputRange dinamicInput w-3/4 h-auto cursor-pointer"
             />
 
             <input
+              id="xExitWell"
               type="text"
               class="manualInput manualInputs w-1/1 mt-1 h-6 cursor-pointer p-2 hidden"
             />
@@ -336,6 +352,8 @@
         </label>
 
         <button
+          id="confirmButton"
+          type="button"
           class="manualInput text-white bg-blue-400 hover:bg-blue-500 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-400 dark:hover:bg-blue-300 dark:focus:ring-blue-300 dark:border-blue-300 cursor-pointer hidden"
           >Confirm values</button
         >
@@ -350,122 +368,4 @@
   </div>
 </div>
 
-<script>
-  //scrip para el funcionamiento del switch
-  const switchInput = document.getElementById(
-    "switchInput"
-  ) as HTMLInputElement;
-  const manualInputs = document.querySelectorAll(".manualInput");
-  const dinamicInputs = document.querySelectorAll(".dinamicInput");
-  switchInput?.addEventListener("change", () => {
-    if (switchInput.checked) {
-      manualInputs.forEach((input) => input.classList.remove("hidden"));
-      dinamicInputs.forEach((input) => input.classList.add("hidden"));
-    } else {
-      manualInputs.forEach((input) => input.classList.add("hidden"));
-      dinamicInputs.forEach((input) => input.classList.remove("hidden"));
-    }
-  });
-
-  //Scrip para el funcionamiento del boton reset
-  const resetButton = document.getElementById("reset-btn");
-  if (resetButton) resetButton.addEventListener("click", resetValues);
-
-  function resetValues() {
-    const grupos = document.querySelectorAll("div.flex.flex-row");
-
-    grupos.forEach((grupo) => {
-      const input = grupo.querySelector(
-        'input[type="range"]'
-      ) as HTMLInputElement;
-      const p = grupo.querySelector("p");
-
-      if (input && p) {
-        input.value = "0";
-        const tieneUnidad = p.textContent.trim().endsWith("m");
-        p.textContent = tieneUnidad ? "0 m" : "0";
-      }
-    });
-  }
-
-  //Script para el funcionamiento de la actualizacion de los elemento p con el valor del input y respetando si son m
-  const grupos = document.querySelectorAll("div.flex.flex-row");
-
-  grupos.forEach((grupo) => {
-    const input = grupo.querySelector(
-      'input[type="range"]'
-    ) as HTMLInputElement;
-    const p = grupo.querySelector("p");
-
-    if (input && p) {
-      const tieneUnidad = p.textContent.trim().endsWith("m");
-
-      input.addEventListener("input", () => {
-        p.textContent = tieneUnidad ? `${input.value} m` : input.value;
-      });
-    }
-  });
-</script>
-
-<style>
-  .scheme {
-    background-color: var(--cardEjercicio);
-    width: 55%;
-    border: 1px solid var(--titles);
-    border-radius: 12px;
-  }
-  .controls {
-    background-color: var(--cardEjercicio);
-    width: 45%;
-    border: 1px solid var(--titles);
-    border-radius: 12px;
-  }
-  .headSimulationArea {
-    border-bottom: 1px solid var(--titles);
-    justify-content: space-between;
-  }
-
-  .schemeContent {
-    border: 1px solid var(--titles);
-    background-color: white;
-    border-radius: 8px;
-    background-repeat: no-repeat;
-    background-size: contain;
-  }
-
-  #terrain {
-    stroke: oklch(28.6% 0.066 53.813);
-  }
-
-  #freatic {
-    stroke: oklch(70.7% 0.165 254.624);
-  }
-
-  #water {
-    fill: var(--water);
-    stroke: oklch(70.7% 0.165 254.624);
-  }
-
-  .headControls {
-    border-bottom: 1px solid var(--titles);
-    justify-content: space-between;
-  }
-
-  .text {
-    margin: 0;
-  }
-
-  .tittle {
-    font-size: 1.2rem;
-    font-weight: 700;
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-
-  .manualInputs {
-    background-color: var(--cardEjercicio);
-
-    border: 1px solid var(--titles);
-    border-radius: 8px;
-  }
-</style>
+<script src="./InteractiveScheme.js"></script>
