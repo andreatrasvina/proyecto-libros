@@ -123,3 +123,13 @@ body.dark-mode .dark-mode-logo {
 body.dark-mode .light-mode-logo {
   display: none;
 }
+
+/* === Ajustes de negritas y cursivas dentro del contenido del libro === */
+
+/* Modo claro */
+.prose strong { color: var(--titles); font-weight: 700; }
+.prose em { color: var(--sidebarText); }
+
+/* Modo oscuro */
+body.dark-mode .prose strong { color: #93c5fd; /* Tailwind sky-300 */ }
+body.dark-mode .prose em { color: #cbd5e1; /* Tailwind slate-300 */ }
