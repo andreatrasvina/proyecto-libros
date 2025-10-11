@@ -5,22 +5,34 @@ bookSlug: "book-01"
 
 import Exercise3Interactive from "@/components/Ejercicio3.astro"
 
-## Exercise 3 – Equipotential Lines and Flow Direction
+## EQUIPOTENTIAL LINES AND FLOW DIRECTION
 
-The goal of this exercise is to <span class="text-[var(--color-text)]">understand how equipotential lines are drawn</span> in an isotropic medium and how they allow us to determine the <span class="text-[var(--color-text)]">direction of groundwater flow</span>.
+**Example Problem 3**
 
-## Statement
-<span class="text-[var(--color-text)]">
-A cylinder filled with a saturated porous medium allows water to flow under laminar conditions. Piezometers are inserted at different depths at both ends:
-</span>
+<p class="text-[var(--textoCardCanvas)] leading-relaxed">
+  The goal of this exercise is to 
+  <strong class="text-[var(--color-text)]">understand how equipotential lines are drawn</strong> 
+  in an isotropic medium and how they allow us to determine the 
+  <strong class="text-[var(--color-text)]">direction of groundwater flow</strong>.
+</p>
 
-- <span class="text-[var(--titles)]">On the left side, all piezometers indicate a level of 20 cm</span>.  
-- <span class="text-[var(--titles)]">On the right side, all indicate a level of 14 cm</span>.  
+---
+<div class="mt-3 text-[var(--textoCardCanvas)] leading-relaxed space-y-3">
+  **a)** Draw equipotential lines in the sand at 1 ft intervals.  
+  **b)** To what level will water rise in the hypothetical piezometer?
+</div>
 
-  <span class="text-[var(--titles)]">Based on this information:</span>
 
-<span class="text-[var(--titles)]">1. Draw equipotential lines in the sand at 1 ft intervals.</span>  
-<span class="text-[var(--titles)]">2. Determine the water level in a hypothetical piezometer placed in the center.</span>
+---
+
+<div class="flex justify-center my-6">
+  <img 
+    src="/images/exercise3-diagram.png" 
+    alt="Experimental setup for equipotential lines"
+    class="rounded-md border border-[var(--borderEjercicio)] max-w-md"
+  />
+</div>
+
 
 ---
 
@@ -28,17 +40,33 @@ A cylinder filled with a saturated porous medium allows water to flow under lami
 
 ---
 
-## Interactive hint
-- <span class="text-[var(--titles)]">Equipotential lines connect points with the same hydraulic head.</span>  
-- <span class="text-[var(--titles)]">Flow is always perpendicular to equipotential lines.</span>  
-- <span class="text-[var(--titles)]">Since the medium is homogeneous, the lines must be uniformly spaced.</span>  
+<details class="mt-6 border border-[var(--borderEjercicio)] bg-[var(--cardEjercicio)] shadow-[var(--shadowEjercicio)] rounded-xl p-4 transition-colors duration-300">
+  <summary class="cursor-pointer font-semibold text-[var(--titles)]">
+    Show solution
+  </summary>
 
----
+  <div class="mt-3 text-[var(--textoCardCanvas)] leading-relaxed space-y-3">
+    <p>
+      <strong class="text-[var(--titles)]">Questions:</strong><br />
+      a) Draw equipotential lines in the sand at 1 ft intervals.<br />
+      b) To what level will water rise in the hypothetical piezometer?
+    </p>
 
-<details class="mt-4 p-3 border rounded-md bg-[var(--cards)] text-[var(--color-text)]">
-  <summary class="cursor-pointer font-semibold text-[var(--titles)]">Show solution</summary>
+    <p>
+      <strong class="text-[var(--titles)]">Solutions:</strong><br />
+      a) The constant head values at the top and bottom of the sand column are equal to the water-level elevation of the column of water that bounds each end of the porous medium. Flow must be vertical in the sand column given the geometry of the cylinder, and the potentiometric lines must be horizontal (equipotential contours are perpendicular to the direction of flow and perpendicular to no-flow boundaries). The head gradient is specified by the spacing between contour lines; in this case, they must be equally spaced because the medium is homogeneous.
+    </p>
 
-  <span class="text-[var(--titles)]">1. The equipotential lines must be horizontal and evenly spaced, since the medium is homogeneous and the flow is vertical.</span>
-  <span class="text-[var(--titles)]">2. The water level in the central piezometer will rise to 14 ft</span>.  
+    <p>
+      b) The water level in a piezometer is equal to the hydraulic head at the point of measurement, which in this case is the open end of the piezometer in the sand. Therefore, the water level in the hypothetical piezometer is 14 ft.
+    </p>
+  </div>
 
+  <div class="mt-4 flex justify-center">
+    <img
+      src="/images/exercise3-solution.png"
+      alt="Solution diagram – hypothetical piezometer"
+      class="rounded-md max-w-sm border border-[var(--borderEjercicio)] shadow-[var(--shadowEjercicio)]"
+    />
+  </div>
 </details>

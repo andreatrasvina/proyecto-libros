@@ -1,39 +1,139 @@
 ---
 import "../styles/global.css";
-let waterLevel = 0;
 ---
 
-<div class="p-4 border rounded-md bg-[var(--cards)] text-[var(--color-text)]">
-  <h3 class="text-lg font-bold mb-2 text-[var(--titles)]">Interactive Hydraulic Head</h3>
-  
-  <label for="waterSlider" class="block mb-2">
-    <span class="text-[var(--titles)]">Select water level (m):</span> 
-    <span id="waterValue" class="font-semibold text-[var(--titles)]">{waterLevel}</span>
-  </label>
-  
-  <input 
-    id="waterSlider" 
-    type="range" 
-    min="0" 
-    max="20" 
-    value={waterLevel} 
-    step="1"
-    class="w-full accent-green-400"
-    oninput="document.getElementById('waterValue').innerText=this.value;
-             document.getElementById('headIndicator').style.height=this.value*10 + 'px';"
-  />
+<section
+  class="flex flex-col items-center justify-center p-6 border border-[var(--borderEjercicio)] 
+  bg-[var(--cardEjercicio)] shadow-[var(--shadowEjercicio)] rounded-xl transition-colors duration-300"
+>
+  <h3 class="text-lg font-semibold text-[var(--titles)] mb-4 text-center">
+    Interactive Hydraulic Head
+  </h3>
 
-  <div class="mt-6 flex justify-around">
-    <!-- Simulación de piezómetro -->
-    <div class="w-6 h-60 bg-[var(--titles)] relative">
-      <div id="headIndicator" 
-           class="absolute bottom-0 w-6 bg-blue-400" 
-           style="height:{waterLevel*10}px">
-      </div>
-    </div>
+  <!-- Contenedor principal -->
+  <div class="relative flex flex-col items-center">
+    <img
+      src="/images/exercise3-base.png"
+      alt="Piezometer diagram"
+      class="max-w-sm rounded-md border border-[var(--borderEjercicio)]"
+    />
+
+    <!-- 1️⃣ Canal horizontal -->
+    <div
+      id="waterMiddle"
+      class="absolute bottom-[3.15rem] left-[7.8rem] w-[12.6rem] bg-[#55CFFF] opacity-100 
+      transition-all duration-300 ease-out"
+      style="height:0px;"
+    ></div>
+
+    <!-- 2️⃣ Tubo derecho -->
+    <div
+      id="waterRight"
+      class="absolute bottom-[3.15rem] left-[19.15rem] w-[1.3rem] bg-[#55CFFF] opacity-100 
+      transition-all duration-300 ease-out"
+      style="height:0px;"
+    ></div>
+
+    <!-- 3️⃣ Tubo izquierdo -->
+    <div
+      id="waterLeft"
+      class="absolute bottom-[3.15rem] left-[7.8rem] w-[2.35rem] bg-[#55CFFF] opacity-100 
+      transition-all duration-300 ease-out"
+      style="height:0px;"
+    ></div>
   </div>
-  
-  <p class="mt-4 text-sm text-[var(--color-text)]">
-    The slider controls the water level. Hydraulic head corresponds to the water column height in the piezometer. test
+
+  <!-- 🔘 Checkbox para alternar modo -->
+  <div class="flex items-center justify-center gap-2 my-6">
+    <input
+      id="manualToggle"
+      type="checkbox"
+      class="w-4 h-4 accent-[var(--titles)] cursor-pointer"
+    />
+    <label
+      for="manualToggle"
+      class="text-[var(--textoCardCanvas)] cursor-pointer select-none"
+    >
+      Enable manual input mode
+    </label>
+  </div>
+
+  <!-- Controles -->
+  <div class="flex flex-col items-center mt-2">
+    <label for="waterInput" class="text-sm text-[var(--titles)] mb-2">
+      Select water level (ft): 
+      <span id="waterValue" class="font-semibold ml-1">0</span>
+    </label>
+
+    <div id="inputContainer" class="flex justify-center"></div>
+  </div>
+
+  <p
+    class="mt-5 text-sm text-[var(--textoCardCanvas)] text-center leading-relaxed max-w-md"
+  >
+    From 0 to 6 ft, the horizontal channel fills evenly.  
+    After 6 ft, water begins to rise in the right and left tubes,  
+    reaching heads of 12 ft and 16 ft respectively.
   </p>
-</div>
+</section>
+
+<!-- ✅ Script cliente -->
+<script is:client>
+  const container = document.getElementById("inputContainer");
+  const manualToggle = document.getElementById("manualToggle");
+  const valueLabel = document.getElementById("waterValue");
+  const waterMiddle = document.getElementById("waterMiddle");
+  const waterRight = document.getElementById("waterRight");
+  const waterLeft = document.getElementById("waterLeft");
+
+  let currentValue = 0; // 🔹 guarda el valor actual del agua
+
+  // 🔧 crea input (slider o number)
+  const createInput = (manual) => {
+    container.innerHTML = ""; // limpia el contenedor
+
+    const input = document.createElement("input");
+    input.id = "waterInput";
+    input.type = manual ? "number" : "range";
+    input.min = 0;
+    input.max = 16;
+    input.step = 1;
+    input.value = currentValue; // 🟢 conserva el valor anterior
+    input.className = manual
+      ? "w-24 text-center border border-[var(--borderEjercicio)] rounded-md bg-[var(--cards)] text-[var(--titles)]"
+      : "w-64 accent-[var(--rayaTubo)] cursor-pointer";
+
+    input.addEventListener("input", (e) => {
+      currentValue = parseFloat(e.target.value); // 🟢 actualiza la variable global
+      updateWater(currentValue);
+    });
+
+    container.appendChild(input);
+  };
+
+  // 🌊 animación del agua
+  const updateWater = (val) => {
+    valueLabel.innerText = val;
+    const canalMax = 40;
+    const derechoMax = 202;
+    const izquierdoMax = 268;
+
+    let canal = Math.min(val, 6) / 6 * canalMax;
+    let derecho = 0;
+    let izquierdo = 0;
+
+    if (val > 6) derecho = Math.min((val - 6) / 6, 1) * derechoMax;
+    if (val > 12) izquierdo = Math.min((val - 12) / 4, 1) * izquierdoMax;
+
+    waterMiddle.style.height = canal + "px";
+    waterRight.style.height = derecho + "px";
+    waterLeft.style.height = izquierdo + "px";
+  };
+
+  // 🎛 inicialización
+  createInput(false);
+
+  manualToggle.addEventListener("change", (e) => {
+    createInput(e.target.checked); // 🟢 conserva posición al cambiar modo
+  });
+</script>
