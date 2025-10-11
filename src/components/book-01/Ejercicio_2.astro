@@ -62,13 +62,31 @@ const initA = 5;
     >
       <h2>Datos</h2>
       <div class="data-grid">
-        <div><h3>h₁:</h3><label id="data-1"></label></div>
-        <div><h3>h₂:</h3><label id="data-2"></label></div>
-        <div><h3>∆L:</h3><label id="data-3"></label></div>
-        <div><h3>∆h/∆L:</h3><label id="data-4"></label></div>
-        <div><h3>Q:</h3><label id="data-5"></label></div>
-        <div><h3>K:</h3><label id="data-6"></label></div>
-        <div><h3>A:</h3><label id="data-7"></label></div>
+        <div>
+          <h3 class="data-label">h₁:</h3><h3 class="data-value" id="data-1">
+          </h3>
+        </div>
+        <div>
+          <h3 class="data-label">h₂:</h3><h3 class="data-value" id="data-2">
+          </h3>
+        </div>
+        <div>
+          <h3 class="data-label">∆L:</h3><h3 class="data-value" id="data-3">
+          </h3>
+        </div>
+        <div>
+          <h3 class="data-label">∆h/∆L:</h3><h3 class="data-value" id="data-4">
+          </h3>
+        </div>
+        <div>
+          <h3 class="data-label">Q:</h3><h3 class="data-value" id="data-5"></h3>
+        </div>
+        <div>
+          <h3 class="data-label">K:</h3><h3 class="data-value" id="data-6"></h3>
+        </div>
+        <div>
+          <h3 class="data-label">A:</h3><h3 class="data-value" id="data-7"></h3>
+        </div>
       </div>
     </div>
 
@@ -275,6 +293,29 @@ const initA = 5;
 </script>
 
 <style>
+  /* === VARIABLES DE COLOR === */
+  :root {
+    /* 🌞 Modo claro */
+    --label-bg: rgba(0, 0, 0, 0.05);
+    --label-hover: rgba(0, 0, 0, 0.1);
+    --input-bg: rgba(0, 0, 0, 0.05);
+    --borderMario: rgba(0, 0, 0, 0.2);
+    --cardMario: #ffffff;
+    --shadowMario: rgba(0, 0, 0, 0.1);
+    --color-primary: #0077cc;
+  }
+
+  [data-theme="dark"] {
+    /* 🌚 Modo oscuro */
+    --label-bg: rgba(255, 255, 255, 0.03);
+    --label-hover: rgba(255, 255, 255, 0.08);
+    --input-bg: rgba(255, 255, 255, 0.1);
+    --borderMario: rgba(255, 255, 255, 0.1);
+    --cardMario: rgba(20, 20, 20, 0.7);
+    --shadowMario: rgba(0, 0, 0, 0.6);
+    --color-primary: #4ad6ff;
+  }
+
   /* === LAYOUT PRINCIPAL === */
   .layout {
     display: flex;
@@ -282,11 +323,28 @@ const initA = 5;
     padding: 20px 0;
     align-items: flex-start;
   }
+  .data-grid div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 15px;
+    border-bottom: 1px solid var(--borderMario);
+  }
 
-  /* Igual tamaño horizontal para gráfica y panel derecho */
+  .data-label {
+    font-weight: 500;
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .data-value {
+    font-weight: 800;
+    font-size: 0.95rem;
+    margin: 0;
+  }
   .visual,
   .right-column {
-    flex: 1; /* Ambos ocupan el mismo ancho */
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -319,6 +377,7 @@ const initA = 5;
   .height-line {
     width: 4px;
     margin-right: 20px;
+    background: var(--color-primary);
   }
 
   /* Contenedor general de la gráfica */
@@ -346,8 +405,8 @@ const initA = 5;
     height: 200px;
     background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgb(0, 0, 0);
-    border-bottom: 0px solid rgb(0, 0, 0);
-    border-top: 0px solid rgb(0, 0, 0);
+    border-bottom: 0;
+    border-top: 0;
     transition: margin-left 0.5s ease;
   }
 
@@ -383,7 +442,7 @@ const initA = 5;
     position: absolute;
     top: 50%;
     height: 2px;
-    background: black;
+    background: currentColor;
     transition: width 0.5s ease;
   }
 
@@ -394,7 +453,7 @@ const initA = 5;
     top: -8px;
     width: 2px;
     height: 18px;
-    background: black;
+    background: currentColor;
   }
 
   .linea::before {
@@ -409,7 +468,6 @@ const initA = 5;
     position: absolute;
     top: -12px;
     font-weight: bold;
-    color: #000000;
     padding: 0 4px;
     transition: all 0.5s ease;
   }
@@ -469,7 +527,7 @@ const initA = 5;
 
   .data-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* dos columnas */
+    grid-template-columns: 1fr 1fr;
     gap: 10px 20px;
   }
 
@@ -478,30 +536,28 @@ const initA = 5;
     justify-content: space-between;
     align-items: center;
     padding: 6px 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid var(--borderMario);
+    background: var(--label-bg);
     border-radius: 6px;
     transition: background 0.2s ease;
   }
 
   .data-grid div:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--label-hover);
   }
 
   .data-grid h3 {
     margin: 0;
     font-weight: 500;
     font-size: 0.95rem;
-    color: rgba(255, 255, 255, 0.8);
   }
 
   .data-grid label {
     font-weight: bold;
-    color: #ffffff;
     font-size: 0.95rem;
   }
 
-  /* === PANEL DE CONTROLES (NUEVO ESTILO) === */
+  /* === PANEL DE CONTROLES === */
   .panel {
     border-radius: 10px;
     padding: 20px;
@@ -515,12 +571,11 @@ const initA = 5;
 
   .panel label {
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.8);
   }
 
   .panel-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* dos columnas */
+    grid-template-columns: 1fr 1fr;
     gap: 12px 20px;
   }
 
@@ -536,7 +591,7 @@ const initA = 5;
 
   /* Caso especial: el control del tipo de input (checkbox) */
   .panel-grid .control:first-child {
-    flex-direction: row; /* horizontal */
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
   }
@@ -544,20 +599,19 @@ const initA = 5;
   .panel-grid .control:first-child label {
     margin-right: 10px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.85);
   }
 
   .panel-grid .control:first-child input[type="checkbox"] {
     width: 18px;
     height: 18px;
-    accent-color: #0077cc;
+    accent-color: var(--color-primary);
     cursor: pointer;
   }
 
   /* Resto de inputs */
   .panel-grid input[type="range"] {
     width: 100%;
-    accent-color: #0077cc;
+    accent-color: var(--color-primary);
     margin-top: 6px;
   }
 
@@ -565,10 +619,9 @@ const initA = 5;
     width: 100%;
     margin-top: 6px;
     padding: 5px;
-    border: 1px solid #aaa;
+    border: 1px solid var(--borderMario);
     border-radius: 5px;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
+    background: var(--input-bg);
   }
 
   /* === SOMBRAS Y BORDES === */
@@ -596,11 +649,11 @@ const initA = 5;
     }
 
     .panel-grid {
-      grid-template-columns: 1fr; /* en móviles una sola columna */
+      grid-template-columns: 1fr;
     }
 
     .data-grid {
-      grid-template-columns: 1fr; /* también una columna en pantallas pequeñas */
+      grid-template-columns: 1fr;
     }
   }
 </style>
