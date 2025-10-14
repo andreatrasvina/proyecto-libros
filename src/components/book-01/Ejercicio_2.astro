@@ -293,29 +293,6 @@ const initA = 5;
 </script>
 
 <style>
-  /* === VARIABLES DE COLOR === */
-  :root {
-    /* 🌞 Modo claro */
-    --label-bg: rgba(0, 0, 0, 0.05);
-    --label-hover: rgba(0, 0, 0, 0.1);
-    --input-bg: rgba(0, 0, 0, 0.05);
-    --borderMario: rgba(0, 0, 0, 0.2);
-    --cardMario: #ffffff;
-    --shadowMario: rgba(0, 0, 0, 0.1);
-    --color-primary: #0077cc;
-  }
-
-  [data-theme="dark"] {
-    /* 🌚 Modo oscuro */
-    --label-bg: rgba(255, 255, 255, 0.03);
-    --label-hover: rgba(255, 255, 255, 0.08);
-    --input-bg: rgba(255, 255, 255, 0.1);
-    --borderMario: rgba(255, 255, 255, 0.1);
-    --cardMario: rgba(20, 20, 20, 0.7);
-    --shadowMario: rgba(0, 0, 0, 0.6);
-    --color-primary: #4ad6ff;
-  }
-
   /* === LAYOUT PRINCIPAL === */
   .layout {
     display: flex;
@@ -323,6 +300,7 @@ const initA = 5;
     padding: 20px 0;
     align-items: flex-start;
   }
+
   .data-grid div {
     display: flex;
     align-items: center;
@@ -342,6 +320,7 @@ const initA = 5;
     font-size: 0.95rem;
     margin: 0;
   }
+
   .visual,
   .right-column {
     flex: 1;
@@ -353,6 +332,9 @@ const initA = 5;
   .visual {
     border-radius: 10px;
     padding: 20px;
+    border: 1px solid var(--borderMario);
+    background: var(--cardMario);
+    box-shadow: 0 8px 30px var(--shadowMario);
   }
 
   .right-column {
@@ -523,6 +505,9 @@ const initA = 5;
   .data {
     border-radius: 10px;
     padding: 20px;
+    border: 1px solid var(--borderMario);
+    background: var(--cardMario);
+    box-shadow: 0 8px 30px var(--shadowMario);
   }
 
   .data-grid {
@@ -537,13 +522,13 @@ const initA = 5;
     align-items: center;
     padding: 6px 10px;
     border-bottom: 1px solid var(--borderMario);
-    background: var(--label-bg);
+    background: rgba(0, 0, 0, 0.05);
     border-radius: 6px;
     transition: background 0.2s ease;
   }
 
   .data-grid div:hover {
-    background: var(--label-hover);
+    background: rgba(0, 0, 0, 0.1);
   }
 
   .data-grid h3 {
@@ -561,6 +546,9 @@ const initA = 5;
   .panel {
     border-radius: 10px;
     padding: 20px;
+    border: 1px solid var(--borderMario);
+    background: var(--cardMario);
+    box-shadow: 0 8px 30px var(--shadowMario);
   }
 
   .panel h2 {
@@ -621,7 +609,7 @@ const initA = 5;
     padding: 5px;
     border: 1px solid var(--borderMario);
     border-radius: 5px;
-    background: var(--input-bg);
+    background: rgba(0, 0, 0, 0.05);
   }
 
   /* === SOMBRAS Y BORDES === */
