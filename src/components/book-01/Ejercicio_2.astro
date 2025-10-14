@@ -34,9 +34,13 @@ const initA = 5;
         <div class="pms">
           <div class="piezometer" id="pm-1">
             <div class="water"><h3>h₁</h3></div>
+            <!-- línea punteada para h1 -->
+            <div class="dotted-line" id="line-h1"></div>
           </div>
           <div class="piezometer" id="pm-2">
             <div class="water"><h3>h₂</h3></div>
+            <!-- línea punteada para h2 -->
+            <div class="dotted-line" id="line-h2"></div>
           </div>
         </div>
 
@@ -167,7 +171,12 @@ const initA = 5;
   const data5 = document.getElementById("data-5");
   const data6 = document.getElementById("data-6");
   const data7 = document.getElementById("data-7");
-  const data8 = document.getElementById("data-8");
+
+  // 🔹 Líneas punteadas
+  const lineH1 = document.getElementById("line-h1");
+  const lineH2 = document.getElementById("line-h2");
+  const leftLine = document.querySelector(".height-line");
+  const graph = document.querySelector(".graph");
 
   const water1Height = water1.offsetHeight;
 
@@ -218,16 +227,12 @@ const initA = 5;
     // h2 = h1 - ((Q * ∆L) / (K * A))
     let water2Height =
       water1Height - (flowRate * distance) / (conductivity * area);
-
-    // Evita valores negativos o cero
-    if (water2Height <= 0) {
-      water2Height = 0;
-    }
+    if (water2Height <= 0) water2Height = 0;
 
     // Ajuste de altura de agua
     water2.style.height = water2Height + "px";
 
-    // actualizar división de datos
+    // Actualización de datos
     data1.textContent = water1Height.toFixed(2) + "m";
     data2.textContent = water2Height.toFixed(2) + "m";
     data3.textContent = distance.toFixed(2) + "m";
@@ -236,6 +241,35 @@ const initA = 5;
     data5.textContent = flowRate.toFixed(2) + "m³";
     data6.textContent = conductivity.toFixed(2) + "m/día";
     data7.textContent = area.toFixed(2) + "m²";
+
+    // === LÍNEAS PUNTEADAS ===
+    const graphRect = graph.getBoundingClientRect();
+    const leftLineRect = leftLine.getBoundingClientRect();
+    const pm1Rect = pm1.getBoundingClientRect();
+    const pm2Rect = pm2.getBoundingClientRect();
+
+    const topH1 = pm1.offsetHeight - water1.offsetHeight;
+    const topH2 = pm2.offsetHeight - water2.offsetHeight;
+
+    // Posicionar verticalmente dentro de cada piezómetro
+    lineH1.style.top = topH1 + "px";
+    lineH2.style.top = topH2 + "px";
+
+    // 🔧 Calcular ancho en coordenadas del gráfico
+    const offsetLeftGraph = graphRect.left;
+    const offsetLeftLine = leftLineRect.right - offsetLeftGraph;
+    const offsetPm1 = pm1Rect.left - offsetLeftGraph;
+    const offsetPm2 = pm2Rect.left - offsetLeftGraph;
+
+    const width1 = Math.max(0, offsetPm1 - offsetLeftLine);
+    const width2 = Math.max(0, offsetPm2 - offsetLeftLine);
+
+    lineH1.style.width = width1 + "px";
+    lineH2.style.width = width2 + "px";
+
+    // Mover las líneas hacia la izquierda dentro de su contenedor
+    lineH1.style.left = -width1 + "px";
+    lineH2.style.left = -width2 + "px";
   }
 
   function actualizarLinea() {
@@ -261,7 +295,6 @@ const initA = 5;
     actualizarLinea();
   }
 
-  // 🔧 Inicialización explícita de valores de los inputs
   function inicializarInputs() {
     rangeDistanceIn.value = distance.toString();
     numberDistanceIn.value = distance.toString();
@@ -271,9 +304,20 @@ const initA = 5;
     numberKIn.value = conductivity.toString();
     rangeAIn.value = area.toString();
     numberAIn.value = area.toString();
+
+    if (type.checked) {
+      numberDistanceIn.style.display = "none";
+      numberQIn.style.display = "none";
+      numberKIn.style.display = "none";
+      numberAIn.style.display = "none";
+    } else {
+      rangeDistanceIn.style.display = "none";
+      rangeQIn.style.display = "none";
+      rangeKIn.style.display = "none";
+      rangeAIn.style.display = "none";
+    }
   }
 
-  // eventos
   rangeDistanceIn.addEventListener("input", actualizarTodo);
   numberDistanceIn.addEventListener("input", actualizarTodo);
   rangeQIn.addEventListener("input", actualizarTodo);
@@ -284,13 +328,13 @@ const initA = 5;
   numberAIn.addEventListener("input", actualizarTodo);
   type.addEventListener("input", actualizarTodo);
 
-  // Estado inicial corregido
   window.addEventListener("load", () => {
     inicializarInputs();
     actualizarTodo();
     requestAnimationFrame(() => actualizarLinea());
   });
 </script>
+
 <style>
   /* === LAYOUT PRINCIPAL === */
   .layout {
@@ -353,6 +397,7 @@ const initA = 5;
     flex-direction: row;
     height: auto;
     min-height: 50vh;
+    position: relative;
   }
 
   .height-line {
@@ -380,6 +425,7 @@ const initA = 5;
   }
 
   .piezometer {
+    position: relative; /* necesario para las dotted-lines absolutas */
     display: flex;
     flex-direction: column-reverse;
     width: 30px;
@@ -409,6 +455,21 @@ const initA = 5;
   .water h3 {
     margin-top: -1em;
     margin-left: 1.8em;
+  }
+
+  .dotted-line {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    border-top: 2px dashed black;
+    opacity: 0.7;
+    pointer-events: none;
+    transition: top 0.3s ease;
+  }
+
+  body.dark-mode .dotted-line {
+    border-top: 2px dashed white;
   }
 
   /* === Línea ∆L === */
