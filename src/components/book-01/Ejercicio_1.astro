@@ -84,9 +84,9 @@
 
       <div class="section-card">
         <h3>Sección Otra</h3>
-        <label for="ejemplo">ejemploooo</label>
+        <label for="ejemplo">Q (Caudal): </label>
         <input type="range" id="ejemplo" min="1" max="100" value="30" />
-        <span class="removeSpan" id="ejemploVal">aqui van los numeros</span>
+        <span class="removeSpan" id="ejemploVal">30</span>
       </div>
     </div>
 
@@ -200,20 +200,112 @@
   const areaTubo3 = document.getElementById("aC");
   console.log("Valor del tubo:", areaTubo3.value);
 
+  //Empezamos con la logica de la ley de darcy
+
+  //1. Dejaremos fijos los metros de L, seran 200
+  const L = 200;
+  const altura_piezometro_total = 200;
+  const h_inicial = 150; //Altura del primer piezometro
+  const altura_base_tubo = 335;
+
+  //Esta funcion obtiene los valores de los inputs (ya sean range o number)
+  function getValorInput(id) {
+    const elemento = document.getElementById(id);
+    return parseFloat(elemento.value);
+  }
+
   function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    //dibuja los tubos
-    drawTube(ctx, 100, 320, 200, parseInt(areaTubo1.value));
-    drawTube(ctx, 300, 320, 200, parseInt(areaTubo2.value));
-    drawTube(ctx, 500, 320, 200, parseInt(areaTubo3.value));
+    const kA = getValorInput("kA");
+    const aA = getValorInput("aA");
+    const kB = getValorInput("kB");
+    const aB = getValorInput("aB");
+    const kC = getValorInput("kC");
+    const aC = getValorInput("aC");
+    const Q = getValorInput("ejemplo");
+
+    // dibuja los tubos (usando los valores de Área directamente como altura visual)
+    drawTube(ctx, 100, 320, 200, aA);
+    drawTube(ctx, 300, 320, 200, aB);
+    drawTube(ctx, 500, 320, 200, aC);
+
+    // 2. CALCULO DEL GRADIENTE (i) Y PERDIDA DE CARGAa (Delta de h), la cual sera fija porque el largo de los tubos sera de 200
+    // Fórmula: i = Q / (K * A) y Delta h = i * L
+
+    //Seccion A
+    const denominadorA = kA * aA;
+    const iA = Q / denominadorA; // i = Q / (K * A)
+    const deltaHA = iA * L; // Delta h = i * L
+
+    //seccionn B
+    const denominadorB = kB * aB;
+    const iB = Q / denominadorB;
+    const deltaHB = iB * L;
+
+    //Seccion C
+    const denominadorC = kC * aC;
+    const iC = Q / denominadorC;
+    const deltaHC = iC * L;
+
+    //3 CÁLCULO DE LAS CARGAS PIEZOMÉTRICAS (h)
+    // Carga inicial (P1). Asume que 'h_inicial' ya está definida globalmente
+    let h1 = h_inicial;
+
+    // Carga en la unión A-B (P2)
+    let h2 = h1 - deltaHA;
+
+    // Carga en la unión B-C (P3)
+    let h3 = h2 - deltaHB;
+
+    // Carga final (P4)
+    let h4 = h3 - deltaHC;
+
+    // 4b. APLICACIÓN DEL CONTROL DE LÍMITES (Define safeH1, safeH2, etc.)
+    // Asegurarse de que las cargas no sean < 0 ni > altura_piezometro_total
+
+    // altura_piezometro_total = 200;
+    // h_inicial = 150;
+    // altura_base_tubo = 335;
+
+    // Esto es necesario para la coordenada 'y' en el array piezometros
+    const Y_SUPERIOR = altura_base_tubo - altura_piezometro_total;
+    const safeH1 = Math.min(Math.max(h1, 0), altura_piezometro_total);
+    const safeH2 = Math.min(Math.max(h2, 0), altura_piezometro_total);
+    const safeH3 = Math.min(Math.max(h3, 0), altura_piezometro_total);
+    const safeH4 = Math.min(Math.max(h4, 0), altura_piezometro_total);
 
     //dibuja los piezometros
     const piezometros = [
-      { x: 120, y: 135, w: 20, h: 200, hAgua: 80 },
-      { x: 290, y: 135, w: 20, h: 200, hAgua: 120 },
-      { x: 490, y: 135, w: 20, h: 200, hAgua: 100 },
-      { x: 660, y: 135, w: 20, h: 200, hAgua: 100 },
+      // Usamos Y_SUPERIOR (calculada arriba) y las cargas dinámicas (safeHX)
+      {
+        x: 120,
+        y: Y_SUPERIOR,
+        w: 20,
+        h: altura_piezometro_total,
+        hAgua: safeH1,
+      },
+      {
+        x: 290,
+        y: Y_SUPERIOR,
+        w: 20,
+        h: altura_piezometro_total,
+        hAgua: safeH2,
+      },
+      {
+        x: 490,
+        y: Y_SUPERIOR,
+        w: 20,
+        h: altura_piezometro_total,
+        hAgua: safeH3,
+      },
+      {
+        x: 660,
+        y: Y_SUPERIOR,
+        w: 20,
+        h: altura_piezometro_total,
+        hAgua: safeH4,
+      },
     ];
 
     piezometros.forEach((p) =>
@@ -226,7 +318,13 @@
 
   draw();
 
-  // Redibujar en tiempo real cuando se mueva el range
+  document.getElementById("kA").addEventListener("input", draw);
+  document.getElementById("aA").addEventListener("input", draw);
+  document.getElementById("kB").addEventListener("input", draw);
+  document.getElementById("aB").addEventListener("input", draw);
+  document.getElementById("kC").addEventListener("input", draw);
+  document.getElementById("aC").addEventListener("input", draw);
+  document.getElementById("ejemplo").addEventListener("input", draw); // Q
   areaTubo1.addEventListener("input", draw);
   areaTubo2.addEventListener("input", draw);
   areaTubo3.addEventListener("input", draw);
