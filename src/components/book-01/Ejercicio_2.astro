@@ -6,13 +6,13 @@ const initDistance = 50;
 
 //flow rate Q
 const minQ = 1;
-const maxQ = 10;
-const initQ = 5;
+const maxQ = 6;
+const initQ = 3;
 
 //conductivity K
-const minK = 3;
-const maxK = 10;
-const initK = 5;
+const minK = 0.3;
+const maxK = 0.10;
+const initK = 0.5;
 
 //area A
 const minA = 1;
@@ -32,12 +32,12 @@ const initA = 5;
 
       <div class="container">
         <div class="pms">
-          <div class="piezometer" id="pm-1">
+          <div class="piezometer" id="pm-left">
             <div class="water"><h3>h₁</h3></div>
             <!-- línea punteada para h1 -->
             <div class="dotted-line" id="line-h1"></div>
           </div>
-          <div class="piezometer" id="pm-2">
+          <div class="piezometer" id="pm-right">
             <div class="water"><h3>h₂</h3></div>
             <!-- línea punteada para h2 -->
             <div class="dotted-line" id="line-h2"></div>
@@ -139,12 +139,14 @@ const initA = 5;
   const numberAIn = document.getElementById("number-A") as HTMLInputElement;
 
   //elementes for piezometer and water level
-  const pm1 = document.getElementById("pm-1") as HTMLDivElement;
-  const pm2 = document.getElementById("pm-2") as HTMLDivElement;
-  const water1 = document.querySelector("#pm-1 .water") as HTMLDivElement;
-  const water2 = document.querySelector("#pm-2 .water") as HTMLDivElement;
+  const pz = document.querySelector(".piezometer") as HTMLDivElement
+  const pms = document.querySelector(".pms") as HTMLDivElement
+  const pmLeft = document.getElementById("pm-left") as HTMLDivElement;
+  const pmRight = document.getElementById("pm-right") as HTMLDivElement;
+  const waterLeft = document.querySelector("#pm-left .water") as HTMLDivElement;
+  const waterRight = document.querySelector("#pm-right .water") as HTMLDivElement;
 
-  //elements for ∆L visualization
+  //elements for ∆L line visualization
   const deltaContainer = document.querySelector(".delta-container") as HTMLDivElement;
   const linea = document.querySelector(".linea") as HTMLDivElement;
   const deltaText = document.querySelector(".delta-text") as HTMLDivElement;
@@ -157,7 +159,6 @@ const initA = 5;
   const data5 = document.getElementById("data-5") as HTMLLabelElement;
   const data6 = document.getElementById("data-6") as HTMLLabelElement;
   const data7 = document.getElementById("data-7") as HTMLLabelElement;
-  const data8 = document.getElementById("data-8") as HTMLLabelElement;
 
   // 🔹 Líneas punteadas
   const lineH1 = document.getElementById("line-h1") as HTMLDivElement;
@@ -165,20 +166,49 @@ const initA = 5;
   const leftLine = document.querySelector(".height-line") as HTMLDivElement;
   const graph = document.querySelector(".graph") as HTMLDivElement;
 
-  const water1Height = water1.offsetHeight;
+  //left water level
+  const waterLeftHeight = waterLeft.offsetHeight;
+
+  //min gap between the two piezometers
+  const pmsMinGap = pz.offsetWidth + parseInt(getComputedStyle(pms).gap)
+
+  //piezometers coords
+  const pmLeftcoords = pmLeft.getBoundingClientRect();
+  const pmRightCoords = pmRight.getBoundingClientRect();
+  const pmLeftCenter = pmLeftcoords.left + pmLeftcoords.width / 2;
+  const pmRightCenter = pmRightCoords.left + pmRightCoords.width / 2;
+
+  //delta container coords
+  const deltaContainerCoords = deltaContainer.getBoundingClientRect();
+  const lineLeftCoord = Math.min(pmLeftCenter, pmRightCenter) - deltaContainerCoords.left;
+  const deltaTextLeftCoord = deltaText.offsetWidth / 2;
+
+  //graph and height-line coords
+  const graphCoords = graph.getBoundingClientRect();
+  const heightLineCoords = leftLine.getBoundingClientRect();
+
+  const offsetLeftLine = heightLineCoords.right - graphCoords.left;
+  const offsetPm1 = pmLeftcoords.left - graphCoords.left;
+
+  const lineH1Width = Math.max(0, offsetPm1 - offsetLeftLine);
 
   //∆L
   let distance = 50;
+  //Q
   let flowRate = 2;
+  //K
   let conductivity = 0.5;
+  //A
   let area = 4;
+
+  actualizarTodo() 
 
   function actualizarInputType() {
     if (type.checked) {
       distance = parseInt(rangeDistanceIn.value);
       flowRate = parseInt(rangeQIn.value);
       conductivity = parseFloat(rangeKIn.value);
-      area = parseFloat(rangeAIn.value);
+      area = parseInt(rangeAIn.value);
 
       numberDistanceIn.style.display = "none";
       numberQIn.style.display = "none";
@@ -193,7 +223,7 @@ const initA = 5;
       distance = parseInt(numberDistanceIn.value);
       flowRate = parseInt(numberQIn.value);
       conductivity = parseFloat(numberKIn.value);
-      area = parseFloat(numberAIn.value);
+      area = parseInt(numberAIn.value);
 
       numberDistanceIn.style.display = "flex";
       numberQIn.style.display = "flex";
@@ -209,71 +239,49 @@ const initA = 5;
 
   function actualizarEstado() {
     // Movimiento horizontal del pm-2
-    pm2.style.marginLeft = distance + "px";
+    pmRight.style.marginLeft = distance + "px";
 
     // h2 = h1 - ((Q * ∆L) / (K * A))
-    let water2Height =
-      water1Height - (flowRate * distance) / (conductivity * area);
-    if (water2Height <= 0) water2Height = 0;
+    let waterRightHeight =
+      waterLeftHeight - (flowRate * distance) / (conductivity * area);
+    if (waterRightHeight <= 0) waterRightHeight = 0;
 
     // Ajuste de altura de agua
-    water2.style.height = water2Height + "px";
+    waterRight.style.height = waterRightHeight + "px";
 
     // Actualización de datos
-    data1.textContent = water1Height.toFixed(2) + "m";
-    data2.textContent = water2Height.toFixed(2) + "m";
+    data1.textContent = waterLeftHeight.toFixed(2) + "m";
+    data2.textContent = waterRightHeight.toFixed(2) + "m";
     data3.textContent = distance.toFixed(2) + "m";
-    let slope = ((water2Height - water1Height) / distance).toFixed(2);
+    const slope = ((waterRightHeight - waterLeftHeight) / distance).toFixed(2);
     data4.textContent = slope + "m";
     data5.textContent = flowRate.toFixed(2) + "m³";
     data6.textContent = conductivity.toFixed(2) + "m/día";
     data7.textContent = area.toFixed(2) + "m²";
 
+    // linea ∆L
+    const lineWidth = distance + pmsMinGap;
+    // actualizacion de linea de distancia
+    linea.style.left = lineLeftCoord + "px";
+    linea.style.width = distance + pmsMinGap + "px";
+    deltaText.style.left = lineLeftCoord + lineWidth / 2 - deltaTextLeftCoord + "px";
+
     // === LÍNEAS PUNTEADAS ===
-    const graphRect = graph.getBoundingClientRect();
-    const leftLineRect = leftLine.getBoundingClientRect();
-    const pm1Rect = pm1.getBoundingClientRect();
+    const lineH2Width = lineH1Width + distance + pmsMinGap;
 
-    // 🔧 Calcular ancho en coordenadas del gráfico
-    const offsetLeftGraph = graphRect.left;
-    const offsetLeftLine = leftLineRect.right - offsetLeftGraph;
-    const offsetPm1 = pm1Rect.left - offsetLeftGraph;
+    // asignar width de lineas punteadas
+    lineH1.style.width = lineH1Width + "px";
+    lineH2.style.width = lineH2Width + "px";
 
-    const width1 = Math.max(0, offsetPm1 - offsetLeftLine);
-    // width2 = distancia de separacion del primer pz + distance + gap entre los pms y width de los pms
-    const width2 = width1 + distance + 55;
+    // Mover las líneas punteadas hacia la izquierda dentro de su contenedor
+    lineH1.style.marginLeft = -lineH1Width + "px"
+    lineH2.style.marginLeft = -lineH2Width + "px"
 
-    lineH1.style.width = width1 + "px";
-    lineH2.style.width = width2 + "px";
-
-    // Mover las líneas hacia la izquierda dentro de su contenedor
-    lineH1.style.marginLeft = -width1 + "px"
-    lineH2.style.marginLeft = -width2 + "px"
-  }
-
-  function actualizarLinea() {
-    const rect1 = pm1.getBoundingClientRect();
-    const rect2 = pm2.getBoundingClientRect();
-    const parentRect = deltaContainer.getBoundingClientRect();
-
-    const center1 = rect1.left + rect1.width / 2;
-    const center2 = rect2.left + rect2.width / 2;
-
-    const left = Math.min(center1, center2) - parentRect.left;
-    // 55 = gap + pms-width
-    // 55 = 25 + 30
-    const width = distance + 55;
-
-    linea.style.left = left + "px";
-    linea.style.width = width + "px";
-    const offset = deltaText.offsetWidth / 2;
-    deltaText.style.left = left + width / 2 - offset + "px";
   }
 
   function actualizarTodo() {
     actualizarInputType();
     actualizarEstado();
-    actualizarLinea();
   }
 
   rangeDistanceIn.addEventListener("input", actualizarTodo);
@@ -286,7 +294,7 @@ const initA = 5;
   numberAIn.addEventListener("input", actualizarTodo);
   type.addEventListener("input", actualizarTodo);
 
-  actualizarTodo() 
+
 </script>
 
 <style>
@@ -379,7 +387,6 @@ const initA = 5;
   }
 
   .piezometer {
-    position: relative; /* necesario para las dotted-lines absolutas */
     display: flex;
     flex-direction: column-reverse;
     width: 30px;
@@ -391,11 +398,11 @@ const initA = 5;
     transition: margin-left 0.5s ease;
   }
 
-  .piezometer#pm-1 > .water {
+  .piezometer#pm-left > .water {
     height: 70%;
   }
 
-  .piezometer#pm-2 > .water {
+  .piezometer#pm-right > .water {
     height: 50%;
   }
 
