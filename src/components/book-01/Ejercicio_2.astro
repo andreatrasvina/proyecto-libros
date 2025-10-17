@@ -95,40 +95,26 @@ const initA = 5;
     </div>
 
     <!-- Panel controles -->
-    <div
-      class="panel border border-[var(--borderMario)] bg-[var(--cardMario)] rounded-md shadow-[0_8px_30px_var(--shadowMario)]"
-    >
-      <h2>Controles</h2>
-      <div class="panel-grid">
-        <div class="control">
-          <label>Tipo de input</label>
-          <input type="checkbox" id="input-type" value="true" />
-        </div>
-        <div class="control"></div>
-
-        <div class="control">
-          <label>Distancia entre piezómetros</label>
-          <input id="range-distance" type="range" />
-          <input id="number-distance" type="number" />
-        </div>
-
-        <div class="control">
-          <label>Ratio de flujo</label>
-          <input id="range-Q" type="range" />
-          <input id="number-Q" type="number" />
-        </div>
-
-        <div class="control">
-          <label>Conductividad</label>
-          <input id="range-K" type="range" />
-          <input id="number-K" type="number" />
-        </div>
-
-        <div class="control">
-          <label>Área</label>
-          <input id="range-A" type="range" />
-          <input id="number-A" type="number" />
-        </div>
+      <div class="panel border border-[var(--borderMario)] bg-[var(--cardMario)] rounded-md shadow-[0_8px_30px_var(--shadowMario)]">
+        <h2>Controles</h2>
+        <label>Tipo de input</label>
+        <input type="checkbox" id="input-type" value="true"/>
+        <br><br>
+        <label>Distancia entre piezómetros</label>
+        <input id="range-distance" type="range" min={minDistance} max={maxDistance} value={initDistance} />
+        <input id="number-distance" type="number" min={minDistance} max={maxDistance} value={initDistance} />
+        <br><br>
+        <label>Ratio de flujo</label>
+        <input id="range-Q" type="range" min={minQ} max={maxQ} value={initQ} />
+        <input id="number-Q" type="number" min={minQ} max={maxQ} value={initQ} />
+        <br><br>
+        <label>Conductividad</label>
+        <input id="range-K" type="range" min={minK} max={maxK} value={initK} />
+        <input id="number-K" type="number" min={minK} max={maxK} value={initK} />
+        <br><br>
+        <label>Area</label>
+        <input id="range-A" type="range" min={minA} max={maxA} value={initA} />
+        <input id="number-A" type="number" min={minA} max={maxA} value={initA} />
       </div>
     </div>
   </div>
@@ -136,47 +122,48 @@ const initA = 5;
 
 <script>
   //elements for distance (∆L) control
-  const type = document.getElementById("input-type");
-  const rangeDistanceIn = document.getElementById("range-distance");
-  const numberDistanceIn = document.getElementById("number-distance");
+  const type = document.getElementById("input-type") as HTMLInputElement;
+  const rangeDistanceIn = document.getElementById("range-distance") as HTMLInputElement;
+  const numberDistanceIn = document.getElementById("number-distance") as HTMLInputElement;
 
   //elements for flow rate (Q) control
-  const rangeQIn = document.getElementById("range-Q");
-  const numberQIn = document.getElementById("number-Q");
+  const rangeQIn = document.getElementById("range-Q") as HTMLInputElement;
+  const numberQIn = document.getElementById("number-Q") as HTMLInputElement;
 
   //elements for conductivity (K) control
-  const rangeKIn = document.getElementById("range-K");
-  const numberKIn = document.getElementById("number-K");
+  const rangeKIn = document.getElementById("range-K") as HTMLInputElement;
+  const numberKIn = document.getElementById("number-K") as HTMLInputElement;
 
   //elements for area (A) control
-  const rangeAIn = document.getElementById("range-A");
-  const numberAIn = document.getElementById("number-A");
+  const rangeAIn = document.getElementById("range-A") as HTMLInputElement;
+  const numberAIn = document.getElementById("number-A") as HTMLInputElement;
 
   //elementes for piezometer and water level
-  const pm1 = document.getElementById("pm-1");
-  const pm2 = document.getElementById("pm-2");
-  const water1 = document.querySelector("#pm-1 .water");
-  const water2 = document.querySelector("#pm-2 .water");
+  const pm1 = document.getElementById("pm-1") as HTMLDivElement;
+  const pm2 = document.getElementById("pm-2") as HTMLDivElement;
+  const water1 = document.querySelector("#pm-1 .water") as HTMLDivElement;
+  const water2 = document.querySelector("#pm-2 .water") as HTMLDivElement;
 
   //elements for ∆L visualization
-  const deltaContainer = document.querySelector(".delta-container");
-  const linea = document.querySelector(".linea");
-  const deltaText = document.querySelector(".delta-text");
+  const deltaContainer = document.querySelector(".delta-container") as HTMLDivElement;
+  const linea = document.querySelector(".linea") as HTMLDivElement;
+  const deltaText = document.querySelector(".delta-text") as HTMLDivElement;
 
   //data values
-  const data1 = document.getElementById("data-1");
-  const data2 = document.getElementById("data-2");
-  const data3 = document.getElementById("data-3");
-  const data4 = document.getElementById("data-4");
-  const data5 = document.getElementById("data-5");
-  const data6 = document.getElementById("data-6");
-  const data7 = document.getElementById("data-7");
+  const data1 = document.getElementById("data-1") as HTMLLabelElement;
+  const data2 = document.getElementById("data-2") as HTMLLabelElement;
+  const data3 = document.getElementById("data-3") as HTMLLabelElement;
+  const data4 = document.getElementById("data-4") as HTMLLabelElement;
+  const data5 = document.getElementById("data-5") as HTMLLabelElement;
+  const data6 = document.getElementById("data-6") as HTMLLabelElement;
+  const data7 = document.getElementById("data-7") as HTMLLabelElement;
+  const data8 = document.getElementById("data-8") as HTMLLabelElement;
 
   // 🔹 Líneas punteadas
-  const lineH1 = document.getElementById("line-h1");
-  const lineH2 = document.getElementById("line-h2");
-  const leftLine = document.querySelector(".height-line");
-  const graph = document.querySelector(".graph");
+  const lineH1 = document.getElementById("line-h1") as HTMLDivElement;
+  const lineH2 = document.getElementById("line-h2") as HTMLDivElement;
+  const leftLine = document.querySelector(".height-line") as HTMLDivElement;
+  const graph = document.querySelector(".graph") as HTMLDivElement;
 
   const water1Height = water1.offsetHeight;
 
@@ -246,30 +233,22 @@ const initA = 5;
     const graphRect = graph.getBoundingClientRect();
     const leftLineRect = leftLine.getBoundingClientRect();
     const pm1Rect = pm1.getBoundingClientRect();
-    const pm2Rect = pm2.getBoundingClientRect();
-
-    const topH1 = pm1.offsetHeight - water1.offsetHeight;
-    const topH2 = pm2.offsetHeight - water2.offsetHeight;
-
-    // Posicionar verticalmente dentro de cada piezómetro
-    lineH1.style.top = topH1 + "px";
-    lineH2.style.top = topH2 + "px";
 
     // 🔧 Calcular ancho en coordenadas del gráfico
     const offsetLeftGraph = graphRect.left;
     const offsetLeftLine = leftLineRect.right - offsetLeftGraph;
     const offsetPm1 = pm1Rect.left - offsetLeftGraph;
-    const offsetPm2 = pm2Rect.left - offsetLeftGraph;
 
     const width1 = Math.max(0, offsetPm1 - offsetLeftLine);
-    const width2 = Math.max(0, offsetPm2 - offsetLeftLine);
+    // width2 = distancia de separacion del primer pz + distance + gap entre los pms y width de los pms
+    const width2 = width1 + distance + 55;
 
     lineH1.style.width = width1 + "px";
     lineH2.style.width = width2 + "px";
 
     // Mover las líneas hacia la izquierda dentro de su contenedor
-    lineH1.style.left = -width1 + "px";
-    lineH2.style.left = -width2 + "px";
+    lineH1.style.marginLeft = -width1 + "px"
+    lineH2.style.marginLeft = -width2 + "px"
   }
 
   function actualizarLinea() {
@@ -281,6 +260,8 @@ const initA = 5;
     const center2 = rect2.left + rect2.width / 2;
 
     const left = Math.min(center1, center2) - parentRect.left;
+    // 55 = gap + pms-width
+    // 55 = 25 + 30
     const width = distance + 55;
 
     linea.style.left = left + "px";
@@ -295,29 +276,6 @@ const initA = 5;
     actualizarLinea();
   }
 
-  function inicializarInputs() {
-    rangeDistanceIn.value = distance.toString();
-    numberDistanceIn.value = distance.toString();
-    rangeQIn.value = flowRate.toString();
-    numberQIn.value = flowRate.toString();
-    rangeKIn.value = conductivity.toString();
-    numberKIn.value = conductivity.toString();
-    rangeAIn.value = area.toString();
-    numberAIn.value = area.toString();
-
-    if (type.checked) {
-      numberDistanceIn.style.display = "none";
-      numberQIn.style.display = "none";
-      numberKIn.style.display = "none";
-      numberAIn.style.display = "none";
-    } else {
-      rangeDistanceIn.style.display = "none";
-      rangeQIn.style.display = "none";
-      rangeKIn.style.display = "none";
-      rangeAIn.style.display = "none";
-    }
-  }
-
   rangeDistanceIn.addEventListener("input", actualizarTodo);
   numberDistanceIn.addEventListener("input", actualizarTodo);
   rangeQIn.addEventListener("input", actualizarTodo);
@@ -328,11 +286,7 @@ const initA = 5;
   numberAIn.addEventListener("input", actualizarTodo);
   type.addEventListener("input", actualizarTodo);
 
-  window.addEventListener("load", () => {
-    inicializarInputs();
-    actualizarTodo();
-    requestAnimationFrame(() => actualizarLinea());
-  });
+  actualizarTodo() 
 </script>
 
 <style>
@@ -458,14 +412,13 @@ const initA = 5;
   }
 
   .dotted-line {
-    position: absolute;
     left: 0;
     width: 100%;
-    height: 1px;
     border-top: 2px dashed black;
+    margin-bottom: -2px;
     opacity: 0.7;
     pointer-events: none;
-    transition: top 0.3s ease;
+    transition: 0.5s ease;
   }
 
   body.dark-mode .dotted-line {
