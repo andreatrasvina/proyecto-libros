@@ -22,7 +22,7 @@
       <canvas
         id="myCanvas"
         width="800"
-        height="400"
+        height="500"
         style="border:1px solid var(--borderEjercicio); margin: 0 auto;"
         class="rounded"
       >
@@ -34,7 +34,11 @@
         <input type="checkbox" id="manual" />
         <span class="slider-toggle text-[var(--titles)]"></span>
       </div>
-      <h1 class="lato-regular text-sm mt-3">Datos manuales</h1>
+      <h1 class="lato-regular text-sm mt-3">
+        Datos manuales <span class="lato-bold">
+          (La representacion visual puede distorsionarse)</span
+        >
+      </h1>
     </label>
 
     <div class="controls">
@@ -184,19 +188,33 @@
   const cantidadBolitas = 40;
 
   //posiciones verticales random del tubo
-  let posicionesY_Tubo1 = Array.from({length: cantidadBolitas}, () => Math.random());
-  let posicionesY_Tubo2 = Array.from({length: cantidadBolitas}, () => Math.random());
-  let posicionesY_Tubo3 = Array.from({length: cantidadBolitas}, () => Math.random());
+  let posicionesY_Tubo1 = Array.from({ length: cantidadBolitas }, () =>
+    Math.random(),
+  );
+  let posicionesY_Tubo2 = Array.from({ length: cantidadBolitas }, () =>
+    Math.random(),
+  );
+  let posicionesY_Tubo3 = Array.from({ length: cantidadBolitas }, () =>
+    Math.random(),
+  );
 
   let t = 0;
 
-  function drawParticulas(ctx, x, centroY, width, height, kValue, aValue, posicionesY) {
+  function drawParticulas(
+    ctx,
+    x,
+    centroY,
+    width,
+    height,
+    kValue,
+    aValue,
+    posicionesY,
+  ) {
     const radio = 1 + kValue / 25; //tamaño segun K
     const velocidadBase = 1; //velocidad base
     const velocidad = velocidadBase * (aValue / 100); //velocidad proporcional a A
 
     for (let i = 0; i < cantidadBolitas; i++) {
-
       //posicion x de la arena
       const px = x + ((i * (width / cantidadBolitas) + t * velocidad) % width);
 
@@ -209,8 +227,6 @@
       ctx.fill();
     }
   }
-
-
 
   const canvas = document.getElementById("myCanvas");
   const ctx = canvas.getContext("2d");
@@ -237,12 +253,26 @@
   const L = 200;
   const altura_piezometro_total = 200;
   const h_inicial = 150; //Altura del primer piezometro
-  const altura_base_tubo = 335;
+  const altura_base_tubo = 320;
 
   //Esta funcion obtiene los valores de los inputs (ya sean range o number)
   function getValorInput(id) {
     const elemento = document.getElementById(id);
     return parseFloat(elemento.value);
+  }
+
+  function drawOval(ctx, x, y, radioX, radioY) {
+    ctx.beginPath();
+    // Dibuja la elipse: (x, y, radioX, radioY, rotación, ángulo inicial, ángulo final)
+    ctx.ellipse(x, y, radioX, radioY, 0, 0, 2 * Math.PI);
+
+    // Estilos del óvalo
+    ctx.fillStyle = "#a4d8f2"; // Azul para el agua
+    ctx.fill();
+    ctx.strokeStyle = "#555";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.closePath();
   }
 
   function draw() {
@@ -256,16 +286,44 @@
     const aC = getValorInput("aC");
     const Q = getValorInput("ejemplo");
 
-    // dibuja los tubos (usando los valores de Área directamente como altura visual)
+    // dibuja los tubos
     drawTube(ctx, 100, 320, 200, aA);
     drawTube(ctx, 300, 320, 200, aB);
     drawTube(ctx, 500, 320, 200, aC);
+
+    // --- DIBUJA EL ÓVALO (Origen del Caudal Q) ---
+    const tuboX = 100;
+    const tuboCentroY = 320;
+    const tuboHeight = aA;
+    const tuboHeightC = aC;
+
+    // Calculamos el radio vertical
+    let radioY = aA * 0.8;
+    let radioYC = aC * 0.8;
+
+    radioY = Math.max(4, Math.min(radioY, tuboHeight / 2));
+    radioYC = Math.max(4, Math.min(radioYC, tuboHeightC / 2));
+
+    //El radioX será mayor que el radioY ya que es una ellipse vertical
+    const radioX = radioY * 0.9;
+    const radioXC = radioYC * 0.9;
+
+    // Centramos el óvalo verticalmente en el tubo
+    const ovalCenterX = tuboX - 2; // ligeramente a la izquierda del tubo
+    const ovalCenterY = tuboCentroY; // centrado verticalmente
+
+    // Inicio del Caudal
+    drawOval(ctx, ovalCenterX, ovalCenterY, radioX, radioY);
+
+    // Fin del Caudal
+    drawOval(ctx, 700, 320, radioXC, radioYC);
+
+    // --- FIN DEL DIBUJO DEL OVALO (QUE PEDOTE) ---
 
     //animar arena dentro del tubo
     drawParticulas(ctx, 100, 320, 200, aA, kA, aA, posicionesY_Tubo1);
     drawParticulas(ctx, 300, 320, 200, aB, kB, aB, posicionesY_Tubo2);
     drawParticulas(ctx, 500, 320, 200, aC, kC, aC, posicionesY_Tubo3);
-
 
     // 2. CALCULO DEL GRADIENTE (i) Y PERDIDA DE CARGAa (Delta de h), la cual sera fija porque el largo de los tubos sera de 200
     // Fórmula: i = Q / (K * A) y Delta h = i * L
@@ -301,9 +359,9 @@
     // 4b. APLICACIÓN DEL CONTROL DE LÍMITES (Define safeH1, safeH2, etc.)
     // Asegurarse de que las cargas no sean < 0 ni > altura_piezometro_total
 
+    // altura_base_tubo = 335;
     // altura_piezometro_total = 200;
     // h_inicial = 150;
-    // altura_base_tubo = 335;
 
     // Esto es necesario para la coordenada 'y' en el array piezometros
     const Y_SUPERIOR = altura_base_tubo - altura_piezometro_total;
@@ -348,6 +406,41 @@
     piezometros.forEach((p) =>
       drawPiezometro(ctx, p.x, p.y, p.w, p.h, p.hAgua),
     );
+
+    // 6. MOSTRAR CÁLCULOS CLAVE EN EL CANVAS
+    ctx.font = "14px Arial, sans-serif"; // Arial o cualquier sans-serif disponible
+    ctx.fillStyle = "#333333";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "top";
+
+    // Gradiente Total (i_total)
+    const deltaH_total = deltaHA + deltaHB + deltaHC;
+    const L_total = 3 * L;
+    const i_total = deltaH_total / L_total;
+
+    // Sección A
+    const textoIA = `iA = ${iA.toFixed(4)}`;
+    ctx.fillText(`${textoIA}`, 175, 100);
+    const textoDha = `ΔhA = ${deltaHA.toFixed(2)}`;
+    ctx.fillText(`${textoDha}`, 175, 120);
+
+    // Sección B
+    const textoIB = `iB = ${iB.toFixed(4)}`;
+    ctx.fillText(`${textoIB}`, 365, 100);
+    const textoDhb = `ΔhB = ${deltaHB.toFixed(2)}`;
+    ctx.fillText(`${textoDhb}`, 365, 120);
+
+    // Sección C
+    const textoIC = `iC = ${iC.toFixed(4)}`;
+    ctx.fillText(`${textoIC}`, 550, 100);
+    const textoDhc = `ΔhC = ${deltaHC.toFixed(2)}`;
+    ctx.fillText(`${textoDhc}`, 550, 120);
+
+    //Gradiente Hidráulico Total (por si lo quieres matar yeya)
+    ctx.font = "14px Consolas";
+    ctx.fillStyle = "red";
+    const textoITotal = `i TOTAL (Promedio) = ${i_total.toFixed(4)}`;
+    ctx.fillText(textoITotal, 550, 400);
 
     //dibuja la linea que conecta los niveles de agua jeje
     drawGradienteHidraulico(ctx, piezometros);
