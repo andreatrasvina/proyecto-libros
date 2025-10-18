@@ -200,19 +200,12 @@
 
   let t = 0;
 
-  function drawParticulas(
-    ctx,
-    x,
-    centroY,
-    width,
-    height,
-    kValue,
-    aValue,
-    posicionesY,
-  ) {
+  function drawParticulas(ctx, x, centroY, width, height, kValue, aValue, posicionesY,) {
+    
     const radio = 1 + kValue / 25; //tamaño segun K
     const velocidadBase = 1; //velocidad base
-    const velocidad = velocidadBase * (aValue / 100); //velocidad proporcional a A
+    
+    const velocidad = velocidadBase * (100 / Math.max(aValue, 1)) * 0.1; 
 
     for (let i = 0; i < cantidadBolitas; i++) {
       //posicion x de la arena
