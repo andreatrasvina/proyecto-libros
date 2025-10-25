@@ -110,6 +110,22 @@
 </div>
 
 <script>
+  // Paleta general
+  const colores = {
+    fondoCanvas: "#f8f9fa",          // fondo neutro, cálido y limpio
+    tubo: "#dfe4ea",                 // gris claro
+    bordeTubo: "#c5cbd3",            // gris medio para borde
+    aguaGradienteInicio: "#6fd3e7",  // azul claro
+    aguaGradienteFin: "#3aa6b9",     // azul medio
+    particula1: "rgba(194, 178, 128, 0.8)", // beige suave
+    particula2: "rgba(181, 166, 109, 0.75)", // ocre claro
+    particula3: "rgba(153, 132, 82, 0.7)",   // marrón arena
+    piezometro: "#e7ebef",            // gris azulado muy claro
+    bordePiezometro: "#bfc6cf",
+    texto: "#2d3436",                 // gris oscuro para tipografía
+    gradienteLine: "#3aa6b9",         // azul consistente con el agua
+  };
+
   //esto es para los numeritos del span, se actualizan cuando se mueve el range
   document.querySelectorAll("input[type=range]").forEach((slider) => {
     const span = document.getElementById(slider.id + "Val");
@@ -149,19 +165,35 @@
   // funcionn para dibujar los piezometros
   function drawPiezometro(ctx, x, y, width, height, hAgua) {
     //agua dentro del tubo
-    ctx.fillStyle = "#4ad6ff";
+    // ctx.fillStyle = colores.tubo;
+    // ctx.strokeStyle = colores.bordeTubo;
+
+    //gradiente del color del agua
+    const grad = ctx.createLinearGradient(0, y + height, 0, y + height - hAgua);
+    grad.addColorStop(0, colores.aguaGradienteFin);
+    grad.addColorStop(1, colores.aguaGradienteInicio);
+    ctx.fillStyle = grad;
+    
     ctx.fillRect(x, y + height - hAgua, width, hAgua);
 
     //tubo del piezometro
-    ctx.strokeStyle = borderColor;
-    ctx.lineWidth = 2;
+    // ctx.fillStyle = colores.piezometro;
+    ctx.strokeStyle = colores.bordePiezometro;
+    ctx.lineWidth = 1;
+
     ctx.strokeRect(x, y, width, height);
   }
 
   function drawTube(ctx, x, centroY, w, h) {
-    ctx.fillStyle = "#a4d8f2";
-    ctx.strokeStyle = "#555";
-    ctx.lineWidth = 2;
+    
+    const gradTubo = ctx.createLinearGradient(0, centroY, 0, centroY + h);
+    gradTubo.addColorStop(0, colores.aguaGradienteInicio);
+    gradTubo.addColorStop(1, colores.aguaGradienteFin);
+    ctx.fillStyle = gradTubo;
+    // ctx.fill();
+    ctx.strokeStyle = colores.aguaGradienteFin;
+    ctx.lineWidth = 1;
+
 
     //calcular el punto superior para mantener el centro fijo jeje
     const y = centroY - h / 2;
@@ -180,7 +212,7 @@
       else ctx.lineTo(xCentro, yAgua);
     });
 
-    ctx.strokeStyle = "brown";
+    ctx.strokeStyle = colores.gradienteLine;
     ctx.lineWidth = 2;
     ctx.stroke();
   }
@@ -220,7 +252,8 @@
 
       ctx.beginPath();
       ctx.arc(px, py, radio, 0, Math.PI * 2);
-      ctx.fillStyle = "#d4b072"; //aki se puede poner otro colorr, quiza negro como en el libro
+
+      ctx.fillStyle = colores.particula1; //aki se puede poner otro colorr, quiza negro como en el libro
       ctx.fill();
     }
   }
@@ -264,16 +297,23 @@
     ctx.ellipse(x, y, radioX, radioY, 0, 0, 2 * Math.PI);
 
     // Estilos del óvalo
-    ctx.fillStyle = "#a4d8f2"; // Azul para el agua
-    ctx.fill();
-    ctx.strokeStyle = "#555";
-    ctx.lineWidth = 2;
+    const gradTubo = ctx.createLinearGradient(0, radioY, 0, y + x);
+    gradTubo.addColorStop(0, colores.aguaGradienteInicio);
+    gradTubo.addColorStop(1, colores.aguaGradienteFin);
+    ctx.fillStyle = gradTubo;
+    ctx.fill(); // Azul para el agua
+    
+    ctx.strokeStyle = colores.bordeTubo;
+    ctx.lineWidth = 1;
     ctx.stroke();
     ctx.closePath();
   }
 
   function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // ctx.fillStyle = "#f9fafb";
+    // ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     const kA = getValorInput("kA");
     const aA = getValorInput("aA");
@@ -405,8 +445,8 @@
     );
 
     // 6. MOSTRAR CÁLCULOS CLAVE EN EL CANVAS
-    ctx.font = "14px Arial, sans-serif"; // Arial o cualquier sans-serif disponible
-    ctx.fillStyle = "#333333";
+    ctx.font = "14px 'Roboto Mono', monospace";
+    ctx.fillStyle = colores.texto;
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
 
@@ -469,6 +509,13 @@
     margin-top: 16px;
   }
 
+  .card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
   .section-card {
     background: rgba(255, 255, 255, 0.02);
     border-radius: 12px;
@@ -489,6 +536,31 @@
     margin-top: 8px;
     font-size: 13px;
     color: var(--textoCardCanvas);
+  }
+
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 5px;
+    background: linear-gradient(90deg, #3aa6b9, #6fd3e7);
+    outline: none;
+    transition: 0.3s ease;
+  }
+  
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    background: #3aa6b9;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
   }
 
   .section-card input[type="range"] {
@@ -532,6 +604,8 @@
     height: 0;
   }
 
+
+
   .slider-toggle {
     position: absolute;
     cursor: pointer;
@@ -557,7 +631,7 @@
   }
 
   .switch input:checked + .slider-toggle {
-    background-color: #00bfff;
+    background-color: #3aa6b9;
   }
 
   .switch input:checked + .slider-toggle:before {
