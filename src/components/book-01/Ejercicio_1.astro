@@ -112,18 +112,18 @@
 <script>
   // Paleta general
   const colores = {
-    fondoCanvas: "#f8f9fa",          // fondo neutro, cálido y limpio
-    tubo: "#dfe4ea",                 // gris claro
-    bordeTubo: "#c5cbd3",            // gris medio para borde
-    aguaGradienteInicio: "#6fd3e7",  // azul claro
-    aguaGradienteFin: "#3aa6b9",     // azul medio
+    fondoCanvas: "#f8f9fa", // fondo neutro, cálido y limpio
+    tubo: "#dfe4ea", // gris claro
+    bordeTubo: "#c5cbd3", // gris medio para borde
+    aguaGradienteInicio: "#6fd3e7", // azul claro
+    aguaGradienteFin: "#3aa6b9", // azul medio
     particula1: "rgba(194, 178, 128, 0.8)", // beige suave
     particula2: "rgba(181, 166, 109, 0.75)", // ocre claro
-    particula3: "rgba(153, 132, 82, 0.7)",   // marrón arena
-    piezometro: "#e7ebef",            // gris azulado muy claro
+    particula3: "rgba(153, 132, 82, 0.7)", // marrón arena
+    piezometro: "#e7ebef", // gris azulado muy claro
     bordePiezometro: "#bfc6cf",
-    texto: "#2d3436",                 // gris oscuro para tipografía
-    gradienteLine: "#3aa6b9",         // azul consistente con el agua
+    texto: "#2d3436", // gris oscuro para tipografía
+    gradienteLine: "#3aa6b9", // azul consistente con el agua
   };
 
   //esto es para los numeritos del span, se actualizan cuando se mueve el range
@@ -173,7 +173,7 @@
     grad.addColorStop(0, colores.aguaGradienteFin);
     grad.addColorStop(1, colores.aguaGradienteInicio);
     ctx.fillStyle = grad;
-    
+
     ctx.fillRect(x, y + height - hAgua, width, hAgua);
 
     //tubo del piezometro
@@ -185,7 +185,6 @@
   }
 
   function drawTube(ctx, x, centroY, w, h) {
-    
     const gradTubo = ctx.createLinearGradient(0, centroY, 0, centroY + h);
     gradTubo.addColorStop(0, colores.aguaGradienteInicio);
     gradTubo.addColorStop(1, colores.aguaGradienteFin);
@@ -193,7 +192,6 @@
     // ctx.fill();
     ctx.strokeStyle = colores.aguaGradienteFin;
     ctx.lineWidth = 1;
-
 
     //calcular el punto superior para mantener el centro fijo jeje
     const y = centroY - h / 2;
@@ -233,13 +231,21 @@
 
   let t = 0;
 
-  function drawParticulas(ctx, x, centroY, width, height, kValue, aValue, posicionesY,) {
-    
+  function drawParticulas(
+    ctx,
+    x,
+    centroY,
+    width,
+    height,
+    kValue,
+    aValue,
+    posicionesY,
+  ) {
     const radio = 1 + kValue / 25; //tamaño segun K
     const velocidadBase = 1; //velocidad base
-    
+
     //let velocidad =( velocidadBase * (1 / aValue)) * 10;
-    const velocidad = velocidadBase * (100 / Math.max(aValue, 1)) * 0.1; 
+    const velocidad = velocidadBase * (100 / Math.max(aValue, 1)) * 0.1;
 
     //min = 20 y max = (area/100)*40
     cantidadBolitas = Math.max(25, Math.floor((aValue / 100) * 40));
@@ -302,7 +308,7 @@
     gradTubo.addColorStop(1, colores.aguaGradienteFin);
     ctx.fillStyle = gradTubo;
     ctx.fill(); // Azul para el agua
-    
+
     ctx.strokeStyle = colores.bordeTubo;
     ctx.lineWidth = 1;
     ctx.stroke();
@@ -342,8 +348,8 @@
     radioYC = Math.max(4, Math.min(radioYC, tuboHeightC / 2));
 
     //El radioX será mayor que el radioY ya que es una ellipse vertical
-    const radioX = radioY * 0.9;
-    const radioXC = radioYC * 0.9;
+    const radioX = radioY * 0.4;
+    const radioXC = radioYC * 0.2;
 
     // Centramos el óvalo verticalmente en el tubo
     const ovalCenterX = tuboX - 2; // ligeramente a la izquierda del tubo
@@ -510,11 +516,13 @@
   }
 
   .card {
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  transition: transform 0.2s ease, box-shadow 0.3s ease;
-}
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.3s ease;
+  }
 
   .section-card {
     background: rgba(255, 255, 255, 0.02);
@@ -538,7 +546,6 @@
     color: var(--textoCardCanvas);
   }
 
-
   input[type="range"] {
     -webkit-appearance: none;
     width: 100%;
@@ -548,7 +555,7 @@
     outline: none;
     transition: 0.3s ease;
   }
-  
+
   input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 14px;
@@ -603,8 +610,6 @@
     width: 0;
     height: 0;
   }
-
-
 
   .slider-toggle {
     position: absolute;
