@@ -212,3 +212,12 @@ body.dark-mode .light-mode-logo {
   height: 1px;
   margin-bottom: 3rem;
 }
+
+.pie-foto {
+  display: inline-block; 
+
+  background-color: #eaf6ff; 
+  border: 1px solid #eaf6ff;
+  color: #333; 
+  padding: 10px;
+}
