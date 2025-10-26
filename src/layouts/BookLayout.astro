@@ -70,10 +70,15 @@ const { exercises = [], currentBookSlug } = Astro.props;
           <path
             class="moon-path"
             d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"></path>
+
           <path
             class="sun-path hidden"
-            d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm-9-7a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1zm16 0a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1zm-8-15a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1zm0 16a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1zM7.05 6.05a1 1 0 0 1-.707-1.707l1.414-1.414a1 1 0 0 1 1.414 1.414L7.05 6.05zm9.9-9.9a1 1 0 0 1-.707-1.707l1.414-1.414a1 1 0 0 1 1.414 1.414l-1.414 1.414zM4.93 18.36a1 1 0 0 1-.707-1.707L5.64 15.24a1 1 0 0 1 1.414 1.414l-1.414 1.414zM16.36 5.64a1 1 0 0 1-.707-1.707l1.414-1.414a1 1 0 0 1 1.414 1.414L16.36 5.64z"
-          ></path>
+            d="M12 4V2m0 20v-2m8-8h2M2 12h2m15.364-7.364l1.414-1.414M4.222 19.778l1.414-1.414m0-12.728L4.222 4.222m14.142 14.142l1.414 1.414M12 6a6 6 0 1 1 0 12 6 6 0 0 1 0-12z"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            fill="none"></path>
         </svg>
       </button>
     </div>
@@ -188,17 +193,38 @@ const { exercises = [], currentBookSlug } = Astro.props;
 </html>
 
 <script>
-  // Script para el tema
   const themeToggle = document.getElementById("theme-toggle");
   const body = document.body;
 
-  // Preferencia por localstorage
+  // Elementos para alternar el icono
+  const sunPath = document.querySelector(".sun-path");
+  const moonPath = document.querySelector(".moon-path");
+
+  // Función para actualizar los iconos
+  const updateIcon = () => {
+    // Si el body contiene la clase dark-mode mostrar el sol
+    if (body.classList.contains("dark-mode")) {
+      sunPath.classList.remove("hidden");
+      moonPath.classList.add("hidden");
+    } else {
+      // si no, pues muestra la luna
+      sunPath.classList.add("hidden");
+      moonPath.classList.remove("hidden");
+    }
+  };
+
+  //Preferencia por localstorage
   const currentTheme = localStorage.getItem("theme");
   if (currentTheme) {
     body.classList.add(currentTheme);
+    // Llamar a updateIcon para establecer el icono correcto al cargar
+    updateIcon();
+  } else {
+    // Asegurar que el icono inicial (luna) es correcto si no hay tema guardado
+    updateIcon();
   }
 
-  // Agrega el "listener" para el clic en el botón del tema
+  // Agrega el "listener" para el clic en el botón
   themeToggle.addEventListener("click", (e) => {
     e.preventDefault();
     body.classList.toggle("dark-mode");
@@ -208,6 +234,8 @@ const { exercises = [], currentBookSlug } = Astro.props;
     } else {
       localStorage.removeItem("theme");
     }
+
+    updateIcon();
   });
 
   // Script para el Sidebar Abatible
