@@ -3,14 +3,14 @@ title: "Ejercicio 1"
 bookSlug: "book-01"
 ---
 
-import "../../../styles/ejercicio1.css";
+import "../../../styles/global.css";
 import Ejercicio_1 from "../../../components/book-01/Ejercicio_1.astro";
 
 <section class="book-section">
 
-  <h1 class="book-title">🙋 2.2 Hydraulic Head Gradient as a Manifestation of Other Variables and Conditions</h1>
+  <h3 class="book-title text-[var(--book-title-1)] text-4xl">🙋 2.2 Hydraulic Head Gradient as a Manifestation of Other Variables and Conditions</h3>
   
-  <hr class="linea-delgada"></hr>
+  <hr class="linea-delgada bg-[var(--rayas)]"></hr>
 
   Hydraulic gradient (Δh/ΔL) is often expressed mathematically in differential format as dh/dL.  
   Rearrangement of Darcy’s law using this formulation shows that hydraulic gradient is a function of Q, K, and A:
@@ -59,7 +59,7 @@ import Ejercicio_1 from "../../../components/book-01/Ejercicio_1.astro";
 
   <hr class="linea-delgada"></hr>
 
-  <span class="etiqueta-guia">Ejercicio interactivo</span>
+  <span class="etiqueta-guia text-[var(--subtitle-text)] bg-[var(--subtitle-bg)]">Ejercicio interactivo</span>
   <hr class="divisor final"></hr>
 
   <Ejercicio_1/>
