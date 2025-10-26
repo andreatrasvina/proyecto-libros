@@ -1,0 +1,42 @@
+.book-section{
+  font-family: "Lato", sans-serif;
+}
+
+.book-title{
+  color: #0080ff;
+  font-weight: 600;
+  font-family: "Lato", sans-serif;
+  /* margin: ;  */
+
+}
+
+.etiqueta-guia {
+  display: inline-block; 
+  
+  background-color: #eaf6ff; 
+  border: 1px solid #eaf6ff;
+  color: #333; 
+
+  padding: 6px 12px; 
+  border-radius: 4px; 
+  
+  font-size: 24px; 
+  font-weight: 700; 
+  
+  /* margin-top: 0; */
+  margin-bottom: .60rem;
+}
+
+.divisor {
+  border: none;
+  height: 2px; 
+  background-color: #3399ff; 
+  margin: 0; 
+}
+
+.linea-delgada {
+  border: none; 
+  height: 1px;
+  background-color: #e0e0e0; 
+  margin-bottom: 3rem; 
+}
