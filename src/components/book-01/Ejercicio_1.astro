@@ -1,8 +1,8 @@
 <div>
-  <!-- <h3 class="text-[var(--titlesMd)] text-3xl lato-bold">
-    Ejercicio interactivo
-  </h3>
-  <hr class="border-[var(--titlesMd)]" /> -->
+  <!-- <h3 class="text-[var(--titlesMd)] text-3xl lato-bold"> -->
+  <!--   Ejercicio interactivo -->
+  <!-- </h3> -->
+  <!-- <hr class="border-[var(--titlesMd)]" /> -->
   <div
     class="p-4 my-6 border border-[var(--borderEjercicio)] rounded-md shadow-[0_8px_30px_var(--shadowEjercicio)] bg-[var(--cardEjercicio)]"
   >
@@ -23,7 +23,7 @@
         id="myCanvas"
         width="800"
         height="500"
-        style="border:1px solid var(--borderEjercicio); margin: 0 auto;"
+        style="border:1px solid var(--borderEjercicio); margin: 0 auto; background-color: #fdfdfd;"
         class="rounded"
       >
       </canvas>
@@ -96,12 +96,7 @@
 
     <div class="mt-6">
       <button
-        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors duration-300 ease-in-out"
-        >Iniciar</button
-      >
-
-      <button
-        class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors duration-300 ease-in-out"
+        class="bg-[#7dc6d9] hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors duration-300 ease-in-out"
       >
         Reiniciar
       </button>
@@ -466,22 +461,27 @@
     ctx.fillText(`${textoIA}`, 175, 100);
     const textoDha = `ΔhA = ${deltaHA.toFixed(2)}`;
     ctx.fillText(`${textoDha}`, 175, 120);
+    ctx.fillText("ΔL = 200", 175, 140);
 
     // Sección B
     const textoIB = `iB = ${iB.toFixed(4)}`;
     ctx.fillText(`${textoIB}`, 365, 100);
     const textoDhb = `ΔhB = ${deltaHB.toFixed(2)}`;
     ctx.fillText(`${textoDhb}`, 365, 120);
+    ctx.fillText("ΔL = 200", 365, 140);
 
     // Sección C
     const textoIC = `iC = ${iC.toFixed(4)}`;
     ctx.fillText(`${textoIC}`, 550, 100);
     const textoDhc = `ΔhC = ${deltaHC.toFixed(2)}`;
     ctx.fillText(`${textoDhc}`, 550, 120);
+    ctx.fillText("ΔL = 200", 550, 140);
+
+    //Texto de la Q
+    ctx.fillText("Q", 27, 315);
+    ctx.fillText("――――>", 40, 315);
 
     //Gradiente Hidráulico Total (por si lo quieres matar yeya)
-    ctx.font = "14px Consolas";
-    ctx.fillStyle = "red";
     const textoITotal = `i TOTAL (Promedio) = ${i_total.toFixed(4)}`;
     ctx.fillText(textoITotal, 550, 400);
 
