@@ -215,9 +215,7 @@ body.dark-mode .light-mode-logo {
 
 .pie-foto {
   display: inline-block; 
+  border-radius: 4px;
 
-  background-color: #eaf6ff; 
-  border: 1px solid #eaf6ff;
-  color: #333; 
   padding: 10px;
 }
