@@ -80,6 +80,7 @@
   --book-title-1: #3769c5;
   --subtitle-bg: #eaf6ff;
   --subtitle-text: #333;
+  --images-bg: #eaf6ff;
 
   /* Color claro para el blur del ejercicio */
   /* --blurMario: #ffffff8c; */
@@ -143,6 +144,7 @@ body.dark-mode {
   --book-title-1: #78b2fa;
   --subtitle-bg: #263a59;
   --subtitle-text: #fff;
+  --images-bg: #eaf6ff;
 
   /* /* Color oscuro para el blur del mario */
   /* --blurMario: #0f172a8c; */
