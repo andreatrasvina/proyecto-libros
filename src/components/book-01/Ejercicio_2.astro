@@ -6,16 +6,16 @@ const initDistance = 50;
 
 //flow rate Q
 const minQ = 1;
-const maxQ = 6;
-const initQ = 3;
+const maxQ = 3;
+const initQ = 2;
 
 //conductivity K
-const minK = 0.3;
-const maxK = 0.10;
-const initK = 0.5;
+const minK = 1;
+const maxK = 2;
+const initK = 1.5;
 
 //area A
-const minA = 1;
+const minA = 3;
 const maxA = 10;
 const initA = 5;
 ---
@@ -109,8 +109,8 @@ const initA = 5;
         <input id="number-Q" type="number" min={minQ} max={maxQ} value={initQ} />
         <br><br>
         <label>Conductividad</label>
-        <input id="range-K" type="range" min={minK} max={maxK} value={initK} />
-        <input id="number-K" type="number" min={minK} max={maxK} value={initK} />
+        <input id="range-K" type="range" step="0.1" min={minK} max={maxK} value={initK} />
+        <input id="number-K" type="number" step="0.1" min={minK} max={maxK} value={initK} />
         <br><br>
         <label>Area</label>
         <input id="range-A" type="range" min={minA} max={maxA} value={initA} />
