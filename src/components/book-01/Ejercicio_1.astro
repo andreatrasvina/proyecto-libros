@@ -102,49 +102,49 @@
 
         <!-- range de K -->
         <label for="kA">K (Conductividad)</label>
-        <input type="range" id="kA" min="1" max="50" value="25" />
+        <input type="range" id="kA" min="1" max="50" value="25" onblur="if(this.value < 1 || this.value === '') this.value = 1;"/>
         <span class="removeSpan" id="kAVal">25</span><span class="removeSpan"
           >m/d</span
         >
 
         <!-- range del area -->
         <label for="aA">A (Área)</label>
-        <input type="range" id="aA" min="1" max="100" value="50" />
+        <input type="range" id="aA" min="1" max="100" value="50" onblur="if(this.value < 1 || this.value === '') this.value = 1;"/>
         <span class="removeSpan" id="aAVal">50</span>
       </div>
 
       <div class="section-card">
         <h3>Sección B</h3>
         <label for="kB">K (Conductividad)</label>
-        <input type="range" id="kB" min="1" max="50" value="25" />
+        <input type="range" id="kB" min="1" max="50" value="25" onblur="if(this.value < 1 || this.value === '') this.value = 1;"/>
         <span class="removeSpan" id="kBVal">25</span><span class="removeSpan"
           >m/d</span
         >
 
         <!-- range del area tubo 2 -->
         <label for="aB">A (Área)</label>
-        <input type="range" id="aB" min="1" max="100" value="50" />
+        <input type="range" id="aB" min="1" max="100" value="50" onblur="if(this.value < 1 || this.value === '') this.value = 1;"/>
         <span class="removeSpan" id="aBVal">50</span>
       </div>
 
       <div class="section-card">
         <h3>Sección C</h3>
         <label for="kC">K (Conductividad)</label>
-        <input type="range" id="kC" min="1" max="50" value="25" />
+        <input type="range" id="kC" min="1" max="50" value="25" onblur="if(this.value < 1 || this.value === '') this.value = 1;"/>
         <span class="removeSpan" id="kCVal">25</span><span class="removeSpan"
           >m/d</span
         >
 
         <!-- range del area tubo 3 -->
         <label for="aC">A (Área)</label>
-        <input type="range" id="aC" min="1" max="100" value="50" />
+        <input type="range" id="aC" min="1" max="100" value="50" onblur="if(this.value < 1 || this.value === '') this.value = 1;"/>
         <span class="removeSpan" id="aCVal">50</span>
       </div>
 
       <div class="section-card">
         <h3>Sección Otra</h3>
         <label for="ejemplo">Q (Caudal): </label>
-        <input type="range" id="ejemplo" min="1" max="100" value="50" />
+        <input type="range" id="ejemplo" min="1" max="100" value="50" onblur="if(this.value < 1 || this.value === '') this.value = 1;"/>
         <span class="removeSpan" id="ejemploVal">50</span>
       </div>
     </div>
@@ -366,7 +366,15 @@
   //Esta funcion obtiene los valores de los inputs (ya sean range o number)
   function getValorInput(id) {
     const elemento = document.getElementById(id);
-    return parseFloat(elemento.value);
+    const valor = parseFloat(elemento.value);
+
+    //validacion para entradas invalidas, menor a 1 o vacio devuelve 1
+    if(isNaN(valor) || valor < 1){
+      return 1;
+    }
+
+    return valor;
+    
   }
 
   function drawOval(ctx, x, y, radioX, radioY) {
