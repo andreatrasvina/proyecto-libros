@@ -245,42 +245,71 @@ const { exercises = [], currentBookSlug } = Astro.props;
   const toggleIcon = document.getElementById("toggle-icon");
 
   // Definir el ancho del sidebar para las transiciones
-  const SIDEBAR_WIDTH = "330px";
+  const SIDEBAR_WIDTH = "312px";
   const COLLAPSED_MARGIN = "0px";
 
-  // Clase de utilidad para ocultar/mostrar elementos
-  // vamos a usar esta en el CSS para un mejor manejo de la transición del ancho del espaciador y la posición del sidebar fijo.
-
-  // Establecer el estado inicial del sidebar
+  // Variable para el estado del sidebar
   let isSidebarOpen = true;
 
-  const toggleSidebar = () => {
-    isSidebarOpen = !isSidebarOpen;
+  // Añadimos una clase al body para deshabilitar las transiciones temporalmente
+  body.classList.add("no-transition");
 
-    // Toggle class en el body para aplicar estilos CSS
-    body.classList.toggle("sidebar-collapsed");
+  const applySidebarState = (isOpen, animate = true) => {
+    isSidebarOpen = isOpen;
 
-    // Actualizar el estado del espaciador
-    sidebarSpacer.style.width = isSidebarOpen
-      ? SIDEBAR_WIDTH
-      : COLLAPSED_MARGIN;
+    // Si no debe animar, temporalmente desactiva la clase de transición en los elementos
+    if (!animate) {
+      sidebar.classList.add("no-transition-element");
+      sidebarSpacer.classList.add("no-transition-element");
+      sidebarToggle.classList.add("no-transition-element");
+    }
 
-    // Esta parte del codigo si me la robe de internet
-    // Abierto: flecha apuntando a la izquierda (ocultar)
-    // Cerrado: flecha apuntando a la derecha (mostrar)
-    if (isSidebarOpen) {
+    // 2. Aplicar/remover la clase en el body
+    body.classList.toggle("sidebar-collapsed", !isOpen);
+
+    // 3. Actualizar el ancho del espaciador
+    sidebarSpacer.style.width = isOpen ? SIDEBAR_WIDTH : COLLAPSED_MARGIN;
+
+    // 4. Actualizar el ícono de la flecha
+    if (isOpen) {
       toggleIcon.innerHTML = `<path d="M15 18l-6-6 6-6"></path>`;
-      // Asegurarse de que el sidebar está visible
-      sidebar.style.left = "0";
     } else {
       toggleIcon.innerHTML = `<path d="M9 18l6-6-6-6"></path>`;
-      // Mover el sidebar fuera de la vista
-      sidebar.style.left = `-${SIDEBAR_WIDTH}`;
+    }
+
+    // Si no estaba animando, la volvemos a habilitar después de un pequeño retraso
+    if (!animate) {
+      // Usamos setTimeout para que se apliquen los estilos sin transición primero,
+      // y luego se quite la clase para las siguientes interacciones del usuario.
+      setTimeout(() => {
+        sidebar.classList.remove("no-transition-element");
+        sidebarSpacer.classList.remove("no-transition-element");
+        sidebarToggle.classList.remove("no-transition-element");
+      }, 50); // Un pequeño retraso
     }
   };
 
-  // Inicializar el ancho del espaciador en la carga de la página
-  sidebarSpacer.style.width = SIDEBAR_WIDTH;
+  const toggleSidebar = () => {
+    const newState = !isSidebarOpen;
+    applySidebarState(newState, true); // Aplicar con animación, el click
+
+    // Guardar la preferencia en localStorage
+    if (newState) {
+      localStorage.removeItem("sidebarState");
+    } else {
+      localStorage.setItem("sidebarState", "collapsed");
+    }
+  };
+
+  const savedSidebarState = localStorage.getItem("sidebarState");
+
+  if (savedSidebarState === "collapsed") {
+    // Aplicar estado colapsado SIN animación al cargar
+    applySidebarState(false, false);
+  } else {
+    // Asegurar que está abierto (puede ser con o sin animación, no es visible si ya está abierto)
+    applySidebarState(true, false);
+  }
 
   // Listener para el botón de alternancia
   sidebarToggle.addEventListener("click", toggleSidebar);
@@ -351,5 +380,9 @@ const { exercises = [], currentBookSlug } = Astro.props;
   /* Esto ya se maneja con js, pero por si acaso ponemos la referencia */
   .sidebar-collapsed #sidebar-spacer {
     width: 0px !important; /*El espaciador no ocupa espacio */
+  }
+
+  .no-transition-element {
+    transition: none !important;
   }
 </style>

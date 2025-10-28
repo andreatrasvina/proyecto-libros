@@ -442,6 +442,19 @@
   function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    // --- Mostrar mensaje si la pantalla es muy pequeña ---
+    if (window.innerWidth < 890) {
+      ctx.fillStyle = "var(--titles)";
+      ctx.font = "20px Lato, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(
+        "📱 Amplía la pantalla",
+        canvas.width / 2,
+        canvas.height / 2,
+      );
+      return;
+    }
     // ctx.fillStyle = "#f9fafb";
     // ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -624,6 +637,12 @@
 
   draw();
 
+  // Llamar cada vez que cambia el tamaño de la pantalla
+  window.addEventListener("resize", () => {
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+    draw();
+  });
   // document.getElementById("kA").addEventListener("input", draw);
   // document.getElementById("aA").addEventListener("input", draw);
   // document.getElementById("kB").addEventListener("input", draw);
