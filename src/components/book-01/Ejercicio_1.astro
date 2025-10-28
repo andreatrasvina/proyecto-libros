@@ -23,7 +23,7 @@
         id="myCanvas"
         width="800"
         height="500"
-        style="border:1px solid var(--borderEjercicio); margin: 0 auto; background-color: #fdfdfd;"
+        style="border:1px solid var(--borderEjercicio); margin: 0 auto; background-color: #ffffff;"
         class="rounded"
       >
       </canvas>
@@ -54,8 +54,8 @@
 
         <!-- range del area -->
         <label for="aA">A (Área)</label>
-        <input type="range" id="aA" min="1" max="100" value="30" />
-        <span class="removeSpan" id="aAVal">30</span>
+        <input type="range" id="aA" min="1" max="100" value="50" />
+        <span class="removeSpan" id="aAVal">50</span>
       </div>
 
       <div class="section-card">
@@ -68,8 +68,8 @@
 
         <!-- range del area tubo 2 -->
         <label for="aB">A (Área)</label>
-        <input type="range" id="aB" min="1" max="100" value="30" />
-        <span class="removeSpan" id="aBVal">30</span>
+        <input type="range" id="aB" min="1" max="100" value="50" />
+        <span class="removeSpan" id="aBVal">50</span>
       </div>
 
       <div class="section-card">
@@ -82,22 +82,21 @@
 
         <!-- range del area tubo 3 -->
         <label for="aC">A (Área)</label>
-        <input type="range" id="aC" min="1" max="100" value="30" />
-        <span class="removeSpan" id="aCVal">30</span>
+        <input type="range" id="aC" min="1" max="100" value="50" />
+        <span class="removeSpan" id="aCVal">50</span>
       </div>
 
       <div class="section-card">
         <h3>Sección Otra</h3>
         <label for="ejemplo">Q (Caudal): </label>
-        <input type="range" id="ejemplo" min="1" max="100" value="30" />
-        <span class="removeSpan" id="ejemploVal">30</span>
+        <input type="range" id="ejemplo" min="1" max="100" value="50" />
+        <span class="removeSpan" id="ejemploVal">50</span>
       </div>
     </div>
 
     <div class="mt-6">
       <button
-        class="bg-[#7dc6d9] hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors duration-300 ease-in-out"
-      >
+        class="bg-[#7dc6d9] hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors duration-300 ease-in-out" id="resetBtn">
         Reiniciar
       </button>
     </div>
@@ -129,6 +128,27 @@
         span.textContent = slider.value;
       });
     }
+  });
+
+  //seleccionar todos los inputs range
+  const ranges = document.querySelectorAll('input[type="range"]');
+  //o inputs tipo number
+  const inputs = document.querySelectorAll('input[type="number"]');
+
+  const resetBtn = document.querySelector('#resetBtn');
+
+  //evnto del boton de reseteo
+  resetBtn.addEventListener('click', () => {
+    ranges.forEach(range => {
+      //reinicia el input a su valor por defecto
+      range.value = range.defaultValue;
+
+      //span
+      const span = document.querySelector(`#${range.id}Val`);
+      if (span) {
+        span.textContent = range.defaultValue;
+      }
+    });
   });
 
   //convertir el tipo slider a manual equis de
