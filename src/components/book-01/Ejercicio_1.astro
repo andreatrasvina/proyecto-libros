@@ -4,17 +4,72 @@
   <!-- </h3> -->
   <!-- <hr class="border-[var(--titlesMd)]" /> -->
   <div
-    class="p-4 my-6 border border-[var(--borderEjercicio)] rounded-md shadow-[0_8px_30px_var(--shadowEjercicio)] bg-[var(--cardEjercicio)]"
+    class="p-4 my-6 border border-[var(--borderEjercicio)] rounded-md bg-[var(--cardEjercicio)]"
   >
     <h1 class="font-semibold text-lg text-[var(--titles)]">
-      Gradiente hidráulico
+      💧 Gradiente hidráulico
     </h1>
 
-    <label for="humedad" class="text-[var(--titles)] mt-2">
-      <span class="lato-bold">Cómo funciona: </span> Lorem ipsum dolor sit amet consectetur
-      adipisicing elit. Doloremque esse cumque vero tempora dolores ratione, quo
-      possimus itaque commodi ducimus consequuntur perferendis, accusantium pariatur
-      nulla adipisci a assumenda error nesciunt?
+    <label for="humedad" class="text-[var(--titles)] mt-2 block">
+      Este ejercicio se basa en la forma despejada de la ley de Darcy, la cual
+      permite analizar el gradiente hidráulico de manera directa. A continuación
+      se presenta la ecuación fundamental:
+    </label>
+
+    <!-- Bloque de la ecuación fundamental -->
+    <div class="flex items-center m-8">
+      <div
+        class="p-4 text-[var(--subtitle-text)] bg-[var(--subtitle-bg)] rounded-md text-center inline-block mx-auto shadow-md"
+      >
+        <span class="font-mono text-lg">
+          Q = K · A · i <br />
+          <!-- i = Δh / ΔL -->
+        </span>
+      </div>
+    </div>
+
+    <label for="humedad" class="text-[var(--titles)] mt-2 block">
+      Para este ejercicio se emplea la <span class="lato-bold"
+        >fórmula despejada</span
+      > del gradiente hidráulico:
+    </label>
+
+    <!-- Bloque de la ecuación despejada -->
+    <div class="flex items-center m-8">
+      <div
+        class="p-4 text-[var(--subtitle-text)] bg-[var(--subtitle-bg)] rounded-md text-center inline-block mx-auto shadow-md"
+      >
+        <span class="font-mono text-lg"> i = Q / (K · A) </span>
+      </div>
+    </div>
+
+    <label class="text-[var(--titles)] mt-2 block">
+      En esta sección se puede observar cómo el gradiente hidráulico (<em>i</em
+      >) varía en función de la conductividad (<em>K</em>), el caudal (<em>Q</em
+      >) y el área (<em>A</em>).
+    </label>
+
+    <h1 class="font-semibold text-lg text-[var(--titles)] mt-8">
+      ⚙️ Cómo funciona
+    </h1>
+
+    <label class="text-[var(--titles)] mt-2 block">
+      Ajusta los controles para observar cómo cada parámetro influye en la
+      visualización del gradiente hidráulico:
+      <br /><br />
+      <div class="formulas text-center">
+        <span class="lato-bold">K (Conductividad)</span>: regula la facilidad
+        con la que el agua fluye a través del medio.
+        <br />
+        <span class="lato-bold">A (Área)</span>: determina la cantidad de flujo
+        visible en los tubos.
+        <br />
+        <span class="lato-bold">Q (Caudal)</span>: establece el volumen total de
+        flujo en el sistema.
+      </div>
+      <br />
+      Utiliza los sliders o introduce los valores manualmente para explorar cómo
+      las variaciones de cada parámetro afectan el gradiente hidráulico.
     </label>
 
     <!-- aqui va el canvas -->
@@ -96,7 +151,9 @@
 
     <div class="mt-6">
       <button
-        class="bg-[#7dc6d9] hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors duration-300 ease-in-out" id="resetBtn">
+        class="bg-[#7dc6d9] hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors duration-300 ease-in-out"
+        id="resetBtn"
+      >
         Reiniciar
       </button>
     </div>
@@ -135,11 +192,11 @@
   //o inputs tipo number
   const inputs = document.querySelectorAll('input[type="number"]');
 
-  const resetBtn = document.querySelector('#resetBtn');
+  const resetBtn = document.querySelector("#resetBtn");
 
   //evnto del boton de reseteo
-  resetBtn.addEventListener('click', () => {
-    ranges.forEach(range => {
+  resetBtn.addEventListener("click", () => {
+    ranges.forEach((range) => {
       //reinicia el input a su valor por defecto
       range.value = range.defaultValue;
 
