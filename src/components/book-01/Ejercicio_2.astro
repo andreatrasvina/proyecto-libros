@@ -138,6 +138,13 @@ const initA = 5;
   const rangeAIn = document.getElementById("range-A") as HTMLInputElement;
   const numberAIn = document.getElementById("number-A") as HTMLInputElement;
 
+  const numberInputs = [
+    numberDistanceIn,
+    numberQIn,
+    numberKIn,
+    numberAIn
+  ]
+
   //elementes for piezometer and water level
   const pz = document.querySelector(".piezometer") as HTMLDivElement
   const pms = document.querySelector(".pms") as HTMLDivElement
@@ -205,17 +212,40 @@ const initA = 5;
   let area:number;
   let areaIn: HTMLInputElement;
 
+  rangeDistanceIn.addEventListener("input", actualizarEstado);
+  rangeQIn.addEventListener(       "input", actualizarEstado);
+  rangeKIn.addEventListener(       "input", actualizarEstado);
+  rangeAIn.addEventListener(       "input", actualizarEstado);
+
+  numberInputs.forEach(input => input.addEventListener("input", () => {
+
+    const value = parseFloat(input.value)
+    const min = parseFloat(input.min)
+    const max = parseFloat(input.max)
+
+    if(isNaN(value)) {
+      input.value = ''
+      //? mensaje "el valor minimo es"
+      //? mensaje "el rango de valores es" 
+    } else if (value < min) {
+      //mensaje "el valor minimo es"
+    } else if (value > max) {
+      input.value = String(max)
+      //mensaje "el valor maximo es"
+    }
+
+    actualizarEstado()
+  }));
+
+  type.addEventListener("input", actualizarTodo);
+
   actualizarTodo() 
 
   function actualizarInputType() {
     if (type.checked) {
-      //distance = parseInt(rangeDistanceIn.value);
       distanceIn = rangeDistanceIn
-      //flowRate = parseInt(rangeQIn.value);
       flowIn = rangeQIn 
-      //conductivity = parseFloat(rangeKIn.value);
       conductivityIn = rangeKIn
-      //area = parseInt(rangeAIn.value);
       areaIn = rangeAIn
 
       numberDistanceIn.style.display = "none";
@@ -228,15 +258,10 @@ const initA = 5;
       rangeKIn.style.display = "flex";
       rangeAIn.style.display = "flex";
     } else {
-      //distance = parseInt(numberDistanceIn.value);
       distanceIn = numberDistanceIn
-      //flowRate = parseInt(numberQIn.value);
       flowIn = numberQIn 
-      //conductivity = parseFloat(numberKIn.value);
       conductivityIn = numberKIn
-      //area = parseInt(numberAIn.value);
       areaIn = numberAIn
-
 
       numberDistanceIn.style.display = "flex";
       numberQIn.style.display = "flex";
@@ -248,17 +273,16 @@ const initA = 5;
       rangeKIn.style.display = "none";
       rangeAIn.style.display = "none";
     }
-    console.log("hola");
     
   }
 
   function actualizarEstado() {
 
-    // cambio de valor
-    distance = parseFloat(distanceIn.value);
-    flowRate = parseFloat(flowIn.value);
-    conductivity = parseFloat(conductivityIn.value);
-    area = parseFloat(areaIn.value);
+    // cambio de valor valido
+    distance = getValidValue(distanceIn);
+    flowRate = getValidValue(flowIn);
+    conductivity = getValidValue(conductivityIn);
+    area = getValidValue(areaIn);
 
     // Movimiento horizontal del pm-2
     pmRight.style.marginLeft = distance + "px";
@@ -306,16 +330,26 @@ const initA = 5;
     actualizarEstado();
   }
 
-  rangeDistanceIn.addEventListener("input",  actualizarEstado);
-  numberDistanceIn.addEventListener("input", actualizarEstado);
-  rangeQIn.addEventListener("input",         actualizarEstado);
-  numberQIn.addEventListener("input",        actualizarEstado);
-  rangeKIn.addEventListener("input",         actualizarEstado);
-  numberKIn.addEventListener("input",        actualizarEstado);
-  rangeAIn.addEventListener("input",         actualizarEstado);
-  numberAIn.addEventListener("input",        actualizarEstado);
-  type.addEventListener("input", actualizarTodo);
+  function getValidValue(input:HTMLInputElement) {
 
+    const value = parseFloat(input.value);
+    const min = parseFloat(input.min);
+    const max = parseFloat(input.max);
+    
+    if (isNaN(value)) {
+        return min;
+    }
+    
+    if (value < min) {
+        return min;
+    }
+    
+    if (value > max) {
+        return max;
+    }
+    
+    return value;
+  }
 
 </script>
 
