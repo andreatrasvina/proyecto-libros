@@ -7,43 +7,50 @@ import "../styles/global.css";
   bg-[var(--cardEjercicio)] shadow-[var(--shadowEjercicio)] rounded-xl transition-colors duration-300"
 >
   <h3 class="text-lg font-semibold text-[var(--titles)] mb-4 text-center">
-    Interactive Hydraulic Head
+    Interactive Hydraulic Head with Sand Divisions
   </h3>
 
-  <!-- Contenedor principal -->
+  <!-- 💧 Contenedor visual -->
   <div class="relative flex flex-col items-center">
     <img
       src="/images/exercise3-base.png"
-      alt="Piezometer diagram"
+      alt="Hydraulic head diagram"
       class="max-w-sm rounded-md border border-[var(--borderEjercicio)]"
     />
 
-    <!-- 1️⃣ Canal horizontal -->
+    <!-- Canal horizontal -->
     <div
       id="waterMiddle"
-      class="absolute bottom-[3.15rem] left-[7.8rem] w-[12.6rem] bg-[#55CFFF] opacity-100 
+      class="absolute bottom-[2.9rem] left-[7.8rem] w-[12.6rem] bg-[#55CFFF] opacity-100
       transition-all duration-300 ease-out"
-      style="height:0px;"
+      style="height:100px;"
     ></div>
 
-    <!-- 2️⃣ Tubo derecho -->
+    <!-- Tubo derecho (h₂ = constante base 12 ft) -->
     <div
       id="waterRight"
-      class="absolute bottom-[3.15rem] left-[19.15rem] w-[1.3rem] bg-[#55CFFF] opacity-100 
+      class="absolute bottom-[2.9rem] left-[19.15rem] w-[1.3rem] bg-[#55CFFF] opacity-100
       transition-all duration-300 ease-out"
-      style="height:0px;"
+      style="height:202px;"
     ></div>
 
-    <!-- 3️⃣ Tubo izquierdo -->
+    <!-- Tubo izquierdo (h₁ depende de arena) -->
     <div
       id="waterLeft"
-      class="absolute bottom-[3.15rem] left-[7.8rem] w-[2.35rem] bg-[#55CFFF] opacity-100 
+      class="absolute bottom-[2.9rem] left-[7.2rem] w-[2.45rem] bg-[#55CFFF] opacity-100
       transition-all duration-300 ease-out"
-      style="height:0px;"
+      style="height:270px;"
     ></div>
+
+    <!-- Zona de arena -->
+    <div
+      id="sandZone"
+      class="absolute bottom-[6.2rem] left-[7.2rem] w-[2.45rem] h-[170px] bg-transparent pointer-events-none overflow-hidden"
+    ></div>
+
   </div>
 
-  <!-- 🔘 Checkbox para alternar modo -->
+  <!-- 🔘 Checkbox modo manual -->
   <div class="flex items-center justify-center gap-2 my-6">
     <input
       id="manualToggle"
@@ -58,82 +65,174 @@ import "../styles/global.css";
     </label>
   </div>
 
-  <!-- Controles -->
-  <div class="flex flex-col items-center mt-2">
-    <label for="waterInput" class="text-sm text-[var(--titles)] mb-2">
-      Select water level (ft): 
-      <span id="waterValue" class="font-semibold ml-1">0</span>
-    </label>
+  <!-- 🎛️ Controles -->
+  <div class="mt-2 flex flex-col items-center gap-6">
+    <!-- Control nivel de agua -->
+    <div class="flex flex-col items-center">
+      <label for="waterInput" class="text-sm text-[var(--titles)] mb-2">
+        Select water level (ft):
+        <span id="waterValue" class="font-semibold ml-1">12</span>
+      </label>
+      <div id="waterContainer" class="flex justify-center"></div>
+    </div>
 
-    <div id="inputContainer" class="flex justify-center"></div>
+    <!-- Control divisiones de arena -->
+    <div class="flex flex-col items-center">
+      <label for="sandInput" class="text-sm text-[var(--titles)] mb-2">
+        Sand divisions added:
+        <span id="sandValue" class="font-semibold ml-1">0</span>
+      </label>
+      <div id="sandContainer" class="flex justify-center"></div>
+    </div>
   </div>
 
-  <p
-    class="mt-5 text-sm text-[var(--textoCardCanvas)] text-center leading-relaxed max-w-md"
-  >
-    From 0 to 6 ft, the horizontal channel fills evenly.  
-    After 6 ft, water begins to rise in the right and left tubes,  
-    reaching heads of 12 ft and 16 ft respectively.
+  <p class="mt-5 text-sm text-[var(--textoCardCanvas)] text-center leading-relaxed max-w-md">
+    Default head on the right (h₂) = 12 ft.  
+    Adding sand divisions increases the left head (h₁) by 1 ft per division.  
+    Divisions appear only inside the sand zone.  
+    Water level can be adjusted between 0 and 12 ft using either input type.
   </p>
 </section>
 
-<!-- ✅ Script cliente -->
+<!-- 🧠 Script -->
 <script is:client>
-  const container = document.getElementById("inputContainer");
   const manualToggle = document.getElementById("manualToggle");
-  const valueLabel = document.getElementById("waterValue");
+
+  const waterContainer = document.getElementById("waterContainer");
+  const sandContainer = document.getElementById("sandContainer");
+  const waterValue = document.getElementById("waterValue");
+  const sandValue = document.getElementById("sandValue");
+
   const waterMiddle = document.getElementById("waterMiddle");
   const waterRight = document.getElementById("waterRight");
   const waterLeft = document.getElementById("waterLeft");
+  const sandZone = document.getElementById("sandZone");
 
-  let currentValue = 0; // 🔹 guarda el valor actual del agua
 
-  // 🔧 crea input (slider o number)
+  let waterLevel = 12; // h₂
+  let sandDivisions = 0;
+  let currentWater = 0;
+  let currentSand = 4;
+
+  // 🧩 Crear input dinámico
   const createInput = (manual) => {
-    container.innerHTML = ""; // limpia el contenedor
+    waterContainer.innerHTML = "";
+    sandContainer.innerHTML = "";
 
-    const input = document.createElement("input");
-    input.id = "waterInput";
-    input.type = manual ? "number" : "range";
-    input.min = 0;
-    input.max = 16;
-    input.step = 1;
-    input.value = currentValue; // 🟢 conserva el valor anterior
-    input.className = manual
+    // Nivel de agua
+    const waterInput = document.createElement("input");
+    waterInput.id = "waterInput";
+    waterInput.type = manual ? "number" : "range";
+    waterInput.min = 0;
+    waterInput.max = 12;
+    waterInput.step = 1;
+    waterInput.value = currentWater;
+    waterInput.className = manual
       ? "w-24 text-center border border-[var(--borderEjercicio)] rounded-md bg-[var(--cards)] text-[var(--titles)]"
       : "w-64 accent-[var(--rayaTubo)] cursor-pointer";
-
-    input.addEventListener("input", (e) => {
-      currentValue = parseFloat(e.target.value); // 🟢 actualiza la variable global
-      updateWater(currentValue);
+    waterInput.addEventListener("input", (e) => {
+      currentWater = parseFloat(e.target.value);
+      updateVisuals();
     });
+    waterContainer.appendChild(waterInput);
 
-    container.appendChild(input);
+    // Divisiones de arena
+    const sandInput = document.createElement("input");
+    sandInput.id = "sandInput";
+    sandInput.type = manual ? "number" : "range";
+    sandInput.min = 0;
+    sandInput.max = 4;
+    sandInput.step = 1;
+    sandInput.value = currentSand;
+    sandInput.className = manual
+      ? "w-24 text-center border border-[var(--borderEjercicio)] rounded-md bg-[var(--cards)] text-[var(--titles)]"
+      : "w-64 accent-[var(--titles)] cursor-pointer";
+    sandInput.addEventListener("input", (e) => {
+      currentSand = parseInt(e.target.value);
+      updateVisuals();
+    });
+    sandContainer.appendChild(sandInput);
   };
 
-  // 🌊 animación del agua
-  const updateWater = (val) => {
-    valueLabel.innerText = val;
-    const canalMax = 40;
-    const derechoMax = 202;
-    const izquierdoMax = 268;
+  // 🏗️ Dibujar divisiones de arena
+  const drawSandDivisions = () => {
+    sandZone.innerHTML = "";
 
-    let canal = Math.min(val, 6) / 6 * canalMax;
-    let derecho = 0;
-    let izquierdo = 0;
+    if (currentSand === 0) return;
 
-    if (val > 6) derecho = Math.min((val - 6) / 6, 1) * derechoMax;
-    if (val > 12) izquierdo = Math.min((val - 12) / 4, 1) * izquierdoMax;
+    const totalHeight = 100; // altura fija del área de arena
+    const divisionHeight = totalHeight / 4;
 
-    waterMiddle.style.height = canal + "px";
-    waterRight.style.height = derecho + "px";
-    waterLeft.style.height = izquierdo + "px";
+    for (let i = 0; i < currentSand; i++) {
+      const block = document.createElement("div");
+      block.style.position = "absolute";
+      block.style.left = "0";
+      block.style.width = "100%";
+      block.style.height = `${divisionHeight}px`;
+      block.style.bottom = `${i * divisionHeight}px`;
+      block.style.background = "rgba(168, 230, 255, 0.4)";
+      block.style.borderTop = "1px solid black";
+      block.style.borderBottom = "1px solid black";
+      sandZone.appendChild(block);
+    }
   };
 
-  // 🎛 inicialización
-  createInput(false);
+  // 💧 Actualizar visualización
+  // 💧 Actualizar visualización
+  const updateVisuals = () => {
+    waterLevel = currentWater;
+    sandDivisions = currentSand;
 
+    const h1 = Math.min(12 + sandDivisions, 16);
+
+    waterValue.textContent = waterLevel;
+    sandValue.textContent = sandDivisions;
+
+    // Escalas reales
+    const canalMax = 60;     // altura visual del canal (0–6 ft)
+    const tuboMax = 202;     // tubo derecho (0–12 ft)
+    const tuboIzqMax = 270;  // tubo izquierdo (0–16 ft con arena)
+
+    let canalHeight = 0;
+    let rightHeight = 0;
+    let leftHeight = 0;
+
+    if (waterLevel <= 6) {
+      // 🟦 Fase 1: sube parejo en todo el sistema
+      const ratio = waterLevel / 6; // 0–1
+      const sharedHeight = ratio * canalMax; // misma escala para todos
+      canalHeight = sharedHeight;
+      rightHeight = sharedHeight;
+      leftHeight = sharedHeight;
+    } else {
+      // 🟦 Fase 2: canal lleno, suben solo los tubos
+      canalHeight = canalMax;
+      const ratio = (waterLevel - 6) / 6; // 0–1 de 6→12
+      rightHeight = canalMax + ratio * (tuboMax - canalMax);
+      leftHeight = canalMax + ratio * (tuboIzqMax - canalMax);
+    }
+
+    // 🔹 Ajuste por arena (solo tubo izquierdo)
+    const leftScale = h1 / 16;
+    leftHeight *= leftScale;
+
+    // Aplicar alturas visuales
+    waterMiddle.style.height = canalHeight + "px";
+    waterRight.style.height = rightHeight + "px";
+    waterLeft.style.height = leftHeight + "px";
+
+    drawSandDivisions();
+  };
+
+
+
+
+  // 🔘 Evento modo manual
   manualToggle.addEventListener("change", (e) => {
-    createInput(e.target.checked); // 🟢 conserva posición al cambiar modo
+    createInput(e.target.checked);
   });
+
+  // 🚀 Inicialización
+  createInput(false);
+  updateVisuals();
 </script>
