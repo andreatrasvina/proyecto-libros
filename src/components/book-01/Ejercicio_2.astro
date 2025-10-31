@@ -95,26 +95,94 @@ const initA = 5;
     </div>
 
     <!-- Panel controles -->
-      <div class="panel border border-[var(--borderMario)] bg-[var(--cardMario)] rounded-md shadow-[0_8px_30px_var(--shadowMario)]">
-        <h2>Controles</h2>
-        <label>Tipo de input</label>
-        <input type="checkbox" id="input-type" value="true"/>
-        <br><br>
-        <label>Distancia entre piezómetros</label>
-        <input id="range-distance" type="range" min={minDistance} max={maxDistance} value={initDistance} />
-        <input id="number-distance" type="number" min={minDistance} max={maxDistance} value={initDistance} />
-        <br><br>
-        <label>Ratio de flujo</label>
-        <input id="range-Q" type="range" min={minQ} max={maxQ} value={initQ} />
-        <input id="number-Q" type="number" min={minQ} max={maxQ} value={initQ} />
-        <br><br>
-        <label>Conductividad</label>
-        <input id="range-K" type="range" step="0.1" min={minK} max={maxK} value={initK} />
-        <input id="number-K" type="number" step="0.1" min={minK} max={maxK} value={initK} />
-        <br><br>
-        <label>Area</label>
-        <input id="range-A" type="range" min={minA} max={maxA} value={initA} />
-        <input id="number-A" type="number" min={minA} max={maxA} value={initA} />
+    <div
+      class="panel border border-[var(--borderMario)] bg-[var(--cardMario)] rounded-md shadow-[0_8px_30px_var(--shadowMario)]"
+    >
+      <h2>Controles</h2>
+      <div class="panel-grid">
+        <!-- Tipo de input -->
+        <div class="control full">
+          <label>Tipo de input</label>
+          <input type="checkbox" id="input-type" value="true" />
+        </div>
+
+        <!-- Distancia -->
+        <div class="control">
+          <label>Distancia entre piezómetros</label>
+          <input
+            id="range-distance"
+            type="range"
+            min={minDistance}
+            max={maxDistance}
+            value={initDistance}
+          />
+          <input
+            id="number-distance"
+            type="number"
+            min={minDistance}
+            max={maxDistance}
+            value={initDistance}
+          />
+        </div>
+
+        <!-- Ratio -->
+        <div class="control">
+          <label>Ratio de flujo</label>
+          <input
+            id="range-Q"
+            type="range"
+            min={minQ}
+            max={maxQ}
+            value={initQ}
+          />
+          <input
+            id="number-Q"
+            type="number"
+            min={minQ}
+            max={maxQ}
+            value={initQ}
+          />
+        </div>
+
+        <!-- Conductividad -->
+        <div class="control">
+          <label>Conductividad</label>
+          <input
+            id="range-K"
+            type="range"
+            step="0.1"
+            min={minK}
+            max={maxK}
+            value={initK}
+          />
+          <input
+            id="number-K"
+            type="number"
+            step="0.1"
+            min={minK}
+            max={maxK}
+            value={initK}
+          />
+        </div>
+
+        <!-- Área -->
+        <div class="control">
+          <label>Área</label>
+          <input
+            id="range-A"
+            type="range"
+            min={minA}
+            max={maxA}
+            value={initA}
+          />
+          <input
+            id="number-A"
+            type="number"
+            min={minA}
+            max={maxA}
+            value={initA}
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -123,8 +191,12 @@ const initA = 5;
 <script>
   const type = document.getElementById("input-type") as HTMLInputElement;
   //elements for distance (∆L) control
-  const rangeDistanceIn = document.getElementById("range-distance") as HTMLInputElement;
-  const numberDistanceIn = document.getElementById("number-distance") as HTMLInputElement;
+  const rangeDistanceIn = document.getElementById(
+    "range-distance",
+  ) as HTMLInputElement;
+  const numberDistanceIn = document.getElementById(
+    "number-distance",
+  ) as HTMLInputElement;
 
   //elements for flow rate (Q) control
   const rangeQIn = document.getElementById("range-Q") as HTMLInputElement;
@@ -138,23 +210,22 @@ const initA = 5;
   const rangeAIn = document.getElementById("range-A") as HTMLInputElement;
   const numberAIn = document.getElementById("number-A") as HTMLInputElement;
 
-  const numberInputs = [
-    numberDistanceIn,
-    numberQIn,
-    numberKIn,
-    numberAIn
-  ]
+  const numberInputs = [numberDistanceIn, numberQIn, numberKIn, numberAIn];
 
   //elementes for piezometer and water level
-  const pz = document.querySelector(".piezometer") as HTMLDivElement
-  const pms = document.querySelector(".pms") as HTMLDivElement
+  const pz = document.querySelector(".piezometer") as HTMLDivElement;
+  const pms = document.querySelector(".pms") as HTMLDivElement;
   const pmLeft = document.getElementById("pm-left") as HTMLDivElement;
   const pmRight = document.getElementById("pm-right") as HTMLDivElement;
   const waterLeft = document.querySelector("#pm-left .water") as HTMLDivElement;
-  const waterRight = document.querySelector("#pm-right .water") as HTMLDivElement;
+  const waterRight = document.querySelector(
+    "#pm-right .water",
+  ) as HTMLDivElement;
 
   //elements for ∆L line visualization
-  const deltaContainer = document.querySelector(".delta-container") as HTMLDivElement;
+  const deltaContainer = document.querySelector(
+    ".delta-container",
+  ) as HTMLDivElement;
   const linea = document.querySelector(".linea") as HTMLDivElement;
   const deltaText = document.querySelector(".delta-text") as HTMLDivElement;
 
@@ -177,7 +248,7 @@ const initA = 5;
   const waterLeftHeight = waterLeft.offsetHeight;
 
   //min gap between the two piezometers
-  const pmsMinGap = pz.offsetWidth + parseInt(getComputedStyle(pms).gap)
+  const pmsMinGap = pz.offsetWidth + parseInt(getComputedStyle(pms).gap);
 
   //piezometers coords
   const pmLeftcoords = pmLeft.getBoundingClientRect();
@@ -187,7 +258,8 @@ const initA = 5;
 
   //delta container coords
   const deltaContainerCoords = deltaContainer.getBoundingClientRect();
-  const lineLeftCoord = Math.min(pmLeftCenter, pmRightCenter) - deltaContainerCoords.left;
+  const lineLeftCoord =
+    Math.min(pmLeftCenter, pmRightCenter) - deltaContainerCoords.left;
   const deltaTextLeftCoord = deltaText.offsetWidth / 2;
 
   //graph and height-line coords
@@ -200,53 +272,54 @@ const initA = 5;
   const lineH1Width = Math.max(0, offsetPm1 - offsetLeftLine);
 
   //∆L
-  let distance:number;
+  let distance: number;
   let distanceIn: HTMLInputElement;
   //Q
-  let flowRate:number;
+  let flowRate: number;
   let flowIn: HTMLInputElement;
   //K
-  let conductivity:number;
+  let conductivity: number;
   let conductivityIn: HTMLInputElement;
   //A
-  let area:number;
+  let area: number;
   let areaIn: HTMLInputElement;
 
   rangeDistanceIn.addEventListener("input", actualizarEstado);
-  rangeQIn.addEventListener(       "input", actualizarEstado);
-  rangeKIn.addEventListener(       "input", actualizarEstado);
-  rangeAIn.addEventListener(       "input", actualizarEstado);
+  rangeQIn.addEventListener("input", actualizarEstado);
+  rangeKIn.addEventListener("input", actualizarEstado);
+  rangeAIn.addEventListener("input", actualizarEstado);
 
-  numberInputs.forEach(input => input.addEventListener("input", () => {
+  numberInputs.forEach((input) =>
+    input.addEventListener("input", () => {
+      const value = parseFloat(input.value);
+      const min = parseFloat(input.min);
+      const max = parseFloat(input.max);
 
-    const value = parseFloat(input.value)
-    const min = parseFloat(input.min)
-    const max = parseFloat(input.max)
+      if (isNaN(value)) {
+        input.value = "";
+        //? mensaje "el valor minimo es"
+        //? mensaje "el rango de valores es"
+      } else if (value < min) {
+        //mensaje "el valor minimo es"
+      } else if (value > max) {
+        input.value = String(max);
+        //mensaje "el valor maximo es"
+      }
 
-    if(isNaN(value)) {
-      input.value = ''
-      //? mensaje "el valor minimo es"
-      //? mensaje "el rango de valores es" 
-    } else if (value < min) {
-      //mensaje "el valor minimo es"
-    } else if (value > max) {
-      input.value = String(max)
-      //mensaje "el valor maximo es"
-    }
-
-    actualizarEstado()
-  }));
+      actualizarEstado();
+    }),
+  );
 
   type.addEventListener("input", actualizarTodo);
 
-  actualizarTodo() 
+  actualizarTodo();
 
   function actualizarInputType() {
     if (type.checked) {
-      distanceIn = rangeDistanceIn
-      flowIn = rangeQIn 
-      conductivityIn = rangeKIn
-      areaIn = rangeAIn
+      distanceIn = rangeDistanceIn;
+      flowIn = rangeQIn;
+      conductivityIn = rangeKIn;
+      areaIn = rangeAIn;
 
       numberDistanceIn.style.display = "none";
       numberQIn.style.display = "none";
@@ -258,10 +331,10 @@ const initA = 5;
       rangeKIn.style.display = "flex";
       rangeAIn.style.display = "flex";
     } else {
-      distanceIn = numberDistanceIn
-      flowIn = numberQIn 
-      conductivityIn = numberKIn
-      areaIn = numberAIn
+      distanceIn = numberDistanceIn;
+      flowIn = numberQIn;
+      conductivityIn = numberKIn;
+      areaIn = numberAIn;
 
       numberDistanceIn.style.display = "flex";
       numberQIn.style.display = "flex";
@@ -273,11 +346,9 @@ const initA = 5;
       rangeKIn.style.display = "none";
       rangeAIn.style.display = "none";
     }
-    
   }
 
   function actualizarEstado() {
-
     // cambio de valor valido
     distance = getValidValue(distanceIn);
     flowRate = getValidValue(flowIn);
@@ -310,7 +381,8 @@ const initA = 5;
     // actualizacion de linea de distancia
     linea.style.left = lineLeftCoord + "px";
     linea.style.width = distance + pmsMinGap + "px";
-    deltaText.style.left = lineLeftCoord + lineWidth / 2 - deltaTextLeftCoord + "px";
+    deltaText.style.left =
+      lineLeftCoord + lineWidth / 2 - deltaTextLeftCoord + "px";
 
     // === LÍNEAS PUNTEADAS ===
     const lineH2Width = lineH1Width + distance + pmsMinGap;
@@ -320,9 +392,8 @@ const initA = 5;
     lineH2.style.width = lineH2Width + "px";
 
     // Mover las líneas punteadas hacia la izquierda dentro de su contenedor
-    lineH1.style.marginLeft = -lineH1Width + "px"
-    lineH2.style.marginLeft = -lineH2Width + "px"
-
+    lineH1.style.marginLeft = -lineH1Width + "px";
+    lineH2.style.marginLeft = -lineH2Width + "px";
   }
 
   function actualizarTodo() {
@@ -330,30 +401,77 @@ const initA = 5;
     actualizarEstado();
   }
 
-  function getValidValue(input:HTMLInputElement) {
-
+  function getValidValue(input: HTMLInputElement) {
     const value = parseFloat(input.value);
     const min = parseFloat(input.min);
     const max = parseFloat(input.max);
-    
+
     if (isNaN(value)) {
-        return min;
+      return min;
     }
-    
+
     if (value < min) {
-        return min;
+      return min;
     }
-    
+
     if (value > max) {
-        return max;
+      return max;
     }
-    
+
     return value;
   }
-
 </script>
 
 <style>
+  /* === PANEL DE CONTROLES === */
+  .panel-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 24px;
+  }
+
+  .panel-grid .control {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+  }
+
+  .panel-grid .control.full {
+    grid-column: 1 / span 2;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .panel-grid input[type="range"] {
+    width: 100%;
+    accent-color: var(--color-primary);
+    margin-top: 6px;
+  }
+
+  .panel-grid input[type="number"] {
+    width: 100%;
+    margin-top: 6px;
+    padding: 5px;
+    border: 1px solid var(--borderMario);
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+  }
+
+  input[type="number"][style*="display: none"] + input[type="range"],
+  input[type="range"][style*="display: flex"] + input[type="number"] {
+    border: 1px solid var(--borderMario);
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.08);
+    opacity: 0.7;
+  }
+
+  .panel-grid input[type="number"]:hover,
+  .panel-grid input[type="range"]:hover {
+    border-color: var(--color-primary);
+  }
+
   /* === LAYOUT PRINCIPAL === */
   .layout {
     display: flex;
@@ -637,57 +755,6 @@ const initA = 5;
 
   .panel label {
     font-weight: 500;
-  }
-
-  .panel-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px 20px;
-  }
-
-  /* Estilo general de cada control */
-  .panel-grid .control {
-    display: flex;
-    flex-direction: column;
-    justify-content: end;
-    padding: 2px 2px;
-    border-radius: 6px;
-    transition: background 0.2s ease;
-  }
-
-  /* Caso especial: el control del tipo de input (checkbox) */
-  .panel-grid .control:first-child {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .panel-grid .control:first-child label {
-    margin-right: 10px;
-    font-weight: 600;
-  }
-
-  .panel-grid .control:first-child input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: var(--color-primary);
-    cursor: pointer;
-  }
-
-  /* Resto de inputs */
-  .panel-grid input[type="range"] {
-    width: 100%;
-    accent-color: var(--color-primary);
-    margin-top: 6px;
-  }
-
-  .panel-grid input[type="number"] {
-    width: 100%;
-    margin-top: 6px;
-    padding: 5px;
-    border: 1px solid var(--borderMario);
-    border-radius: 5px;
-    background: rgba(0, 0, 0, 0.05);
   }
 
   /* === SOMBRAS Y BORDES === */
