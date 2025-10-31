@@ -444,6 +444,25 @@ const initA = 5;
     bubbleH2.style.position = "absolute";
     bubbleH2.style.left = `${leftOffset}px`;
     bubbleH2.style.top = `${topH2}px`;
+
+    // --- Evita que las burbujas se sobrepongan ---
+    const h1Rect = bubbleH1.getBoundingClientRect();
+    const h2Rect = bubbleH2.getBoundingClientRect();
+
+    const overlapThreshold = 25; // px de separación mínima
+    const diff = Math.abs(topH1 - topH2);
+
+    if (diff < overlapThreshold) {
+      if (topH1 < topH2) {
+        // h1 está arriba → mueve h1 un poco más arriba y h2 más abajo
+        bubbleH1.style.top = `${topH1 - (overlapThreshold - diff) / 2}px`;
+        bubbleH2.style.top = `${topH2 + (overlapThreshold - diff) / 2}px`;
+      } else {
+        // h2 está arriba → mueve h2 más arriba y h1 más abajo
+        bubbleH2.style.top = `${topH2 - (overlapThreshold - diff) / 2}px`;
+        bubbleH1.style.top = `${topH1 + (overlapThreshold - diff) / 2}px`;
+      }
+    }
   }
 
   requestAnimationFrame(() => {
