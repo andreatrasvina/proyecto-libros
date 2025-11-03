@@ -25,30 +25,9 @@
     border: 1px solid var(--borderEjercicio);
     background-color: white;
     border-radius: 8px;
-    background-repeat: no-repeat;
-    background-size: contain;
+    width: 390px;
   }
 
-  #terrain {
-    stroke: oklch(28.6% 0.066 53.813);
-  }
-
-  #freatic {
-    stroke: oklch(70.7% 0.165 254.624);
-  }
-
-  #water {
-    fill: rgb(222, 251, 254);
-    stroke: oklch(70.7% 0.165 254.624);
-  }
-
-  #brownDot{
-    fill: rgb(90, 89, 89);
-  }
-
-  .cantidad{
-    fill: rgb(51, 153, 255);
-  }
   .headControls {
     border-bottom: 1px solid var(--borderEjercicio);
     justify-content: space-between;
