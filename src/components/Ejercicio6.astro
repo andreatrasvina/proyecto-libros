@@ -1,0 +1,243 @@
+---
+import "../styles/global.css";
+---
+<section
+  class="flex flex-col items-center justify-center p-6 border border-[var(--borderEjercicio)] 
+  bg-[var(--cardEjercicio)] shadow-[var(--shadowEjercicio)] rounded-xl transition-colors duration-300"
+>
+  <h3 class="text-lg font-semibold text-[var(--titles)] mb-4 text-center">
+    Ejercicio 6 – Flujo en un acuífero libre
+  </h3>
+
+  <!-- Controles -->
+  <div class="flex space-x-3 mb-4">
+    <button id="btnWater" class="px-3 py-1 rounded-lg border bg-blue-500 text-white">
+      Línea freática
+    </button>
+    <button id="btnEquip" class="px-3 py-1 rounded-lg border border-yellow-400 text-yellow-500">
+      Equipotencial (70–80 m)
+    </button>
+    <button id="btnFlow" class="px-3 py-1 rounded-lg border border-green-500 text-green-500">
+      Línea de flujo
+    </button>
+    <button id="btnClear" class="px-3 py-1 rounded-lg border border-gray-400 text-gray-600 hover:bg-gray-100">
+      Limpiar
+    </button>
+  </div>
+
+  <!-- Canvas -->
+  <div class="relative flex flex-col items-center">
+    <canvas
+      id="acuiferoCanvas"
+      width="700"
+      height="400"
+      class="border border-gray-300 rounded-lg shadow-md cursor-crosshair bg-white"
+    ></canvas>
+
+    <p id="loadingText" class="text-gray-500 italic mt-2">Cargando imagen...</p>
+    <p id="instructionText" class="text-sm text-gray-600 mt-2">Selecciona 3 puntos para crear una línea</p>
+  </div>
+
+  <p class="mt-5 text-sm text-[var(--textoCardCanvas)] text-center leading-relaxed max-w-md">
+    Selecciona 3 puntos para crear la <b>línea freática</b>, las <b>líneas equipotenciales (70 m, 75 m, 80 m)</b> 
+    y las <b>líneas de flujo</b> sobre el esquema del acuífero libre.
+  </p>
+</section>
+
+<script is:client>
+  // referencias DOM
+  const canvas = document.getElementById("acuiferoCanvas");
+  const ctx = canvas?.getContext ? canvas.getContext("2d") : null;
+  const loadingText = document.getElementById("loadingText");
+  const instructionText = document.getElementById("instructionText");
+
+  const btnWater = document.getElementById("btnWater");
+  const btnEquip = document.getElementById("btnEquip");
+  const btnFlow = document.getElementById("btnFlow");
+  const btnClear = document.getElementById("btnClear");
+
+  if (!canvas || !ctx) {
+    console.error("Canvas o contexto no disponible.");
+  }
+
+  let tool = "waterTable";
+  let selectedPoints = [];
+  let lines = [];
+  let baseImg = new Image();
+  let baseLoaded = false;
+
+  // Usa la imagen del libro (image33-1.png). crossOrigin para intentar evitar bloqueos CORS.
+  baseImg.crossOrigin = "anonymous";
+  baseImg.src =
+    "https://api.allorigins.win/raw?url=" +
+    encodeURIComponent(
+      "https://books.gw-project.org/conceptual-and-visual-understanding-of-hydraulic-head-and-groundwater-flow/wp-content/uploads/sites/14/2020/12/image33-1.png"
+    );
+
+  baseImg.onload = () => {
+    console.log("✅ baseImg cargada:", baseImg.width, baseImg.height);
+    baseLoaded = true;
+    if (loadingText) loadingText.style.display = "none";
+    drawAll();
+  };
+
+  baseImg.onerror = (e) => {
+    console.error("❌ Error al cargar la imagen base:", e);
+    if (loadingText) loadingText.textContent = "No se pudo cargar la imagen.";
+  };
+
+  // --- eventos del canvas
+  canvas?.addEventListener("click", (e) => {
+    if (!baseLoaded) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const point = { 
+      x: e.clientX - rect.left, 
+      y: e.clientY - rect.top 
+    };
+    
+    selectedPoints.push(point);
+    
+    // Si tenemos 3 puntos, creamos la línea
+    if (selectedPoints.length === 3) {
+      lines.push({ 
+        type: tool, 
+        points: [...selectedPoints] 
+      });
+      selectedPoints = [];
+      updateInstruction();
+    } else {
+      updateInstruction();
+    }
+    
+    drawAll();
+  });
+
+  // botones
+  btnClear?.addEventListener("click", () => {
+    lines = [];
+    selectedPoints = [];
+    updateInstruction();
+    drawAll();
+  });
+
+  btnWater?.addEventListener("click", () => {
+    setTool("waterTable", btnWater);
+    selectedPoints = [];
+    updateInstruction();
+  });
+  
+  btnEquip?.addEventListener("click", () => {
+    setTool("equipotential", btnEquip);
+    selectedPoints = [];
+    updateInstruction();
+  });
+  
+  btnFlow?.addEventListener("click", () => {
+    setTool("flowLine", btnFlow);
+    selectedPoints = [];
+    updateInstruction();
+  });
+
+  function setTool(newTool, activeButton) {
+    tool = newTool;
+    [btnWater, btnEquip, btnFlow].forEach((b) => {
+      if (!b) return;
+      b.classList.remove("bg-blue-500", "bg-yellow-400", "bg-green-500", "text-white");
+    });
+    if (activeButton) {
+      if (newTool === "waterTable") activeButton.classList.add("bg-blue-500", "text-white");
+      if (newTool === "equipotential") activeButton.classList.add("bg-yellow-400", "text-white");
+      if (newTool === "flowLine") activeButton.classList.add("bg-green-500", "text-white");
+    }
+  }
+
+  function updateInstruction() {
+    if (instructionText) {
+      if (selectedPoints.length === 0) {
+        instructionText.textContent = "Selecciona 3 puntos para crear una línea";
+      } else if (selectedPoints.length === 1) {
+        instructionText.textContent = "Selecciona 2 puntos más";
+      } else if (selectedPoints.length === 2) {
+        instructionText.textContent = "Selecciona 1 punto más para completar la línea";
+      }
+    }
+  }
+
+  // dibujo
+  function drawAll() {
+    if (!baseLoaded || !ctx) {
+      return;
+    }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(baseImg, 0, 0, canvas.width, canvas.height);
+
+    // Dibujar las líneas completadas
+    for (const l of lines) {
+      drawLine(l.points, l.type);
+    }
+
+    // Dibujar los puntos seleccionados actualmente
+    for (let i = 0; i < selectedPoints.length; i++) {
+      drawPoint(selectedPoints[i], i);
+    }
+
+    // Si hay puntos seleccionados, dibujar líneas temporales entre ellos
+    if (selectedPoints.length > 1) {
+      drawTemporaryLine(selectedPoints);
+    }
+  }
+
+  function drawLine(points, type) {
+    if (!ctx || !points || points.length < 2) return;
+    
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    
+    // Dibujar línea que conecta los 3 puntos
+    for (let i = 1; i < points.length; i++) {
+      ctx.lineTo(points[i].x, points[i].y);
+    }
+    
+    ctx.strokeStyle =
+      type === "waterTable"
+        ? "#1E90FF"
+        : type === "equipotential"
+        ? "#FFD700"
+        : "#00C853";
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+  }
+
+  function drawTemporaryLine(points) {
+    if (!ctx || !points || points.length < 2) return;
+    
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    
+    // Dibujar línea temporal entre los puntos seleccionados
+    for (let i = 1; i < points.length; i++) {
+      ctx.lineTo(points[i].x, points[i].y);
+    }
+    
+    ctx.strokeStyle = "#888888";
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 5]); // Línea punteada para las temporales
+    ctx.stroke();
+    ctx.setLineDash([]); // Restaurar línea sólida
+  }
+
+  function drawPoint(point, index) {
+    if (!ctx) return;
+    
+    ctx.beginPath();
+    ctx.arc(point.x, point.y, 5, 0, 2 * Math.PI);
+    ctx.fillStyle = "#FF0000";
+    ctx.fill();
+    
+    // Opcional: mostrar número del punto
+    ctx.fillStyle = "#000000";
+    ctx.font = "12px Arial";
+    ctx.fillText(index + 1, point.x + 8, point.y - 8);
+  }
+</script>
