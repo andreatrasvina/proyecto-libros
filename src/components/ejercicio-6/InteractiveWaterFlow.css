@@ -1,0 +1,44 @@
+/* src/components/ejercicio6/InteractiveWaterFlow.css */
+.waterflow-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .waterflow-container {
+    margin: 1rem auto;
+    padding: 0.5rem;
+  }
+}
+
+/* Mejoras visuales para el canvas */
+canvas {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+/* Botones mejorados */
+button {
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Tarjetas informativas */
+.bg-blue-50, .bg-green-50 {
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
