@@ -186,709 +186,791 @@ const initA = 5;
             value={initA}
           />
         </div>
+        <!-- INCLINACIÓN -->
+        <div class="control">
+          <label>Inclinación del cilindro (°)</label>
+          <input
+            id="range-angle"
+            type="range"
+            min="-30"
+            max="30"
+            value="0"
+            step="1"
+          />
+          <input
+            id="number-angle"
+            type="number"
+            min="-30"
+            max="30"
+            value="0"
+            step="1"
+          />
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<script>
-  const type = document.getElementById("input-type") as HTMLInputElement;
-  //elements for distance (∆L) control
-  const rangeDistanceIn = document.getElementById(
-    "range-distance",
-  ) as HTMLInputElement;
-  const numberDistanceIn = document.getElementById(
-    "number-distance",
-  ) as HTMLInputElement;
+  <script>
+    const type = document.getElementById("input-type") as HTMLInputElement;
+    //elements for distance (∆L) control
+    const rangeDistanceIn = document.getElementById(
+      "range-distance",
+    ) as HTMLInputElement;
+    const numberDistanceIn = document.getElementById(
+      "number-distance",
+    ) as HTMLInputElement;
 
-  //elements for flow rate (Q) control
-  const rangeQIn = document.getElementById("range-Q") as HTMLInputElement;
-  const numberQIn = document.getElementById("number-Q") as HTMLInputElement;
+    //elements for flow rate (Q) control
+    const rangeQIn = document.getElementById("range-Q") as HTMLInputElement;
+    const numberQIn = document.getElementById("number-Q") as HTMLInputElement;
 
-  //elements for conductivity (K) control
-  const rangeKIn = document.getElementById("range-K") as HTMLInputElement;
-  const numberKIn = document.getElementById("number-K") as HTMLInputElement;
+    //elements for conductivity (K) control
+    const rangeKIn = document.getElementById("range-K") as HTMLInputElement;
+    const numberKIn = document.getElementById("number-K") as HTMLInputElement;
 
-  //elements for area (A) control
-  const rangeAIn = document.getElementById("range-A") as HTMLInputElement;
-  const numberAIn = document.getElementById("number-A") as HTMLInputElement;
+    //elements for area (A) control
+    const rangeAIn = document.getElementById("range-A") as HTMLInputElement;
+    const numberAIn = document.getElementById("number-A") as HTMLInputElement;
 
-  const numberInputs = [numberDistanceIn, numberQIn, numberKIn, numberAIn];
+    const numberInputs = [numberDistanceIn, numberQIn, numberKIn, numberAIn];
 
-  //elementes for piezometer and water level
-  const pz = document.querySelector(".piezometer") as HTMLDivElement;
-  const pms = document.querySelector(".pms") as HTMLDivElement;
-  const pmLeft = document.getElementById("pm-left") as HTMLDivElement;
-  const pmRight = document.getElementById("pm-right") as HTMLDivElement;
-  const waterLeft = document.querySelector("#pm-left .water") as HTMLDivElement;
-  const waterRight = document.querySelector(
-    "#pm-right .water",
-  ) as HTMLDivElement;
+    //elementes for piezometer and water level
+    const pz = document.querySelector(".piezometer") as HTMLDivElement;
+    const pms = document.querySelector(".pms") as HTMLElement | null;
+    const pmLeft = document.getElementById("pm-left") as HTMLElement | null;
+    const pmRight = document.getElementById("pm-right") as HTMLElement | null;
+    const waterLeft = document.querySelector(
+      "#pm-left .water",
+    ) as HTMLDivElement;
+    const waterRight = document.querySelector(
+      "#pm-right .water",
+    ) as HTMLDivElement;
 
-  //elements for ∆L line visualization
-  const deltaContainer = document.querySelector(
-    ".delta-container",
-  ) as HTMLDivElement;
-  const linea = document.querySelector(".linea") as HTMLDivElement;
-  const deltaText = document.querySelector(".delta-text") as HTMLDivElement;
+    //elements for ∆L line visualization
+    const deltaContainer = document.querySelector(
+      ".delta-container",
+    ) as HTMLElement | null;
+    const linea = document.querySelector(".linea") as HTMLDivElement;
+    const deltaText = document.querySelector(".delta-text") as HTMLDivElement;
 
-  //data values
-  const data1 = document.getElementById("data-1") as HTMLLabelElement;
-  const data2 = document.getElementById("data-2") as HTMLLabelElement;
-  const data3 = document.getElementById("data-3") as HTMLLabelElement;
-  const data4 = document.getElementById("data-4") as HTMLLabelElement;
-  const data5 = document.getElementById("data-5") as HTMLLabelElement;
-  const data6 = document.getElementById("data-6") as HTMLLabelElement;
-  const data7 = document.getElementById("data-7") as HTMLLabelElement;
+    //data values
+    const data1 = document.getElementById("data-1") as HTMLLabelElement;
+    const data2 = document.getElementById("data-2") as HTMLLabelElement;
+    const data3 = document.getElementById("data-3") as HTMLLabelElement;
+    const data4 = document.getElementById("data-4") as HTMLLabelElement;
+    const data5 = document.getElementById("data-5") as HTMLLabelElement;
+    const data6 = document.getElementById("data-6") as HTMLLabelElement;
+    const data7 = document.getElementById("data-7") as HTMLLabelElement;
 
-  // 🔹 Líneas punteadas
-  const lineH1 = document.getElementById("line-h1") as HTMLDivElement;
-  const lineH2 = document.getElementById("line-h2") as HTMLDivElement;
-  const leftLine = document.querySelector(".height-line") as HTMLDivElement;
-  const graph = document.querySelector(".graph") as HTMLDivElement;
+    // Líneas punteadas
+    const lineH1 = document.getElementById("line-h1") as HTMLDivElement;
+    const lineH2 = document.getElementById("line-h2") as HTMLDivElement;
+    const leftLine = document.querySelector(".height-line") as HTMLDivElement;
+    const graph = document.querySelector(".graph") as HTMLDivElement;
 
-  //left water level
-  const waterLeftHeight = waterLeft.offsetHeight;
+    // Angulo
+    const rangeAngleIn = document.getElementById(
+      "range-angle",
+    ) as HTMLInputElement | null;
+    const numberAngleIn = document.getElementById(
+      "number-angle",
+    ) as HTMLInputElement | null;
+    const cylinder = document.querySelector(".cylinder") as HTMLElement | null;
+    let angle = 0;
 
-  let waterRightHeight = waterLeftHeight;
+    //left water level
+    const waterLeftHeight = waterLeft.offsetHeight;
 
-  //min gap between the two piezometers
-  const pmsMinGap = pz.offsetWidth + parseInt(getComputedStyle(pms).gap);
+    let waterRightHeight = waterLeftHeight;
 
-  //piezometers coords
-  const pmLeftcoords = pmLeft.getBoundingClientRect();
-  const pmRightCoords = pmRight.getBoundingClientRect();
-  const pmLeftCenter = pmLeftcoords.left + pmLeftcoords.width / 2;
-  const pmRightCenter = pmRightCoords.left + pmRightCoords.width / 2;
+    //min gap between the two piezometers
+    const pmsMinGap = pz.offsetWidth + parseInt(getComputedStyle(pms).gap);
 
-  //delta container coords
-  const deltaContainerCoords = deltaContainer.getBoundingClientRect();
-  const lineLeftCoord =
-    Math.min(pmLeftCenter, pmRightCenter) - deltaContainerCoords.left;
-  const deltaTextLeftCoord = deltaText.offsetWidth / 2;
+    //piezometers coords
+    const pmLeftcoords = pmLeft.getBoundingClientRect();
+    const pmRightCoords = pmRight.getBoundingClientRect();
+    const pmLeftCenter = pmLeftcoords.left + pmLeftcoords.width / 2;
+    const pmRightCenter = pmRightCoords.left + pmRightCoords.width / 2;
 
-  //graph and height-line coords
-  const graphCoords = graph.getBoundingClientRect();
-  const heightLineCoords = leftLine.getBoundingClientRect();
+    //delta container coords
+    const deltaContainerCoords = deltaContainer.getBoundingClientRect();
+    const lineLeftCoord =
+      Math.min(pmLeftCenter, pmRightCenter) - deltaContainerCoords.left;
+    const deltaTextLeftCoord = deltaText.offsetWidth / 2;
 
-  const offsetLeftLine = heightLineCoords.right - graphCoords.left;
-  const offsetPm1 = pmLeftcoords.left - graphCoords.left;
+    //graph and height-line coords
+    const graphCoords = graph.getBoundingClientRect();
+    const heightLineCoords = leftLine.getBoundingClientRect();
 
-  const lineH1Width = Math.max(0, offsetPm1 - offsetLeftLine);
+    const offsetLeftLine = heightLineCoords.right - graphCoords.left;
+    const offsetPm1 = pmLeftcoords.left - graphCoords.left;
 
-  //∆L
-  let distance: number = 50;
-  let distanceIn: HTMLInputElement;
-  //Q
-  let flowRate: number;
-  let flowIn: HTMLInputElement;
-  //K
-  let conductivity: number;
-  let conductivityIn: HTMLInputElement;
-  //A
-  let area: number;
-  let areaIn: HTMLInputElement;
+    const lineH1Width = Math.max(0, offsetPm1 - offsetLeftLine);
 
-  rangeDistanceIn.addEventListener("input", actualizarEstado);
-  rangeQIn.addEventListener("input", actualizarEstado);
-  rangeKIn.addEventListener("input", actualizarEstado);
-  rangeAIn.addEventListener("input", actualizarEstado);
+    //∆L
+    let distance: number = 50;
+    let distanceIn: HTMLInputElement;
+    //Q
+    let flowRate: number;
+    let flowIn: HTMLInputElement;
+    //K
+    let conductivity: number;
+    let conductivityIn: HTMLInputElement;
+    //A
+    let area: number;
+    let areaIn: HTMLInputElement;
 
-  numberInputs.forEach((input) =>
-    input.addEventListener("input", () => {
+    rangeDistanceIn.addEventListener("input", actualizarEstado);
+    rangeQIn.addEventListener("input", actualizarEstado);
+    rangeKIn.addEventListener("input", actualizarEstado);
+    rangeAIn.addEventListener("input", actualizarEstado);
+
+    if (rangeAngleIn && numberAngleIn) {
+      rangeAngleIn.addEventListener("input", actualizarInclinacion);
+      numberAngleIn.addEventListener("input", actualizarInclinacion);
+    }
+    numberInputs.forEach((input) =>
+      input.addEventListener("input", () => {
+        const value = parseFloat(input.value);
+        const min = parseFloat(input.min);
+        const max = parseFloat(input.max);
+
+        if (isNaN(value)) {
+          input.value = "";
+          //? mensaje "el valor minimo es"
+          //? mensaje "el rango de valores es"
+        } else if (value < min) {
+          //mensaje "el valor minimo es"
+        } else if (value > max) {
+          input.value = String(max);
+          //mensaje "el valor maximo es"
+        }
+
+        actualizarEstado();
+      }),
+    );
+
+    type.addEventListener("input", actualizarTodo);
+
+    actualizarTodo();
+
+    function actualizarInputType() {
+      if (type.checked) {
+        distanceIn = rangeDistanceIn;
+        flowIn = rangeQIn;
+        conductivityIn = rangeKIn;
+        areaIn = rangeAIn;
+
+        numberDistanceIn.style.display = "none";
+        numberQIn.style.display = "none";
+        numberKIn.style.display = "none";
+        numberAIn.style.display = "none";
+
+        rangeDistanceIn.style.display = "flex";
+        rangeQIn.style.display = "flex";
+        rangeKIn.style.display = "flex";
+        rangeAIn.style.display = "flex";
+      } else {
+        distanceIn = numberDistanceIn;
+        flowIn = numberQIn;
+        conductivityIn = numberKIn;
+        areaIn = numberAIn;
+
+        numberDistanceIn.style.display = "flex";
+        numberQIn.style.display = "flex";
+        numberKIn.style.display = "flex";
+        numberAIn.style.display = "flex";
+
+        rangeDistanceIn.style.display = "none";
+        rangeQIn.style.display = "none";
+        rangeKIn.style.display = "none";
+        rangeAIn.style.display = "none";
+      }
+    }
+
+    function actualizarEstado() {
+      // Actualiza los valores
+      distance = getValidValue(distanceIn);
+      flowRate = getValidValue(flowIn);
+      conductivity = getValidValue(conductivityIn);
+      area = getValidValue(areaIn);
+
+      // Movimiento horizontal del pm-2
+      pmRight.style.marginLeft = distance + "px";
+
+      // Alturas dinámicas
+      const waterLeftHeight = waterLeft.offsetHeight;
+      let waterRightHeight =
+        waterLeftHeight - (flowRate * distance) / (conductivity * area);
+      if (waterRightHeight <= 0) waterRightHeight = 0;
+
+      // Ajuste de altura del agua
+      waterRight.style.height = waterRightHeight + "px";
+
+      // Actualización de datos
+      data1.textContent = waterLeftHeight.toFixed(2) + "m";
+      data2.textContent = waterRightHeight.toFixed(2) + "m";
+      data3.textContent = distance.toFixed(2) + "m";
+      const slope = ((waterRightHeight - waterLeftHeight) / distance).toFixed(
+        2,
+      );
+      data4.textContent = slope + "m";
+      data5.textContent = flowRate.toFixed(2) + "m³";
+      data6.textContent = conductivity.toFixed(2) + "m/día";
+      data7.textContent = area.toFixed(2) + "m²";
+
+      // Actualización visual de la línea ∆L
+      const lineWidth = distance + pmsMinGap;
+      linea.style.left = lineLeftCoord + "px";
+      linea.style.width = distance + pmsMinGap + "px";
+      deltaText.style.left =
+        lineLeftCoord + lineWidth / 2 - deltaTextLeftCoord + "px";
+
+      // Líneas punteadas
+      const lineH2Width = lineH1Width + distance + pmsMinGap;
+      lineH1.style.width = lineH1Width + "px";
+      lineH2.style.width = lineH2Width + "px";
+      lineH1.style.marginLeft = -lineH1Width + "px";
+      lineH2.style.marginLeft = -lineH2Width + "px";
+
+      // 🔹 Actualiza burbujas después de todo
+      // 🔹 Actualiza burbujas después de que el navegador aplique el layout
+      requestAnimationFrame(() => {
+        actualizarBurbujas(waterLeftHeight, waterRightHeight, distance);
+      });
+    }
+
+    function actualizarInclinacion() {
+      if (!rangeAngleIn || !numberAngleIn || !cylinder) return;
+
+      angle = parseFloat(rangeAngleIn.value);
+
+      // Sincronizar valores
+      numberAngleIn.value = angle.toString();
+      rangeAngleIn.value = angle.toString();
+
+      // 🔹 Inclinación del cilindro
+      cylinder.style.transform = `rotate(${angle}deg)`;
+      cylinder.style.transformOrigin = "center center";
+
+      // 🔹 Mover piezómetros verticalmente según el ángulo
+      if (pmLeft && pmRight) {
+        const radians = (angle * Math.PI) / 180;
+        const altura = Math.sin(radians) * 50; // 50 controla la sensibilidad (ajústalo si suben mucho o poco)
+
+        // 🔁 Invertimos la dirección del movimiento
+        pmLeft.style.transform = `translateY(${-altura}px)`;
+        pmRight.style.transform = `translateY(${altura}px)`;
+      }
+
+      // 🔹 Ajustar también la línea ∆L
+      if (deltaContainer) {
+        deltaContainer.style.transform = `rotate(${angle}deg)`;
+        deltaContainer.style.transformOrigin = "center center";
+      }
+    }
+
+    // === Burbujas flotantes de h₁ y h₂ ===
+    const bubbleH1 = document.getElementById("bubble-h1");
+    const bubbleH2 = document.getElementById("bubble-h2");
+
+    function actualizarBurbujas(
+      waterLeftHeight: number,
+      waterRightHeight: number,
+      distance: number,
+    ): void {
+      if (!bubbleH1 || !bubbleH2 || !lineH1 || !lineH2 || !graph) return;
+
+      // Actualiza texto de las burbujas
+      bubbleH1.textContent = "h₁: " + waterLeftHeight.toFixed(2) + "m";
+      bubbleH2.textContent = "h₂: " + waterRightHeight.toFixed(2) + "m";
+
+      // Coordenadas base
+      const graphRect = graph.getBoundingClientRect();
+      const heightLine = document.querySelector(
+        ".height-line",
+      ) as HTMLDivElement;
+      const leftLineRect = heightLine.getBoundingClientRect();
+      const pm1Rect = pmLeft.getBoundingClientRect();
+      const pm2Rect = pmRight.getBoundingClientRect();
+
+      // Alturas relativas del agua (desde la base del gráfico)
+      const baseGraphBottom = graphRect.bottom;
+      const pm1Bottom = pm1Rect.bottom;
+      const pm2Bottom = pm2Rect.bottom;
+
+      const topH1 = pm1Bottom - waterLeftHeight - graphRect.top - 15;
+      const topH2 = pm2Bottom - waterRightHeight - graphRect.top - 15;
+
+      // Posicionamos las burbujas pegadas a la línea de la izquierda
+      const leftOffset =
+        leftLineRect.left - graphRect.left - bubbleH1.offsetWidth - 10;
+
+      bubbleH1.style.position = "absolute";
+      bubbleH1.style.left = `${leftOffset}px`;
+      bubbleH1.style.top = `${topH1}px`;
+
+      bubbleH2.style.position = "absolute";
+      bubbleH2.style.left = `${leftOffset}px`;
+      bubbleH2.style.top = `${topH2}px`;
+
+      // --- Evita que las burbujas se sobrepongan ---
+      const h1Rect = bubbleH1.getBoundingClientRect();
+      const h2Rect = bubbleH2.getBoundingClientRect();
+
+      const overlapThreshold = 25; // px de separación mínima
+      const diff = Math.abs(topH1 - topH2);
+
+      if (diff < overlapThreshold) {
+        if (topH1 < topH2) {
+          // h1 está arriba → mueve h1 un poco más arriba y h2 más abajo
+          bubbleH1.style.top = `${topH1 - (overlapThreshold - diff) / 2}px`;
+          bubbleH2.style.top = `${topH2 + (overlapThreshold - diff) / 2}px`;
+        } else {
+          // h2 está arriba → mueve h2 más arriba y h1 más abajo
+          bubbleH2.style.top = `${topH2 - (overlapThreshold - diff) / 2}px`;
+          bubbleH1.style.top = `${topH1 + (overlapThreshold - diff) / 2}px`;
+        }
+      }
+    }
+
+    requestAnimationFrame(() => {
+      actualizarBurbujas(waterLeftHeight, waterRightHeight, distance);
+    });
+
+    function actualizarTodo() {
+      actualizarInputType();
+      actualizarEstado();
+    }
+
+    function getValidValue(input: HTMLInputElement) {
       const value = parseFloat(input.value);
       const min = parseFloat(input.min);
       const max = parseFloat(input.max);
 
       if (isNaN(value)) {
-        input.value = "";
-        //? mensaje "el valor minimo es"
-        //? mensaje "el rango de valores es"
-      } else if (value < min) {
-        //mensaje "el valor minimo es"
-      } else if (value > max) {
-        input.value = String(max);
-        //mensaje "el valor maximo es"
+        return min;
       }
 
-      actualizarEstado();
-    }),
-  );
-
-  type.addEventListener("input", actualizarTodo);
-
-  actualizarTodo();
-
-  function actualizarInputType() {
-    if (type.checked) {
-      distanceIn = rangeDistanceIn;
-      flowIn = rangeQIn;
-      conductivityIn = rangeKIn;
-      areaIn = rangeAIn;
-
-      numberDistanceIn.style.display = "none";
-      numberQIn.style.display = "none";
-      numberKIn.style.display = "none";
-      numberAIn.style.display = "none";
-
-      rangeDistanceIn.style.display = "flex";
-      rangeQIn.style.display = "flex";
-      rangeKIn.style.display = "flex";
-      rangeAIn.style.display = "flex";
-    } else {
-      distanceIn = numberDistanceIn;
-      flowIn = numberQIn;
-      conductivityIn = numberKIn;
-      areaIn = numberAIn;
-
-      numberDistanceIn.style.display = "flex";
-      numberQIn.style.display = "flex";
-      numberKIn.style.display = "flex";
-      numberAIn.style.display = "flex";
-
-      rangeDistanceIn.style.display = "none";
-      rangeQIn.style.display = "none";
-      rangeKIn.style.display = "none";
-      rangeAIn.style.display = "none";
-    }
-  }
-
-  function actualizarEstado() {
-    // Actualiza los valores
-    distance = getValidValue(distanceIn);
-    flowRate = getValidValue(flowIn);
-    conductivity = getValidValue(conductivityIn);
-    area = getValidValue(areaIn);
-
-    // Movimiento horizontal del pm-2
-    pmRight.style.marginLeft = distance + "px";
-
-    // Alturas dinámicas
-    const waterLeftHeight = waterLeft.offsetHeight;
-    let waterRightHeight =
-      waterLeftHeight - (flowRate * distance) / (conductivity * area);
-    if (waterRightHeight <= 0) waterRightHeight = 0;
-
-    // Ajuste de altura del agua
-    waterRight.style.height = waterRightHeight + "px";
-
-    // Actualización de datos
-    data1.textContent = waterLeftHeight.toFixed(2) + "m";
-    data2.textContent = waterRightHeight.toFixed(2) + "m";
-    data3.textContent = distance.toFixed(2) + "m";
-    const slope = ((waterRightHeight - waterLeftHeight) / distance).toFixed(2);
-    data4.textContent = slope + "m";
-    data5.textContent = flowRate.toFixed(2) + "m³";
-    data6.textContent = conductivity.toFixed(2) + "m/día";
-    data7.textContent = area.toFixed(2) + "m²";
-
-    // Actualización visual de la línea ∆L
-    const lineWidth = distance + pmsMinGap;
-    linea.style.left = lineLeftCoord + "px";
-    linea.style.width = distance + pmsMinGap + "px";
-    deltaText.style.left =
-      lineLeftCoord + lineWidth / 2 - deltaTextLeftCoord + "px";
-
-    // Líneas punteadas
-    const lineH2Width = lineH1Width + distance + pmsMinGap;
-    lineH1.style.width = lineH1Width + "px";
-    lineH2.style.width = lineH2Width + "px";
-    lineH1.style.marginLeft = -lineH1Width + "px";
-    lineH2.style.marginLeft = -lineH2Width + "px";
-
-    // 🔹 Actualiza burbujas después de todo
-    // 🔹 Actualiza burbujas después de que el navegador aplique el layout
-    requestAnimationFrame(() => {
-      actualizarBurbujas(waterLeftHeight, waterRightHeight, distance);
-    });
-  }
-
-  // === Burbujas flotantes de h₁ y h₂ ===
-  const bubbleH1 = document.getElementById("bubble-h1");
-  const bubbleH2 = document.getElementById("bubble-h2");
-
-  function actualizarBurbujas(
-    waterLeftHeight: number,
-    waterRightHeight: number,
-    distance: number,
-  ): void {
-    if (!bubbleH1 || !bubbleH2 || !lineH1 || !lineH2 || !graph) return;
-
-    // Actualiza texto de las burbujas
-    bubbleH1.textContent = "h₁: " + waterLeftHeight.toFixed(2) + "m";
-    bubbleH2.textContent = "h₂: " + waterRightHeight.toFixed(2) + "m";
-
-    // Coordenadas base
-    const graphRect = graph.getBoundingClientRect();
-    const heightLine = document.querySelector(".height-line") as HTMLDivElement;
-    const leftLineRect = heightLine.getBoundingClientRect();
-    const pm1Rect = pmLeft.getBoundingClientRect();
-    const pm2Rect = pmRight.getBoundingClientRect();
-
-    // Alturas relativas del agua (desde la base del gráfico)
-    const baseGraphBottom = graphRect.bottom;
-    const pm1Bottom = pm1Rect.bottom;
-    const pm2Bottom = pm2Rect.bottom;
-
-    const topH1 = pm1Bottom - waterLeftHeight - graphRect.top - 15;
-    const topH2 = pm2Bottom - waterRightHeight - graphRect.top - 15;
-
-    // Posicionamos las burbujas pegadas a la línea de la izquierda
-    const leftOffset =
-      leftLineRect.left - graphRect.left - bubbleH1.offsetWidth - 10;
-
-    bubbleH1.style.position = "absolute";
-    bubbleH1.style.left = `${leftOffset}px`;
-    bubbleH1.style.top = `${topH1}px`;
-
-    bubbleH2.style.position = "absolute";
-    bubbleH2.style.left = `${leftOffset}px`;
-    bubbleH2.style.top = `${topH2}px`;
-
-    // --- Evita que las burbujas se sobrepongan ---
-    const h1Rect = bubbleH1.getBoundingClientRect();
-    const h2Rect = bubbleH2.getBoundingClientRect();
-
-    const overlapThreshold = 25; // px de separación mínima
-    const diff = Math.abs(topH1 - topH2);
-
-    if (diff < overlapThreshold) {
-      if (topH1 < topH2) {
-        // h1 está arriba → mueve h1 un poco más arriba y h2 más abajo
-        bubbleH1.style.top = `${topH1 - (overlapThreshold - diff) / 2}px`;
-        bubbleH2.style.top = `${topH2 + (overlapThreshold - diff) / 2}px`;
-      } else {
-        // h2 está arriba → mueve h2 más arriba y h1 más abajo
-        bubbleH2.style.top = `${topH2 - (overlapThreshold - diff) / 2}px`;
-        bubbleH1.style.top = `${topH1 + (overlapThreshold - diff) / 2}px`;
+      if (value < min) {
+        return min;
       }
+
+      if (value > max) {
+        return max;
+      }
+
+      return value;
     }
-  }
+  </script>
 
-  requestAnimationFrame(() => {
-    actualizarBurbujas(waterLeftHeight, waterRightHeight, distance);
-  });
-
-  function actualizarTodo() {
-    actualizarInputType();
-    actualizarEstado();
-  }
-
-  function getValidValue(input: HTMLInputElement) {
-    const value = parseFloat(input.value);
-    const min = parseFloat(input.min);
-    const max = parseFloat(input.max);
-
-    if (isNaN(value)) {
-      return min;
-    }
-
-    if (value < min) {
-      return min;
-    }
-
-    if (value > max) {
-      return max;
+  <style>
+    /* === Burbujas flotantes de h₁ y h₂ === */
+    .value-bubble {
+      position: absolute;
+      background: white;
+      border: 1px solid black;
+      border-radius: 12px;
+      padding: 3px 8px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: black;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+      pointer-events: none;
+      transition: 0.3s ease;
     }
 
-    return value;
-  }
-</script>
+    body.dark-mode .value-bubble {
+      background: #222;
+      color: white;
+      border-color: white;
+    }
 
-<style>
-  /* === Burbujas flotantes de h₁ y h₂ === */
-  .value-bubble {
-    position: absolute;
-    background: white;
-    border: 1px solid black;
-    border-radius: 12px;
-    padding: 3px 8px;
-    font-size: 0.85rem;
-    font-weight: bold;
-    color: black;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
-    pointer-events: none;
-    transition: 0.3s ease;
-  }
+    /* === PANEL DE CONTROLES === */
+    .panel-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px 24px;
+    }
 
-  body.dark-mode .value-bubble {
-    background: #222;
-    color: white;
-    border-color: white;
-  }
-
-  /* === PANEL DE CONTROLES === */
-  .panel-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px 24px;
-  }
-
-  .panel-grid .control {
-    display: flex;
-    flex-direction: column;
-    justify-content: end;
-  }
-
-  .panel-grid .control.full {
-    grid-column: 1 / span 2;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .panel-grid input[type="range"] {
-    width: 100%;
-    accent-color: var(--color-primary);
-    margin-top: 6px;
-  }
-
-  .panel-grid input[type="number"] {
-    width: 100%;
-    margin-top: 6px;
-    padding: 5px;
-    border: 1px solid var(--borderMario);
-    border-radius: 5px;
-    background: rgba(0, 0, 0, 0.05);
-    transition: all 0.2s ease;
-  }
-
-  input[type="number"][style*="display: none"] + input[type="range"],
-  input[type="range"][style*="display: flex"] + input[type="number"] {
-    border: 1px solid var(--borderMario);
-    border-radius: 6px;
-    background: rgba(0, 0, 0, 0.08);
-    opacity: 0.7;
-  }
-
-  .panel-grid input[type="number"]:hover,
-  .panel-grid input[type="range"]:hover {
-    border-color: var(--color-primary);
-  }
-
-  /* === LAYOUT PRINCIPAL === */
-  .layout {
-    display: flex;
-    gap: 20px;
-    padding: 20px 0;
-    align-items: flex-start;
-  }
-
-  .data-grid div {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 15px;
-    border-bottom: 1px solid var(--borderMario);
-  }
-
-  .data-label {
-    font-weight: 500;
-    font-size: 1rem;
-    margin: 0;
-  }
-
-  .data-value {
-    font-weight: 800;
-    font-size: 0.95rem;
-    margin: 0;
-  }
-
-  .visual,
-  .right-column {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-  }
-
-  .visual {
-    border-radius: 10px;
-    padding: 20px;
-    border: 1px solid var(--borderMario);
-    background: var(--cardMario);
-    box-shadow: 0 8px 30px var(--shadowMario);
-  }
-
-  .right-column {
-    gap: 20px;
-  }
-
-  .visual h2,
-  .data h2 {
-    margin-top: 0;
-    margin-bottom: 15px;
-    text-align: center;
-  }
-
-  /* === GRÁFICA === */
-  .graph {
-    display: flex;
-    flex-direction: row;
-    height: auto;
-    min-height: 50vh;
-    position: relative;
-  }
-
-  .height-line {
-    width: 4px;
-    margin-right: 20px;
-    background: var(--color-primary);
-  }
-
-  /* Contenedor general de la gráfica */
-  .container {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-    margin-bottom: 2vh;
-  }
-
-  /* Piezómetros */
-  .pms {
-    display: flex;
-    gap: 25px;
-    z-index: 10;
-    min-width: 200px;
-  }
-
-  .piezometer {
-    display: flex;
-    flex-direction: column-reverse;
-    width: 30px;
-    height: 200px;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgb(0, 0, 0);
-    border-bottom: 0;
-    border-top: 0;
-    transition: margin-left 0.5s ease;
-  }
-
-  .piezometer#pm-left > .water {
-    height: 70%;
-  }
-
-  .piezometer#pm-right > .water {
-    height: 50%;
-  }
-
-  /* Agua dentro de piezómetro */
-  .water {
-    width: 100%;
-    background: rgba(74, 214, 255);
-    transition: height 0.5s ease;
-  }
-
-  .water h3 {
-    margin-top: -1em;
-    margin-left: 1.8em;
-  }
-
-  .dotted-line {
-    left: 0;
-    width: 100%;
-    border-top: 2px dashed black;
-    margin-bottom: -2px;
-    opacity: 0.7;
-    pointer-events: none;
-    transition: 0.5s ease;
-  }
-
-  body.dark-mode .dotted-line {
-    border-top: 2px dashed white;
-  }
-
-  /* === Línea ∆L === */
-  .delta-container {
-    position: relative;
-    width: 100%;
-    height: 20px;
-    margin-top: -30px;
-  }
-
-  .linea {
-    position: absolute;
-    top: 50%;
-    height: 2px;
-    background: black !important;
-    color: black !important;
-    transition: width 0.5s ease;
-  }
-
-  .linea::before,
-  .linea::after {
-    content: "";
-    position: absolute;
-    top: -8px;
-    width: 2px;
-    height: 18px;
-    background: black !important;
-  }
-
-  .linea::before {
-    left: 0;
-  }
-
-  .linea::after {
-    right: 0;
-  }
-
-  .delta-text {
-    position: absolute;
-    top: -12px;
-    font-weight: bold;
-    padding: 0 4px;
-    color: black !important;
-    transition: all 0.5s ease;
-  }
-
-  /* === Cilindro === */
-  .cylinder {
-    margin-top: -20px;
-    display: flex;
-    align-items: center;
-    z-index: 0;
-  }
-
-  .circle {
-    width: 30px;
-    height: 50px;
-    background: rgba(190, 247, 255);
-    border: 1px solid black;
-    border-radius: 50%;
-    position: relative;
-  }
-
-  .circle.front {
-    z-index: 3;
-  }
-
-  .body {
-    width: 280px;
-    height: 50px;
-    background: rgba(190, 247, 255);
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
-    position: relative;
-    left: -15px;
-    z-index: 2;
-    background-image: radial-gradient(
-      rgba(0, 0, 0, 0.459) 1px,
-      transparent 1px
-    );
-    background-size: 10px 10px;
-  }
-
-  .circle.back {
-    left: -30px;
-    z-index: 1;
-    background-image: radial-gradient(
-      rgba(0, 0, 0, 0.459) 1px,
-      transparent 1px
-    );
-    background-size: 10px 10px;
-  }
-
-  /* === PANEL DE DATOS === */
-  .data {
-    border-radius: 10px;
-    padding: 20px;
-    border: 1px solid var(--borderMario);
-    background: var(--cardMario);
-    box-shadow: 0 8px 30px var(--shadowMario);
-  }
-
-  .data-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px 20px;
-  }
-
-  .data-grid div {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 10px;
-    border-bottom: 1px solid var(--borderMario);
-    background: rgba(0, 0, 0, 0.05);
-    border-radius: 6px;
-    transition: background 0.2s ease;
-  }
-
-  .data-grid div:hover {
-    background: rgba(0, 0, 0, 0.1);
-  }
-
-  .data-grid h3 {
-    margin: 0;
-    font-weight: 500;
-    font-size: 0.95rem;
-  }
-
-  .data-grid label {
-    font-weight: bold;
-    font-size: 0.95rem;
-  }
-
-  /* === PANEL DE CONTROLES === */
-  .panel {
-    border-radius: 10px;
-    padding: 20px;
-    border: 1px solid var(--borderMario);
-    background: var(--cardMario);
-    box-shadow: 0 8px 30px var(--shadowMario);
-  }
-
-  .panel h2 {
-    margin-top: 0;
-    text-align: center;
-    margin-bottom: 15px;
-  }
-
-  .panel label {
-    font-weight: 500;
-  }
-
-  /* === SOMBRAS Y BORDES === */
-  .border {
-    border: 1px solid var(--borderMario);
-  }
-
-  .rounded-md {
-    border-radius: 10px;
-  }
-
-  .shadow {
-    box-shadow: 0 8px 30px var(--shadowMario);
-  }
-
-  /* === ADAPTACIÓN RESPONSIVA === */
-  @media (max-width: 900px) {
-    .layout {
+    .panel-grid .control {
+      display: flex;
       flex-direction: column;
+      justify-content: end;
+    }
+
+    .panel-grid .control.full {
+      grid-column: 1 / span 2;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .panel-grid input[type="range"] {
+      width: 100%;
+      accent-color: var(--color-primary);
+      margin-top: 6px;
+    }
+
+    .panel-grid input[type="number"] {
+      width: 100%;
+      margin-top: 6px;
+      padding: 5px;
+      border: 1px solid var(--borderMario);
+      border-radius: 5px;
+      background: rgba(0, 0, 0, 0.05);
+      transition: all 0.2s ease;
+    }
+
+    input[type="number"][style*="display: none"] + input[type="range"],
+    input[type="range"][style*="display: flex"] + input[type="number"] {
+      border: 1px solid var(--borderMario);
+      border-radius: 6px;
+      background: rgba(0, 0, 0, 0.08);
+      opacity: 0.7;
+    }
+
+    .panel-grid input[type="number"]:hover,
+    .panel-grid input[type="range"]:hover {
+      border-color: var(--color-primary);
+    }
+
+    /* === LAYOUT PRINCIPAL === */
+    .layout {
+      display: flex;
+      gap: 20px;
+      padding: 20px 0;
+      align-items: flex-start;
+    }
+
+    .data-grid div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 15px;
+      border-bottom: 1px solid var(--borderMario);
+    }
+
+    .data-label {
+      font-weight: 500;
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .data-value {
+      font-weight: 800;
+      font-size: 0.95rem;
+      margin: 0;
     }
 
     .visual,
     .right-column {
-      width: 100%;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
     }
 
-    .panel-grid {
-      grid-template-columns: 1fr;
+    .visual {
+      border-radius: 10px;
+      padding: 20px;
+      border: 1px solid var(--borderMario);
+      background: var(--cardMario);
+      box-shadow: 0 8px 30px var(--shadowMario);
+    }
+
+    .right-column {
+      gap: 20px;
+    }
+
+    .visual h2,
+    .data h2 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    /* === GRÁFICA === */
+    .graph {
+      display: flex;
+      flex-direction: row;
+      height: auto;
+      min-height: 50vh;
+      position: relative;
+    }
+
+    .height-line {
+      width: 4px;
+      margin-right: 20px;
+      background: var(--color-primary);
+    }
+
+    /* Contenedor general de la gráfica */
+    .container {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      margin-bottom: 2vh;
+    }
+
+    /* Piezómetros */
+    .pms {
+      display: flex;
+      gap: 25px;
+      z-index: 10;
+      min-width: 200px;
+    }
+
+    .piezometer {
+      display: flex;
+      flex-direction: column-reverse;
+      width: 30px;
+      height: 200px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgb(0, 0, 0);
+      border-bottom: 0;
+      border-top: 0;
+      transition: margin-left 0.5s ease;
+    }
+
+    .piezometer#pm-left > .water {
+      height: 70%;
+    }
+
+    .piezometer#pm-right > .water {
+      height: 50%;
+    }
+
+    /* Agua dentro de piezómetro */
+    .water {
+      width: 100%;
+      background: rgba(74, 214, 255);
+      transition: height 0.5s ease;
+    }
+
+    .water h3 {
+      margin-top: -1em;
+      margin-left: 1.8em;
+    }
+
+    .dotted-line {
+      left: 0;
+      width: 100%;
+      border-top: 2px dashed black;
+      margin-bottom: -2px;
+      opacity: 0.7;
+      pointer-events: none;
+      transition: 0.5s ease;
+    }
+
+    body.dark-mode .dotted-line {
+      border-top: 2px dashed white;
+    }
+
+    /* === Línea ∆L === */
+    .delta-container {
+      position: relative;
+      width: 100%;
+      height: 20px;
+      margin-top: -30px;
+    }
+    .pms,
+    .cylinder,
+    #pm-left,
+    #pm-right,
+    .delta-container {
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .delta-container {
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .linea {
+      position: absolute;
+      top: 50%;
+      height: 2px;
+      background: black !important;
+      color: black !important;
+      transition: width 0.5s ease;
+    }
+
+    .linea::before,
+    .linea::after {
+      content: "";
+      position: absolute;
+      top: -8px;
+      width: 2px;
+      height: 18px;
+      background: black !important;
+    }
+
+    .linea::before {
+      left: 0;
+    }
+
+    .linea::after {
+      right: 0;
+    }
+
+    .delta-text {
+      position: absolute;
+      top: -12px;
+      font-weight: bold;
+      padding: 0 4px;
+      color: black !important;
+      transition: all 0.5s ease;
+    }
+
+    /* === Cilindro === */
+    .cylinder {
+      margin-top: -20px;
+      display: flex;
+      align-items: center;
+      z-index: 0;
+      transition: transform 0.4s ease-in-out;
+    }
+
+    .circle {
+      width: 30px;
+      height: 50px;
+      background: rgba(190, 247, 255);
+      border: 1px solid black;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .circle.front {
+      z-index: 3;
+    }
+
+    .body {
+      width: 280px;
+      height: 50px;
+      background: rgba(190, 247, 255);
+      border-top: 1px solid black;
+      border-bottom: 1px solid black;
+      position: relative;
+      left: -15px;
+      z-index: 2;
+      background-image: radial-gradient(
+        rgba(0, 0, 0, 0.459) 1px,
+        transparent 1px
+      );
+      background-size: 10px 10px;
+    }
+
+    .circle.back {
+      left: -30px;
+      z-index: 1;
+      background-image: radial-gradient(
+        rgba(0, 0, 0, 0.459) 1px,
+        transparent 1px
+      );
+      background-size: 10px 10px;
+    }
+
+    /* === PANEL DE DATOS === */
+    .data {
+      border-radius: 10px;
+      padding: 20px;
+      border: 1px solid var(--borderMario);
+      background: var(--cardMario);
+      box-shadow: 0 8px 30px var(--shadowMario);
     }
 
     .data-grid {
-      grid-template-columns: 1fr;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 20px;
     }
-  }
 
-  body:not(.dark-mode) .panel label,
-  body:not(.dark-mode) .panel h2,
-  body:not(.dark-mode) .panel .control,
-  body:not(.dark-mode) .data-grid h3,
-  body:not(.dark-mode) .data-grid label {
-    color: #000 !important;
-  }
-</style>
+    .data-grid div {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 10px;
+      border-bottom: 1px solid var(--borderMario);
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: 6px;
+      transition: background 0.2s ease;
+    }
+
+    .data-grid div:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .data-grid h3 {
+      margin: 0;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .data-grid label {
+      font-weight: bold;
+      font-size: 0.95rem;
+    }
+
+    /* === PANEL DE CONTROLES === */
+    .panel {
+      border-radius: 10px;
+      padding: 20px;
+      border: 1px solid var(--borderMario);
+      background: var(--cardMario);
+      box-shadow: 0 8px 30px var(--shadowMario);
+    }
+
+    .panel h2 {
+      margin-top: 0;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .panel label {
+      font-weight: 500;
+    }
+
+    /* === SOMBRAS Y BORDES === */
+    .border {
+      border: 1px solid var(--borderMario);
+    }
+
+    .rounded-md {
+      border-radius: 10px;
+    }
+
+    .shadow {
+      box-shadow: 0 8px 30px var(--shadowMario);
+    }
+
+    /* === ADAPTACIÓN RESPONSIVA === */
+    @media (max-width: 900px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      .visual,
+      .right-column {
+        width: 100%;
+      }
+
+      .panel-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .data-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    body:not(.dark-mode) .panel label,
+    body:not(.dark-mode) .panel h2,
+    body:not(.dark-mode) .panel .control,
+    body:not(.dark-mode) .data-grid h3,
+    body:not(.dark-mode) .data-grid label {
+      color: #000 !important;
+    }
+  </style>
+</div>
