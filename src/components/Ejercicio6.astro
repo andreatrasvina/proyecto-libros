@@ -1,6 +1,3 @@
----
-import "../styles/global.css";
----
 <section
   class="flex flex-col items-center justify-center p-6 border border-[var(--borderEjercicio)] 
   bg-[var(--cardEjercicio)] shadow-[var(--shadowEjercicio)] rounded-xl transition-colors duration-300"
@@ -66,34 +63,97 @@ import "../styles/global.css";
   let baseImg = new Image();
   let baseLoaded = false;
 
-  // Usa la imagen del libro (image33-1.png). crossOrigin para intentar evitar bloqueos CORS.
-  baseImg.crossOrigin = "anonymous";
-  baseImg.src =
-    "https://api.allorigins.win/raw?url=" +
-    encodeURIComponent(
-      "https://books.gw-project.org/conceptual-and-visual-understanding-of-hydraulic-head-and-groundwater-flow/wp-content/uploads/sites/14/2020/12/image33-1.png"
-    );
+  // Estrategia mejorada para cargar la imagen
+  function loadImageWithFallback() {
+    // Intentar cargar desde diferentes fuentes
+    const imageSources = [
+      // URL directa (puede fallar por CORS pero es más rápida)
+      "https://books.gw-project.org/conceptual-and-visual-understanding-of-hydraulic-head-and-groundwater-flow/wp-content/uploads/sites/14/2020/12/image33-1.png",
+      // Proxy 1
+      "https://api.allorigins.win/raw?url=" + encodeURIComponent("https://books.gw-project.org/conceptual-and-visual-understanding-of-hydraulic-head-and-groundwater-flow/wp-content/uploads/sites/14/2020/12/image33-1.png"),
+      // Proxy 2 alternativo
+      "https://corsproxy.io/?" + encodeURIComponent("https://books.gw-project.org/conceptual-and-visual-understanding-of-hydraulic-head-and-groundwater-flow/wp-content/uploads/sites/14/2020/12/image33-1.png")
+    ];
 
-  baseImg.onload = () => {
-    console.log("✅ baseImg cargada:", baseImg.width, baseImg.height);
+    let currentAttempt = 0;
+
+    function tryNextSource() {
+      if (currentAttempt >= imageSources.length) {
+        console.error("❌ Todas las fuentes de imagen fallaron");
+        if (loadingText) {
+          loadingText.textContent = "Error: No se pudo cargar la imagen base";
+          loadingText.className = "text-red-500 italic mt-2";
+        }
+        // Crear un canvas con fondo y texto como fallback
+        createFallbackCanvas();
+        return;
+      }
+
+      baseImg = new Image();
+      baseImg.crossOrigin = "anonymous";
+      
+      baseImg.onload = () => {
+        console.log("✅ Imagen cargada desde fuente:", currentAttempt);
+        baseLoaded = true;
+        if (loadingText) loadingText.style.display = "none";
+        drawAll();
+      };
+
+      baseImg.onerror = () => {
+        console.warn(`❌ Fuente ${currentAttempt} falló, intentando siguiente...`);
+        currentAttempt++;
+        tryNextSource();
+      };
+
+      console.log(`🔄 Intentando cargar imagen desde fuente ${currentAttempt}:`, imageSources[currentAttempt]);
+      baseImg.src = imageSources[currentAttempt];
+    }
+
+    tryNextSource();
+  }
+
+  function createFallbackCanvas() {
+    if (!ctx) return;
+    
+    // Fondo del canvas
+    ctx.fillStyle = "#f0f8ff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Dibujar un esquema simple de acuífero
+    ctx.strokeStyle = "#4682b4";
+    ctx.lineWidth = 2;
+    
+    // Línea base (suelo)
+    ctx.beginPath();
+    ctx.moveTo(50, 300);
+    ctx.lineTo(650, 300);
+    ctx.stroke();
+    
+    // Texto informativo
+    ctx.fillStyle = "#666";
+    ctx.font = "16px Arial";
+    ctx.fillText("Esquema de acuífero libre - Imagen no disponible", 180, 180);
+    ctx.font = "14px Arial";
+    ctx.fillText("Usa los controles para dibujar líneas freáticas, equipotenciales y de flujo", 120, 210);
+    
     baseLoaded = true;
     if (loadingText) loadingText.style.display = "none";
-    drawAll();
-  };
+  }
 
-  baseImg.onerror = (e) => {
-    console.error("❌ Error al cargar la imagen base:", e);
-    if (loadingText) loadingText.textContent = "No se pudo cargar la imagen.";
-  };
+  // Iniciar carga de imagen
+  loadImageWithFallback();
 
   // --- eventos del canvas
   canvas?.addEventListener("click", (e) => {
     if (!baseLoaded) return;
     
     const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    
     const point = { 
-      x: e.clientX - rect.left, 
-      y: e.clientY - rect.top 
+      x: (e.clientX - rect.left) * scaleX, 
+      y: (e.clientY - rect.top) * scaleY 
     };
     
     selectedPoints.push(point);
@@ -144,11 +204,18 @@ import "../styles/global.css";
     [btnWater, btnEquip, btnFlow].forEach((b) => {
       if (!b) return;
       b.classList.remove("bg-blue-500", "bg-yellow-400", "bg-green-500", "text-white");
+      b.classList.add("border");
     });
+    
     if (activeButton) {
-      if (newTool === "waterTable") activeButton.classList.add("bg-blue-500", "text-white");
-      if (newTool === "equipotential") activeButton.classList.add("bg-yellow-400", "text-white");
-      if (newTool === "flowLine") activeButton.classList.add("bg-green-500", "text-white");
+      activeButton.classList.remove("border");
+      if (newTool === "waterTable") {
+        activeButton.classList.add("bg-blue-500", "text-white");
+      } else if (newTool === "equipotential") {
+        activeButton.classList.add("bg-yellow-400", "text-white");
+      } else if (newTool === "flowLine") {
+        activeButton.classList.add("bg-green-500", "text-white");
+      }
     }
   }
 
@@ -166,11 +233,14 @@ import "../styles/global.css";
 
   // dibujo
   function drawAll() {
-    if (!baseLoaded || !ctx) {
-      return;
-    }
+    if (!ctx) return;
+    
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(baseImg, 0, 0, canvas.width, canvas.height);
+    
+    // Solo dibujar la imagen base si se cargó correctamente
+    if (baseLoaded && baseImg.complete && baseImg.naturalWidth !== 0) {
+      ctx.drawImage(baseImg, 0, 0, canvas.width, canvas.height);
+    }
 
     // Dibujar las líneas completadas
     for (const l of lines) {
@@ -240,4 +310,7 @@ import "../styles/global.css";
     ctx.font = "12px Arial";
     ctx.fillText(index + 1, point.x + 8, point.y - 8);
   }
+
+  // Inicializar el botón activo por defecto
+  setTool("waterTable", btnWater);
 </script>
