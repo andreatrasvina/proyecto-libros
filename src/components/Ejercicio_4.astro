@@ -1,13 +1,8 @@
----
-/**
- * Interactive Aquifer Diagram — "Deluxe" Visual v2
- * - Estética pulida (glass + gradientes + sombras suaves)
- * - Resultados en filas (derecha)
- * - Parámetros en barra inferior horizontal
- * - Listeners corregidos (input + change)
- * - Vanilla JS + Tailwind contenedores
- */
----
+<!--
+  Interactive Aquifer Diagram — "Deluxe" v3 (skin azul con líneas al frente)
+  - Mantiene IDs/estructura y toda la lógica original (interactivo/manual)
+  - Reordenado de SVG para que WT/PS queden por delante (g: #hydro-lines)
+-->
 
 <section class="mx-auto max-w-7xl p-4 md:p-6">
   <header class="mb-4">
@@ -15,52 +10,48 @@
       Interactive Aquifer Diagram
     </h1>
     <p class="text-slate-600 mt-1">
-      Ajusta los parámetros. El diagrama reacciona en tiempo real; debajo verás fórmulas y resultados.
+      Ajusta los parámetros (o usa modo Manual). El diagrama reacciona en tiempo real; a la derecha verás fórmulas y resultados.
     </p>
   </header>
 
-  <!-- =================== DIAGRAM + RESULTS =================== -->
-  <div class="grid lg:grid-cols-12 gap-6 items-start place-items-start">
+  <div class="grid lg:grid-cols-12 gap-6 items-start">
     <!-- ===== Diagram ===== -->
-    <div class="lg:col-span-8 flex flex-col justify-start self-start rounded-2xl border border-slate-200 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/55 shadow-[0_8px_30px_rgba(2,6,23,0.08)] p-3 md:p-4">
-      <div class="flex items-center justify-between mb-2 text-xs md:text-sm text-slate-600">
+    <div class="lg:col-span-8 relative flex flex-col rounded-2xl border border-slate-200 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/55 shadow-[0_10px_35px_rgba(2,6,23,0.10)] p-3 md:p-4 overflow-hidden">
+      <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-sky-50 via-blue-50 to-slate-100 opacity-80"></div>
+
+      <div class="flex items-center justify-between mb-2 text-xs md:text-sm text-slate-600 relative z-[1]">
         <div class="inline-flex items-center gap-2">
           <span class="size-2.5 rounded-full bg-sky-500 shadow-[0_0_0_3px_rgba(14,165,233,.15)]"></span>
-          <span class="font-medium text-slate-800">Saturated Zone</span>
+          <span class="font-medium text-slate-800">Perfil Hidrogeológico</span>
         </div>
-        <div class="text-slate-500">Planar ground surface (reference)</div>
+        <div class="text-slate-500">Superficie del terreno (referencia)</div>
       </div>
 
-      <div class="flex justify-center items-center">
-        <svg id="hydro-svg" viewBox="0 0 1220 660" preserveAspectRatio="xMidYMid meet" class="w-full h-full min-h-[420px]">
+      <div class="flex justify-center items-center relative z-[1]">
+        <svg id="hydro-svg" viewBox="0 0 1220 660" preserveAspectRatio="xMidYMid meet" class="w-full h-full min-h-[440px]">
           <defs>
-            <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#f8fbff" />
-              <stop offset="100%" stop-color="#f1f5f9" />
-            </linearGradient>
             <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
-              <path d="M24 0H0v24" fill="none" stroke="#e7edf3" stroke-width="1" />
+              <path d="M24 0H0v24" fill="none" stroke="#e8eef5" stroke-width="1" />
+            </pattern>
+            <pattern id="dotsTex" width="10" height="10" patternUnits="userSpaceOnUse">
+              <circle cx="1.5" cy="1.5" r="1" fill="#ffffff" opacity="0.15"></circle>
             </pattern>
             <linearGradient id="gradU" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#bfeafe" />
-              <stop offset="60%" stop-color="#9bdcf6" />
-              <stop offset="100%" stop-color="#89d7ef" />
+              <stop offset="0%" stop-color="#7dd3fc" />
+              <stop offset="60%" stop-color="#38bdf8" />
+              <stop offset="100%" stop-color="#22c1e9" />
             </linearGradient>
             <linearGradient id="gradC" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#c7e9fb" />
-              <stop offset="60%" stop-color="#9bdcf3" />
-              <stop offset="100%" stop-color="#7ecde6" />
+              <stop offset="0%" stop-color="#3cb4e6" />
+              <stop offset="60%" stop-color="#249dcf" />
+              <stop offset="100%" stop-color="#0e86b8" />
             </linearGradient>
-            <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#ffffff" stop-opacity=".28" />
-              <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
-            </linearGradient>
-            <pattern id="hatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(30)">
-              <rect width="10" height="10" fill="#d6dee8" />
-              <path d="M0 0h10" stroke="#9aa5b1" stroke-width="2" opacity="0.35" />
+            <pattern id="hatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+              <rect width="12" height="12" fill="#94a3b8" opacity=".22" />
+              <path d="M0 0h12" stroke="#475569" stroke-width="2" opacity="0.25" />
             </pattern>
             <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.14" />
+              <feDropShadow dx="0" dy="2" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.14" />
             </filter>
             <linearGradient id="topFade" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stop-color="#fff" stop-opacity="1" />
@@ -70,109 +61,120 @@
               <rect x="0" y="0" width="100%" height="100%" fill="url(#topFade)" />
             </mask>
             <style>
-              .dash-anim {
-                stroke-dasharray: 10 8;
-                animation: dash 6s linear infinite;
-              }
-              .dash-anim-2 {
-                stroke-dasharray: 8 8;
-                animation: dash 8s linear infinite;
-              }
-              @keyframes dash {
-                to {
-                  stroke-dashoffset: -180;
-                }
-              }
+              .dash-anim { stroke-dasharray: 10 8; animation: dash 6s linear infinite; }
+              .dash-anim-2 { stroke-dasharray: 10 10; animation: dash 8s linear infinite; }
+              @keyframes dash { to { stroke-dashoffset: -180; } }
             </style>
           </defs>
 
-          <!-- Canvas -->
-          <rect x="12" y="12" width="1196" height="636" rx="16" fill="url(#bgGrad)" />
+          <!-- Lienzo + grid -->
           <rect x="12" y="12" width="1196" height="636" rx="16" fill="url(#grid)" />
 
-          <g>
-            <line id="gnd" x1="90" y1="108" x2="1130" y2="108" stroke="#0f172a" stroke-width="2.25" />
-            <line id="wt-line" x1="180" y1="150" x2="1040" y2="170" stroke="#0284c7" stroke-width="3.5" class="dash-anim" />
-            <line id="ps-line" x1="180" y1="170" x2="1040" y2="190" stroke="#0f172a" stroke-width="3" class="dash-anim-2" />
+          <!-- Superficie de terreno -->
+          <line id="gnd" x1="90" y1="108" x2="1130" y2="108" stroke="#0f172a" stroke-width="2.25" />
 
-            <g id="layers" filter="url(#softShadow)">
-              <polygon id="poly-U" points="90,108 1130,108 1130,300 90,300" fill="url(#gradU)" />
-              <rect id="rect-UA" x="90" y="300" width="1040" height="88" fill="url(#hatch)" />
-              <rect id="rect-C" x="90" y="388" width="1040" height="160" fill="url(#gradC)" />
-              <rect id="rect-LA" x="90" y="548" width="1040" height="112" fill="#64748b" />
-              <rect x="90" y="108" width="1040" height="40" fill="url(#gloss)" mask="url(#topGlossMask)" opacity="0.9" />
-            </g>
+          <!-- ===== CAPAS (detrás) ===== -->
+          <g id="layers" filter="url(#softShadow)">
+            <polygon id="poly-U" points="90,108 1130,108 1130,300 90,300" fill="url(#gradU)"/>
+            <polygon points="90,108 1130,108 1130,300 90,300" fill="url(#dotsTex)" opacity=".55"/>
+            <rect id="rect-UA" x="90" y="300" width="1040" height="88" fill="url(#hatch)" />
+            <rect id="rect-C"  x="90" y="388" width="1040" height="160" fill="url(#gradC)" />
+            <rect x="90" y="388" width="1040" height="160" fill="url(#dotsTex)" opacity=".45" />
+            <rect id="rect-LA" x="90" y="548" width="1040" height="112" fill="#31526b" opacity=".9" />
+            <rect x="90" y="108" width="1040" height="40" fill="#ffffff" mask="url(#topGlossMask)" opacity=".7" />
+          </g>
 
-            <g font-size="16" fill="#0f172a" opacity="0.9">
-              <text id="lbl-U" x="200" y="210">Unconfined Aquifer</text>
-              <text id="lbl-UA" x="200" y="345">Upper Aquitard</text>
-              <text id="lbl-C" x="200" y="460">Confined Aquifer</text>
-              <text id="lbl-LA" x="200" y="615">Lower Aquitard</text>
-            </g>
+          <!-- Pozos -->
+          <g id="wells" stroke-linecap="round" filter="url(#softShadow)">
+            <line x1="372" y1="108" x2="372" y2="540" stroke="#1e293b" stroke-width="11" opacity=".85"/>
+            <line id="well-left" x1="372" y1="108" x2="372" y2="320" stroke="#0369a1" stroke-width="7"
+                  style="filter: drop-shadow(0 0 6px rgba(2,132,199,.6));"/>
+            <rect id="wl-left" x="364" y="170" width="16" height="48" rx="4" fill="#93c5fd" opacity=".95" />
 
-            <g id="ruler" font-size="12" fill="#475569" opacity="0.9">
-              <line x1="70" y1="108" x2="70" y2="620" stroke="#94a3b8" stroke-width="1" />
-            </g>
+            <line x1="948" y1="108" x2="948" y2="540" stroke="#1e293b" stroke-width="11" opacity=".85"/>
+            <line id="well-right" x1="948" y1="108" x2="948" y2="540" stroke="#0ea5e9" stroke-width="7"
+                  style="filter: drop-shadow(0 0 6px rgba(14,165,233,.65));"/>
+            <rect id="wl-right" x="940" y="190" width="16" height="48" rx="4" fill="#a5f3fc" opacity=".95" />
+          </g>
 
-            <g id="wells" stroke-linecap="round">
-              <line x1="372" y1="108" x2="372" y2="320" stroke="#334155" stroke-width="10" />
-              <line id="well-left" x1="372" y1="108" x2="372" y2="320" stroke="#1e40af" stroke-width="6" />
-              <rect id="wl-left" x="364" y="170" width="16" height="48" rx="4" fill="#38bdf8" />
+          <!-- Etiquetas de capas -->
+          <g font-size="16" fill="#0f172a" opacity="0.9">
+            <text id="lbl-U"  x="200" y="210">Acuífero No Confinado</text>
+            <text id="lbl-UA" x="200" y="345">Acuitardo Superior</text>
+            <text id="lbl-C"  x="200" y="460">Acuífero Confinado</text>
+            <text id="lbl-LA" x="200" y="615">Acuitardo Inferior</text>
+          </g>
 
-              <line x1="948" y1="108" x2="948" y2="540" stroke="#334155" stroke-width="10" />
-              <line id="well-right" x1="948" y1="108" x2="948" y2="540" stroke="#1e40af" stroke-width="6" />
-              <rect id="wl-right" x="940" y="190" width="16" height="48" rx="4" fill="#38bdf8" />
-            </g>
+          <!-- Regla vertical -->
+          <g id="ruler" font-size="12" fill="#475569" opacity="0.9">
+            <line x1="70" y1="108" x2="70" y2="620" stroke="#94a3b8" stroke-width="1" />
+          </g>
 
-            <g font-size="14" fill="#0f172a">
-              <text id="dtw-left" x="392" y="158">Depth to water (L): — m</text>
-              <text id="dtw-right" x="968" y="178">Depth to water (R): — m</text>
-            </g>
+          <!-- Lecturas de profundidad -->
+          <g font-size="14" fill="#0f172a">
+            <text id="dtw-left"  x="392" y="158">Depth to water (L): — m</text>
+            <text id="dtw-right" x="968" y="178">Depth to water (R): — m</text>
+          </g>
 
-            <g font-size="13" fill="#0f172a">
-              <rect x="880" y="22" width="320" height="64" rx="14" fill="#f8fafc" stroke="#e5e7eb" />
-              <rect x="898" y="38" width="110" height="28" rx="999" fill="#fff" stroke="#e2e8f0" />
-              <line x1="910" y1="52" x2="940" y2="52" stroke="#0284c7" stroke-width="3.5" class="dash-anim" />
-              <text x="948" y="56">Water Table</text>
-              <rect x="1016" y="38" width="164" height="28" rx="999" fill="#fff" stroke="#e2e8f0" />
-              <line x1="1030" y1="52" x2="1060" y2="52" stroke="#0f172a" stroke-width="3" class="dash-anim-2" />
-              <text x="1068" y="56">Potentiometric Surface</text>
-            </g>
+          <!-- ===== LÍNEAS AL FRENTE ===== -->
+          <g id="hydro-lines" pointer-events="none">
+            <!-- WT sólida -->
+            <line id="wt-line" x1="180" y1="150" x2="1040" y2="170"
+                  stroke="#0ea5e9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-opacity=".98"
+                  style="filter: drop-shadow(0 0 6px rgba(14,165,233,.28));"/>
+            <!-- PS punteada -->
+            <line id="ps-line" x1="180" y1="170" x2="1040" y2="190"
+                  stroke="#06b6d4" stroke-width="3.5" class="dash-anim-2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity=".98"
+                  style="filter: drop-shadow(0 0 6px rgba(6,182,212,.25));"/>
+          </g>
 
-            <g id="flow" fill="#0f172a" opacity="0.9">
-              <polygon id="flowArrow" points="0,0 0,0 0,0" />
-            </g>
+          <!-- Flecha de flujo -->
+          <g id="flow" fill="#0f172a" opacity="0.9">
+            <polygon id="flowArrow" points="0,0 0,0 0,0" style="filter: drop-shadow(0 0 6px rgba(16,185,129,.35));"/>
+          </g>
 
-            <g id="bubble" transform="translate(820,104)">
-              <rect id="bubble-box" x="0" y="0" width="298" height="76" rx="12" fill="#ffffff" stroke="#e5e7eb" />
-              <text x="16" y="28" font-size="14" fill="#0f172a" font-weight="600">Gradient & Discharge</text>
-              <text id="bubble-i" x="16" y="50" font-size="13" fill="#0f172a">iₚₛ = —</text>
-              <text id="bubble-Q" x="156" y="50" font-size="13" fill="#0f172a">Q = — m³/s</text>
-            </g>
+          <!-- Tarjeta flotante -->
+          <g id="bubble" transform="translate(820,104)">
+            <rect x="0" y="0" width="298" height="76" rx="12" fill="#ffffff" stroke="#e5e7eb"
+                  style="filter: drop-shadow(0 6px 18px rgba(2,6,23,.12));"/>
+            <text x="16" y="28" font-size="14" fill="#0f172a" font-weight="600">Gradiente & Flujo (Darcy)</text>
+            <text id="bubble-i" x="16"  y="50" font-size="13" fill="#0f172a">iₚₛ = —</text>
+            <text id="bubble-Q" x="156" y="50" font-size="13" fill="#0f172a">Q = — m³/s</text>
+          </g>
+
+          <!-- Leyenda líneas -->
+          <g font-size="13" fill="#0f172a">
+            <rect x="860" y="22" width="340" height="64" rx="14" fill="#f8fafc" stroke="#e5e7eb" />
+            <rect x="878" y="38" width="124" height="28" rx="999" fill="#fff" stroke="#e2e8f0" />
+            <line x1="892" y1="52" x2="924" y2="52" stroke="#0ea5e9" stroke-width="4" />
+            <text x="932" y="56">Water Table</text>
+            <rect x="1012" y="38" width="174" height="28" rx="999" fill="#fff" stroke="#e2e8f0" />
+            <line x1="1026" y1="52" x2="1058" y2="52" stroke="#06b6d4" stroke-width="3.5" class="dash-anim-2" />
+            <text x="1066" y="56">Potentiometric Surface</text>
           </g>
         </svg>
       </div>
     </div>
 
     <!-- ===== Results ===== -->
-    <div class="lg:col-span-4 self-center flex flex-col gap-4 h-fit">
-      <div class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/70 backdrop-blur supports-[backdrop-filter]:bg-white/55 dark:supports-[backdrop-filter]:bg-slate-800/50 shadow-[0_8px_30px_rgba(2,6,23,0.08)] dark:shadow-[0_8px_30px_rgba(255,255,255,0.08)] p-4 transition-colors duration-300">
-        <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">Formulas & Live Results</h3>
-        <div class="grid gap-3 md:grid-cols-1 text-sm">
-          <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-white/70 dark:bg-slate-800/60 transition-colors duration-300">
-            <div class="font-semibold text-slate-900 dark:text-slate-100 mb-2">Water Table</div>
-            <p class="text-slate-700 dark:text-slate-300">Δh<sub>wt</sub> = h<sub>L</sub> − h<sub>R</sub> = <span id="f-wt-dh" class="tabular-nums">—</span> m</p>
-            <p class="text-slate-700 dark:text-slate-300">i<sub>wt</sub> = Δh<sub>wt</sub> / ΔL = <span id="f-wt-i" class="tabular-nums">—</span> (m/m)</p>
+    <div class="lg:col-span-4 self-start flex flex-col gap-4 h-fit">
+      <div class="rounded-2xl border border-slate-200 bg-white/75 backdrop-blur supports-[backdrop-filter]:bg-white/60 shadow-[0_10px_35px_rgba(2,6,23,0.10)] p-4 transition-colors duration-300">
+        <h3 class="text-lg font-semibold text-slate-900 mb-3">Fórmulas & Resultados</h3>
+        <div class="grid gap-3 text-sm">
+          <div class="rounded-xl border border-slate-200 p-4 bg-white/80">
+            <div class="font-semibold text-slate-900 mb-2">Water Table</div>
+            <p class="text-slate-700">Δh<sub>wt</sub> = h<sub>L</sub> − h<sub>R</sub> = <span id="f-wt-dh" class="tabular-nums">—</span> m</p>
+            <p class="text-slate-700">i<sub>wt</sub> = Δh<sub>wt</sub> / ΔL = <span id="f-wt-i" class="tabular-nums">—</span> (m/m)</p>
           </div>
-          <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-white/70 dark:bg-slate-800/60 transition-colors duration-300">
-            <div class="font-semibold text-slate-900 dark:text-slate-100 mb-2">Potentiometric Surface</div>
-            <p class="text-slate-700 dark:text-slate-300">Δh<sub>ps</sub> = h<sub>L</sub> − h<sub>R</sub> = <span id="f-ps-dh" class="tabular-nums">—</span> m</p>
-            <p class="text-slate-700 dark:text-slate-300">i<sub>ps</sub> = Δh<sub>ps</sub> / ΔL = <span id="f-ps-i" class="tabular-nums">—</span> (m/m)</p>
+          <div class="rounded-xl border border-slate-200 p-4 bg-white/80">
+            <div class="font-semibold text-slate-900 mb-2">Potentiometric Surface</div>
+            <p class="text-slate-700">Δh<sub>ps</sub> = h<sub>L</sub> − h<sub>R</sub> = <span id="f-ps-dh" class="tabular-nums">—</span> m</p>
+            <p class="text-slate-700">i<sub>ps</sub> = Δh<sub>ps</sub> / ΔL = <span id="f-ps-i" class="tabular-nums">—</span> (m/m)</p>
           </div>
-          <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-white/70 dark:bg-slate-800/60 transition-colors duration-300">
-            <div class="font-semibold text-slate-900 dark:text-slate-100 mb-2">Discharge (confined)</div>
-            <p class="text-slate-700 dark:text-slate-300">Q = K · i<sub>ps</sub> · A</p>
-            <p class="mt-1 text-slate-700 dark:text-slate-300">Q = <span id="f-Q" class="tabular-nums">—</span> m³/s <span class="text-slate-500 dark:text-slate-400">(K=<span id="f-K" class="tabular-nums">—</span> m/s, A=<span id="f-A" class="tabular-nums">—</span> m²)</span></p>
+          <div class="rounded-xl border border-slate-200 p-4 bg-white/80">
+            <div class="font-semibold text-slate-900 mb-2">Descarga (confinado)</div>
+            <p class="text-slate-700">Q = K · i<sub>ps</sub> · A</p>
+            <p class="mt-1 text-slate-700">Q = <span id="f-Q" class="tabular-nums">—</span> m³/s <span class="text-slate-500">(K=<span id="f-K" class="tabular-nums">—</span> m/s, A=<span id="f-A" class="tabular-nums">—</span> m²)</span></p>
           </div>
         </div>
       </div>
@@ -180,385 +182,330 @@
   </div>
 
   <!-- =================== PARAMETERS TOOLBAR =================== -->
-  <div class="mt-6 rounded-2xl border border-slate-200 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 shadow-[0_8px_30px_rgba(2,6,23,0.08)] p-3 lg:p-4">
+  <div class="mt-6 rounded-2xl border border-slate-200 bg-white/85 backdrop-blur supports-[backdrop-filter]:bg-white/65 shadow-[0_10px_35px_rgba(2,6,23,0.10)] p-3 lg:p-4">
     <div class="flex items-center justify-between mb-2">
-      <h3 class="text-base font-semibold text-slate-900">Parameters</h3>
+      <h3 class="text-base font-semibold text-slate-900">Parámetros</h3>
       <div class="hidden lg:flex gap-2">
-        <button id="btn-toggle" class="rounded-xl border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-50">
-          Modo: Interactivo
-        </button>
+        <button id="btn-toggle" class="rounded-xl border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-50">Modo: Interactivo</button>
         <button id="btn-reset" class="rounded-xl border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-50">Reset</button>
         <button id="btn-rand" class="rounded-xl bg-slate-900 text-white px-3 py-1.5 text-sm hover:opacity-90">Random</button>
       </div>
     </div>
-    <div class="overflow-x-auto scrollbar-thin">
-      <div class="flex gap-5 min-w-[1100px] snap-x snap-mandatory">
-        <!-- Distance -->
-        <div class="min-w-[260px] snap-start">
-          <label class="block font-semibold text-slate-900">Distance L (m)</label>
-          <input id="ctl-L" type="range" min="100" max="1500" value="700" class="w-full accent-slate-900" />
-          <div class="text-xs text-slate-500">Between wells: <span id="val-L">700</span> m</div>
-        </div>
-        <!-- Water Table -->
-        <div class="min-w-[260px] snap-start">
-          <div class="font-semibold text-slate-900">Water Table</div>
-          <div class="text-xs text-slate-500 mb-1">Left elevation</div>
-          <input id="ctl-wtLeft" type="range" min="10" max="40" value="20" class="w-full accent-slate-900" />
-          <div class="text-xs text-slate-500 mb-2"><span id="val-wtLeft">20</span> m</div>
-          <div class="text-xs text-slate-500 mb-1">Slope (m per 100 m → right)</div>
-          <input id="ctl-wtSlope" type="range" min="-5" max="5" value="2.8" step="0.1" class="w-full accent-slate-900" />
-          <div class="text-xs text-slate-500">Δh/100m: <span id="val-wtSlope">2.8</span></div>
-        </div>
-        <!-- Potentiometric -->
-        <div class="min-w-[260px] snap-start">
-          <div class="font-semibold text-slate-900">Potentiometric Surface</div>
-          <div class="text-xs text-slate-500 mb-1">Left elevation</div>
-          <input id="ctl-psLeft" type="range" min="10" max="40" value="18" class="w-full accent-slate-900" />
-          <div class="text-xs text-slate-500 mb-2"><span id="val-psLeft">18</span> m</div>
-          <div class="text-xs text-slate-500 mb-1">Slope (m per 100 m → right)</div>
-          <input id="ctl-psSlope" type="range" min="-5" max="5" value="1.2" step="0.1" class="w-full accent-slate-900" />
-          <div class="text-xs text-slate-500">Δh/100m: <span id="val-psSlope">1.2</span></div>
-        </div>
-        <!-- Thickness -->
-        <div class="min-w-[260px] snap-start">
-          <div class="font-semibold text-slate-900">Unit Thicknesses (m)</div>
-          <div class="text-xs text-slate-500 mb-1">Unconfined aquifer</div>
-          <input id="ctl-tU" type="range" min="5" max="50" value="22" class="w-full accent-slate-900" />
-          <div class="text-xs text-slate-500 mb-2"><span id="val-tU">22</span> m</div>
-          <div class="text-xs text-slate-500 mb-1">Upper aquitard</div>
-          <input id="ctl-tUA" type="range" min="2" max="25" value="12" class="w-full accent-slate-900" />
-          <div class="text-xs text-slate-500 mb-2"><span id="val-tUA">12</span> m</div>
-          <div class="text-xs text-slate-500 mb-1">Confined aquifer</div>
-          <input id="ctl-tC" type="range" min="5" max="50" value="20" class="w-full accent-slate-900" />
-          <div class="text-xs text-slate-500 mb-2"><span id="val-tC">20</span> m</div>
-          <div class="text-xs text-slate-500 mb-1">Lower aquitard</div>
-          <input id="ctl-tLA" type="range" min="2" max="25" value="12" class="w-full accent-slate-900" />
-          <div class="text-xs text-slate-500"><span id="val-tLA">12</span> m</div>
-        </div>
-        <!-- Wells -->
-        <div class="min-w-[260px] snap-start">
-          <div class="font-semibold text-slate-900">Well Depths (m from ground)</div>
-          <div class="text-xs text-slate-500 mb-1">Left well (unconfined)</div>
-          <input id="ctl-wellU" type="range" min="5" max="70" value="26" class="w-full accent-slate-900" />
-          <div class="text-xs text-slate-500 mb-2"><span id="val-wellU">26</span> m</div>
-          <div class="text-xs text-slate-500 mb-1">Right well (penetrates confined)</div>
-          <input id="ctl-wellC" type="range" min="15" max="90" value="55" class="w-full accent-slate-900" />
-          <div class="text-xs text-slate-500"><span id="val-wellC">55</span> m</div>
-        </div>
-        <!-- Hydraulics -->
-        <div class="min-w-[260px] snap-start">
-          <div class="font-semibold text-slate-900">Hydraulic Parameters</div>
-          <div class="text-xs text-slate-500 mb-1">Conductivity K (m/s)</div>
-          <input id="ctl-K" type="range" min="0.0001" max="0.1" value="0.00825" step="0.0001" class="w-full accent-slate-900" />
-          <div class="text-xs text-slate-500 mb-2"><span id="val-K">0.00825</span> m/s</div>
-          <div class="text-xs text-slate-500 mb-1">Cross-sectional area A (m²)</div>
-          <input id="ctl-A" type="range" min="0.02" max="2.0" value="0.20" step="0.01" class="w-full accent-slate-900" />
-          <div class="text-xs text-slate-500"><span id="val-A">0.20</span> m²</div>
-        </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <!-- Distance -->
+      <div>
+        <label for="ctl-L" class="block font-semibold text-slate-900">Distance L (m)</label>
+        <input id="ctl-L" type="range" min="100" max="1500" value="700" class="w-full accent-slate-900" />
+        <input data-linked="L" type="number" class="mt-1 w-full rounded-lg border border-slate-300 px-2 py-1 text-sm hidden" />
+        <div class="text-xs text-slate-500">Between wells: <span id="val-L">700</span> m</div>
+      </div>
+
+      <!-- Water Table -->
+      <div>
+        <div class="font-semibold text-slate-900">Water Table</div>
+        <div class="text-xs text-slate-500 mb-1">Left elevation (m)</div>
+        <input id="ctl-wtLeft" type="range" min="10" max="40" value="20" class="w-full accent-slate-900" />
+        <input data-linked="wtLeft" type="number" class="mt-1 w-full rounded-lg border border-slate-300 px-2 py-1 text-sm hidden" />
+        <div class="text-xs text-slate-500 mb-2">h<sub>L</sub>: <span id="val-wtLeft">20</span> m</div>
+        <div class="text-xs text-slate-500 mb-1">Slope (m per 100 m → right)</div>
+        <input id="ctl-wtSlope" type="range" min="-5" max="5" value="2.8" step="0.1" class="w-full accent-slate-900" />
+        <input data-linked="wtSlope" type="number" step="0.1" class="mt-1 w-full rounded-lg border border-slate-300 px-2 py-1 text-sm hidden" />
+        <div class="text-xs text-slate-500">Δh/100m: <span id="val-wtSlope">2.8</span></div>
+      </div>
+
+      <!-- Potentiometric -->
+      <div>
+        <div class="font-semibold text-slate-900">Potentiometric Surface</div>
+        <div class="text-xs text-slate-500 mb-1">Left elevation (m)</div>
+        <input id="ctl-psLeft" type="range" min="10" max="40" value="18" class="w-full accent-slate-900" />
+        <input data-linked="psLeft" type="number" class="mt-1 w-full rounded-lg border border-slate-300 px-2 py-1 text-sm hidden" />
+        <div class="text-xs text-slate-500 mb-2">h<sub>L</sub>: <span id="val-psLeft">18</span> m</div>
+        <div class="text-xs text-slate-500 mb-1">Slope (m per 100 m → right)</div>
+        <input id="ctl-psSlope" type="range" min="-5" max="5" value="1.2" step="0.1" class="w-full accent-slate-900" />
+        <input data-linked="psSlope" type="number" step="0.1" class="mt-1 w-full rounded-lg border border-slate-300 px-2 py-1 text-sm hidden" />
+        <div class="text-xs text-slate-500">Δh/100m: <span id="val-psSlope">1.2</span></div>
+      </div>
+
+      <!-- Hydraulics -->
+      <div>
+        <div class="font-semibold text-slate-900">Hydraulic Parameters</div>
+        <div class="text-xs text-slate-500 mb-1">Conductivity K (m/s)</div>
+        <input id="ctl-K" type="range" min="0.0001" max="0.1" value="0.00825" step="0.0001" class="w-full accent-slate-900" />
+        <input data-linked="K" type="number" step="0.0001" class="mt-1 w-full rounded-lg border border-slate-300 px-2 py-1 text-sm hidden" />
+        <div class="text-xs text-slate-500 mb-2"><span id="val-K">0.00825</span> m/s</div>
+        <div class="text-xs text-slate-500 mb-1">Cross-sectional area A (m²)</div>
+        <input id="ctl-A" type="range" min="0.02" max="2.0" value="0.20" step="0.01" class="w-full accent-slate-900" />
+        <input data-linked="A" type="number" step="0.01" class="mt-1 w-full rounded-lg border border-slate-300 px-2 py-1 text-sm hidden" />
+        <div class="text-xs text-slate-500"><span id="val-A">0.20</span> m²</div>
       </div>
     </div>
   </div>
 </section>
 
 <script type="module">
-  // ==== DOM ====
-  let interactiveMode = true;
-  const toggleBtn = document.getElementById('btn-toggle');
-  const svg = document.getElementById('hydro-svg');
+let interactiveMode = true;
+const svg = document.getElementById('hydro-svg');
+const toggleBtn = document.getElementById('btn-toggle');
 
-  const ctl = {
-    L: document.getElementById('ctl-L'),
-    wtLeft: document.getElementById('ctl-wtLeft'),
-    wtSlope: document.getElementById('ctl-wtSlope'),
-    psLeft: document.getElementById('ctl-psLeft'),
-    psSlope: document.getElementById('ctl-psSlope'),
-    tU: document.getElementById('ctl-tU'),
-    tUA: document.getElementById('ctl-tUA'),
-    tC: document.getElementById('ctl-tC'),
-    tLA: document.getElementById('ctl-tLA'),
-    wellU: document.getElementById('ctl-wellU'),
-    wellC: document.getElementById('ctl-wellC'),
-    K: document.getElementById('ctl-K'),
-    A: document.getElementById('ctl-A'),
-    reset: document.getElementById('btn-reset'),
-    rand: document.getElementById('btn-rand'),
-  };
+const ctl = {
+  L: document.getElementById('ctl-L'),
+  wtLeft: document.getElementById('ctl-wtLeft'),
+  wtSlope: document.getElementById('ctl-wtSlope'),
+  psLeft: document.getElementById('ctl-psLeft'),
+  psSlope: document.getElementById('ctl-psSlope'),
+  K: document.getElementById('ctl-K'),
+  A: document.getElementById('ctl-A')
+};
 
-  const out = {
-    L: document.getElementById('val-L'),
-    wtLeft: document.getElementById('val-wtLeft'),
-    wtSlope: document.getElementById('val-wtSlope'),
-    psLeft: document.getElementById('val-psLeft'),
-    psSlope: document.getElementById('val-psSlope'),
-    tU: document.getElementById('val-tU'),
-    tUA: document.getElementById('val-tUA'),
-    tC: document.getElementById('val-tC'),
-    tLA: document.getElementById('val-tLA'),
-    wellU: document.getElementById('val-wellU'),
-    wellC: document.getElementById('val-wellC'),
-    K: document.getElementById('val-K'),
-    A: document.getElementById('val-A'),
-  };
+const out = {
+  L: document.getElementById('val-L'),
+  wtLeft: document.getElementById('val-wtLeft'),
+  wtSlope: document.getElementById('val-wtSlope'),
+  psLeft: document.getElementById('val-psLeft'),
+  psSlope: document.getElementById('val-psSlope'),
+  K: document.getElementById('val-K'),
+  A: document.getElementById('val-A')
+};
 
-  const ff = {
-    wt_dh: document.getElementById('f-wt-dh'),
-    wt_i:  document.getElementById('f-wt-i'),
-    ps_dh: document.getElementById('f-ps-dh'),
-    ps_i:  document.getElementById('f-ps-i'),
-    Q:     document.getElementById('f-Q'),
-    K:     document.getElementById('f-K'),
-    A:     document.getElementById('f-A'),
-  };
+const ff = {
+  wt_dh: document.getElementById('f-wt-dh'),
+  wt_i: document.getElementById('f-wt-i'),
+  ps_dh: document.getElementById('f-ps-dh'),
+  ps_i: document.getElementById('f-ps-i'),
+  Q: document.getElementById('f-Q'),
+  K: document.getElementById('f-K'),
+  A: document.getElementById('f-A')
+};
 
-  const refs = {
-    wt: document.getElementById('wt-line'),
-    ps: document.getElementById('ps-line'),
-    polyU: document.getElementById('poly-U'),
-    rUA: document.getElementById('rect-UA'),
-    rC: document.getElementById('rect-C'),
-    rLA: document.getElementById('rect-LA'),
-    wellL: document.getElementById('well-left'),
-    wellR: document.getElementById('well-right'),
-    wlL: document.getElementById('wl-left'),
-    wlR: document.getElementById('wl-right'),
-    dtwL: document.getElementById('dtw-left'),
-    dtwR: document.getElementById('dtw-right'),
-    flowArrow: document.getElementById('flowArrow'),
-    bubble: { i: document.getElementById('bubble-i'), Q: document.getElementById('bubble-Q') },
-    ruler: document.getElementById('ruler'),
-  };
+const refs = {
+  wt: document.getElementById('wt-line'),
+  ps: document.getElementById('ps-line'),
+  polyU: document.getElementById('poly-U'),
+  rUA: document.getElementById('rect-UA'),
+  rC: document.getElementById('rect-C'),
+  rLA: document.getElementById('rect-LA'),
+  wellL: document.getElementById('well-left'),
+  wellR: document.getElementById('well-right'),
+  wlL: document.getElementById('wl-left'),
+  wlR: document.getElementById('wl-right'),
+  dtwL: document.getElementById('dtw-left'),
+  dtwR: document.getElementById('dtw-right'),
+  flowArrow: document.getElementById('flowArrow'),
+  bubble: {
+    i: document.getElementById('bubble-i'),
+    Q: document.getElementById('bubble-Q')
+  },
+  ruler: document.getElementById('ruler')
+};
 
-  if (!svg || Object.values(ctl).some(v => !v) || Object.values(refs).some(v => !v)) {
-    // DOM not ready
-  } else {
-    // ===== Model & helpers =====
-    const X0 = 172, X1 = 1048;
-    const GY = 106;
-    const PX_PER_M = 8.7;
-    const WELL_L_X = 372, WELL_R_X = 948;
+if (!svg || Object.values(ctl).some(v => !v) || Object.values(refs).some(v => !v)) {
+  // safeguard
+} else {
+  const X0 = 172, X1 = 1048;
+  const GY = 106;
+  const PX_PER_M = 8.7;
+  const THK = { U: 22, UA: 12, C: 20, LA: 12 };
 
-    const fnum = (n, d=2) => Number.isFinite(n) ? n.toFixed(d) : '—';
-    const val = (id) => parseFloat(ctl[id].value);
-    const setText = (el, v) => { if (el) el.textContent = v; };
-    const setOut = (id, v) => setText(out[id], v);
-    const clamp = (v,a,b) => Math.max(a, Math.min(b,v));
-    const toY = (depth) => GY + depth * PX_PER_M;
-    const elevRight = (leftElev, slopePer100m, Lm) => leftElev - (slopePer100m * (Lm/100));
-    const lerp = (a,b,t) => a + (b-a)*t;
+  const fnum = (n, d=2) => Number.isFinite(n) ? Number(n).toFixed(d) : '—';
+  const val = (id) => parseFloat(ctl[id].value);
+  const setText = (el, v) => { if (el) el.textContent = v; };
+  const setOut = (id, v) => setText(out[id], v);
+  const clamp = (v,a,b) => Math.max(a, Math.min(b,v));
+  const toY = (depth) => GY + depth * PX_PER_M;
+  const elevRight = (leftElev, slopePer100m, Lm) => leftElev - (slopePer100m * (Lm/100));
+  const lerp = (a,b,t) => a + (b-a)*t;
 
-    // ruler ticks
-    function drawRuler(maxDepthPx){
-      refs.ruler.innerHTML = `<line x1="70" y1="${GY}" x2="70" y2="${GY+maxDepthPx}" stroke="#94a3b8" stroke-width="1"/>`;
-      const stepM = 10;
-      const maxM = Math.round(maxDepthPx / PX_PER_M);
-      for(let m=0; m<=maxM; m+=stepM){
-        const y = toY(m);
-        const len = m % 20 === 0 ? 10 : 6;
-        refs.ruler.insertAdjacentHTML('beforeend', `<line x1="70" y1="${y}" x2="${70+len}" y2="${y}" stroke="#94a3b8"/>`);
-        if(m % 20 === 0){
-          refs.ruler.insertAdjacentHTML('beforeend', `<text x="${70-len-4}" y="${y+4}" text-anchor="end">${m} m</text>`);
-        }
+  function drawRuler(maxDepthPx){
+    refs.ruler.innerHTML = `<line x1="70" y1="${GY}" x2="70" y2="${GY+maxDepthPx}" stroke="#94a3b8" stroke-width="1"/>`;
+    const stepM = 10;
+    const maxM = Math.round(maxDepthPx / PX_PER_M);
+    for(let m=0; m<=maxM; m+=stepM){
+      const y = toY(m);
+      const len = m % 20 === 0 ? 10 : 6;
+      refs.ruler.insertAdjacentHTML('beforeend', `<line x1="70" y1="${y}" x2="${70+len}" y2="${y}" stroke="#94a3b8"/>`);
+      if(m % 20 === 0){
+        refs.ruler.insertAdjacentHTML('beforeend', `<text x="${70-len-4}" y="${y+4}" text-anchor="end">${m} m</text>`);
       }
     }
-
-    function updateReadouts(){
-      setOut('L', fnum(val('L'),0));
-      setOut('wtLeft', fnum(val('wtLeft'),0));
-      setOut('wtSlope', fnum(val('wtSlope'),1));
-      setOut('psLeft', fnum(val('psLeft'),0));
-      setOut('psSlope', fnum(val('psSlope'),1));
-      setOut('tU', fnum(val('tU'),0));
-      setOut('tUA', fnum(val('tUA'),0));
-      setOut('tC', fnum(val('tC'),0));
-      setOut('tLA', fnum(val('tLA'),0));
-      setOut('wellU', fnum(val('wellU'),0));
-      setOut('wellC', fnum(val('wellC'),0));
-      setOut('K', fnum(val('K'),4));
-      setOut('A', fnum(val('A'),2));
-      setText(ff.K, fnum(val('K'),4));
-      setText(ff.A, fnum(val('A'),2));
-    }
-
-    function render(){
-      updateReadouts();
-
-      const Lm  = val('L');
-      const wtL = val('wtLeft');
-      const wtR = elevRight(wtL, val('wtSlope'), Lm);
-      const psL = val('psLeft');
-      const psR = elevRight(psL, val('psSlope'), Lm);
-
-      const tU = val('tU'), tUA = val('tUA'), tC = val('tC'), tLA = val('tLA');
-
-      const totalDepth = tU + tUA + tC + tLA;
-      const maxDepthPx = 560;
-      const needPx     = totalDepth * PX_PER_M;
-      const scaleAdj   = needPx > maxDepthPx ? maxDepthPx/needPx : 1;
-
-      // Interfaces Y
-      const yU_bottom  = toY(tU * scaleAdj);
-      const yUA_bottom = toY((tU+tUA) * scaleAdj);
-      const yC_bottom  = toY((tU+tUA+tC) * scaleAdj);
-      const yLA_bottom = toY((tU+tUA+tC+tLA) * scaleAdj);
-
-      // ruler
-      drawRuler(yLA_bottom - GY);
-
-      // Units
-      refs.polyU.setAttribute('points', `${X0-90},${GY} ${X1+90},${GY} ${X1+90},${yU_bottom} ${X0-90},${yU_bottom}`);
-      refs.rUA.setAttribute('y', yU_bottom);
-      refs.rUA.setAttribute('height', yUA_bottom - yU_bottom);
-      refs.rC.setAttribute('y', yUA_bottom);
-      refs.rC.setAttribute('height', yC_bottom - yUA_bottom);
-      refs.rLA.setAttribute('y', yC_bottom);
-      refs.rLA.setAttribute('height', yLA_bottom - yC_bottom);
-
-      // Surfaces (depth from ground=0)
-      const depthFromElev = (e) => Math.max(0, 0 - e);
-      const yWT_L = toY(depthFromElev(wtL)), yWT_R = toY(depthFromElev(wtR));
-      const yPS_L = toY(depthFromElev(psL)), yPS_R = toY(depthFromElev(psR));
-
-      const yMin = GY + 2, yMax = yLA_bottom - 2;
-      const yWT_Lc = clamp(yWT_L, yMin, yMax), yWT_Rc = clamp(yWT_R, yMin, yMax);
-      const yPS_Lc = clamp(yPS_L, yMin, yMax), yPS_Rc = clamp(yPS_R, yMin, yMax);
-
-      refs.wt.setAttribute('x1', X0);
-      refs.wt.setAttribute('y1', yWT_Lc);
-      refs.wt.setAttribute('x2', X1);
-      refs.wt.setAttribute('y2', yWT_Rc);
-      refs.ps.setAttribute('x1', X0);
-      refs.ps.setAttribute('y1', yPS_Lc);
-      refs.ps.setAttribute('x2', X1);
-      refs.ps.setAttribute('y2', yPS_Rc);
-
-      // Wells
-      refs.wellL.setAttribute('y2', toY(val('wellU') * scaleAdj));
-      refs.wellR.setAttribute('y2', toY(val('wellC') * scaleAdj));
-
-      // Water in wells (sample at well X)
-      const tLeft  = (WELL_L_X - X0) / (X1 - X0);
-      const tRight = (WELL_R_X - X0) / (X1 - X0);
-      const yWT_atLeft  = lerp(yWT_Lc, yWT_Rc, tLeft);
-      const yPS_atRight = lerp(yPS_Lc, yPS_Rc, tRight);
-
-      const wlH = 50;
-      refs.wlL.setAttribute('y', yWT_atLeft - wlH);
-      refs.wlL.setAttribute('height', wlH);
-      refs.wlR.setAttribute('y', yPS_atRight - wlH);
-      refs.wlR.setAttribute('height', wlH);
-
-      const depthL_m = (yWT_atLeft  - GY) / PX_PER_M;
-      const depthR_m = (yPS_atRight - GY) / PX_PER_M;
-      refs.dtwL.textContent = `Depth to water (L): ${fnum(depthL_m)} m`;
-      refs.dtwR.textContent = `Depth to water (R): ${fnum(depthR_m)} m`;
-
-      // Formulas
-      const dH_wt = wtL - wtR, i_wt = dH_wt / Lm;
-      const dH_ps = psL - psR, i_ps = dH_ps / Lm;
-
-      setText(ff.wt_dh, fnum(dH_wt));
-      setText(ff.wt_i,  fnum(i_wt,4));
-      setText(ff.ps_dh, fnum(dH_ps));
-      setText(ff.ps_i,  fnum(i_ps,4));
-
-      const K = val('K'), A = val('A'), Q = K * i_ps * A;
-      setText(ff.Q, fnum(Q,6));
-
-      // Flow arrow + bubble
-      const yMidC = (yUA_bottom + yC_bottom) / 2;
-      const baseX = 740;
-      const len   = 220 * Math.max(0, Math.min(1, Math.abs(i_ps) * 45));
-      const dir   = i_ps >= 0 ? 1 : -1;
-      const x1 = baseX, x2 = baseX + dir*len, yA = yMidC;
-      const head = 12;
-      const p1 = `${x1},${yA}`, p2 = `${x2},${yA}`, p3 = `${x2 - dir*head},${yA - head/1.8}`, p4 = `${x2 - dir*head},${yA + head/1.8}`;
-      refs.flowArrow.setAttribute('points', `${p1} ${p2} ${p3} ${p2} ${p4}`);
-
-      setText(refs.bubble.i, `iₚₛ = ${fnum(i_ps,4)}`);
-      setText(refs.bubble.Q, `Q = ${fnum(Q,6)} m³/s`);
-    }
-
-    function toggleInputs() {
-      interactiveMode = !interactiveMode;
-      toggleBtn.textContent = `Modo: ${interactiveMode ? 'Interactivo' : 'Manual'}`;
-
-      Object.entries(ctl).forEach(([key, el]) => {
-        if (!el || el.type !== 'range') return;
-        const parent = el.parentElement;
-        const numeric = parent.querySelector(`input[data-linked='${key}']`);
-
-        if (interactiveMode) {
-          el.style.display = 'block';
-          if (numeric) numeric.style.display = 'none';
-        } else {
-          if (!numeric) {
-            const numberInput = document.createElement('input');
-            numberInput.type = 'number';
-            numberInput.value = el.value;
-            numberInput.min = el.min;
-            numberInput.max = el.max;
-            numberInput.step = el.step || 1;
-            numberInput.className = 'w-full rounded-lg border border-slate-300 px-2 py-1 text-sm';
-            numberInput.dataset.linked = key;
-            numberInput.addEventListener('input', () => {
-              el.value = numberInput.value;
-              render();
-            });
-            parent.insertBefore(numberInput, el.nextSibling);
-          } else {
-            numeric.value = el.value;
-            numeric.style.display = 'block';
-          }
-          el.style.display = 'none';
-        }
-      });
-    }
-
-    if (toggleBtn) toggleBtn.addEventListener('click', toggleInputs);
-
-    function addListeners(){
-      Object.values(ctl).forEach(el => {
-        if(!el) return;
-        ['input','change'].forEach(ev => el.addEventListener(ev, render));
-      });
-
-      [document.getElementById('btn-reset'), document.getElementById('btn-reset-mobile')].forEach(btn=> btn && btn.addEventListener('click', () => {
-        ctl.L.value = '700';
-        ctl.wtLeft.value = '20';
-        ctl.wtSlope.value = '2.8';
-        ctl.psLeft.value = '18';
-        ctl.psSlope.value = '1.2';
-        ctl.tU.value  = '22';
-        ctl.tUA.value = '12';
-        ctl.tC.value  = '20';
-        ctl.tLA.value = '12';
-        ctl.wellU.value = '26';
-        ctl.wellC.value = '55';
-        ctl.K.value = '0.00825';
-        ctl.A.value = '0.20';
-        render();
-      }));
-
-      [document.getElementById('btn-rand'), document.getElementById('btn-rand-mobile')].forEach(btn=> btn && btn.addEventListener('click', () => {
-        const r = (min,max,step=1)=> (Math.round((min + Math.random()*(max-min))/step)*step).toFixed((String(step).split('.')[1]?.length||0));
-        ctl.L.value = r(100,1500,10);
-        ctl.wtLeft.value = r(10,40,1);
-        ctl.wtSlope.value = r(-5,5,0.1);
-        ctl.psLeft.value = r(10,40,1);
-        ctl.psSlope.value = r(-5,5,0.1);
-        ctl.tU.value  = r(5,50,1);
-        ctl.tUA.value = r(2,25,1);
-        ctl.tC.value  = r(5,50,1);
-        ctl.tLA.value = r(2,25,1);
-        ctl.wellU.value = r(5,70,1);
-        ctl.wellC.value = r(15,90,1);
-        ctl.K.value = r(0.0001,0.1,0.0001);
-        ctl.A.value = r(0.02,2.0,0.01);
-        render();
-      }));
-    }
-
-    addListeners();
-    render();
   }
+
+  function updateReadouts(){
+    setOut('L', fnum(val('L'),0));
+    setOut('wtLeft', fnum(val('wtLeft'),0));
+    setOut('wtSlope', fnum(val('wtSlope'),1));
+    setOut('psLeft', fnum(val('psLeft'),0));
+    setOut('psSlope', fnum(val('psSlope'),1));
+    setOut('K', fnum(val('K'),4));
+    setOut('A', fnum(val('A'),2));
+    setText(ff.K, fnum(val('K'),4));
+    setText(ff.A, fnum(val('A'),2));
+  }
+
+  function render(){
+    updateReadouts();
+
+    const Lm = val('L');
+    const wtL = val('wtLeft');
+    const wtR = elevRight(wtL, val('wtSlope'), Lm);
+    const psL = val('psLeft');
+    const psR = elevRight(psL, val('psSlope'), Lm);
+
+    const totalDepth = THK.U + THK.UA + THK.C + THK.LA;
+    const maxDepthPx = 560;
+    const needPx = totalDepth * PX_PER_M;
+    const scaleAdj = needPx > maxDepthPx ? maxDepthPx/needPx : 1;
+
+    const yU_bottom  = toY(THK.U * scaleAdj);
+    const yUA_bottom = toY((THK.U + THK.UA) * scaleAdj);
+    const yC_bottom  = toY((THK.U + THK.UA + THK.C) * scaleAdj);
+    const yLA_bottom = toY((THK.U + THK.UA + THK.C + THK.LA) * scaleAdj);
+
+    drawRuler(yLA_bottom - GY);
+
+    refs.polyU.setAttribute('points', `${X0-90},${GY} ${X1+90},${GY} ${X1+90},${yU_bottom} ${X0-90},${yU_bottom}`);
+    refs.rUA.setAttribute('y', yU_bottom);
+    refs.rUA.setAttribute('height', yUA_bottom - yU_bottom);
+    refs.rC.setAttribute('y', yUA_bottom);
+    refs.rC.setAttribute('height', yC_bottom - yUA_bottom);
+    refs.rLA.setAttribute('y', yC_bottom);
+    refs.rLA.setAttribute('height', yLA_bottom - yC_bottom);
+
+    const depthFromElev = (e) => Math.max(0, 0 - e);
+    const yWT_L = toY(depthFromElev(wtL)), yWT_R = toY(depthFromElev(wtR));
+    const yPS_L = toY(depthFromElev(psL)), yPS_R = toY(depthFromElev(psR));
+
+    const yMin = GY + 2, yMax = yLA_bottom - 2;
+    const yWT_Lc = clamp(yWT_L, yMin, yMax), yWT_Rc = clamp(yWT_R, yMin, yMax);
+    const yPS_Lc = clamp(yPS_L, yMin, yMax), yPS_Rc = clamp(yPS_R, yMin, yMax);
+
+    refs.wt.setAttribute('x1', X0); refs.wt.setAttribute('y1', yWT_Lc);
+    refs.wt.setAttribute('x2', X1); refs.wt.setAttribute('y2', yWT_Rc);
+
+    refs.ps.setAttribute('x1', X0); refs.ps.setAttribute('y1', yPS_Lc);
+    refs.ps.setAttribute('x2', X1); refs.ps.setAttribute('y2', yPS_Rc);
+
+    refs.wellL.setAttribute('y2', yU_bottom - 4);
+    refs.wellR.setAttribute('y2', yC_bottom - 4);
+
+    const tLeft = (372 - X0) / (X1 - X0);
+    const tRight = (948 - X0) / (X1 - X0);
+    const yWT_atLeft = lerp(yWT_Lc, yWT_Rc, tLeft);
+    const yPS_atRight = lerp(yPS_Lc, yPS_Rc, tRight);
+
+    const wlH = 52;
+    refs.wlL.setAttribute('y', yWT_atLeft - wlH);
+    refs.wlL.setAttribute('height', wlH);
+    refs.wlR.setAttribute('y', yPS_atRight - wlH);
+    refs.wlR.setAttribute('height', wlH);
+
+    const depthL_m = (yWT_atLeft - GY) / PX_PER_M;
+    const depthR_m = (yPS_atRight - GY) / PX_PER_M;
+    refs.dtwL.textContent = `Depth to water (L): ${fnum(depthL_m)} m`;
+    refs.dtwR.textContent = `Depth to water (R): ${fnum(depthR_m)} m`;
+
+    const dH_wt = wtL - wtR, i_wt = dH_wt / Lm;
+    const dH_ps = psL - psR, i_ps = dH_ps / Lm;
+    setText(ff.wt_dh, fnum(dH_wt));
+    setText(ff.wt_i, fnum(i_wt,4));
+    setText(ff.ps_dh, fnum(dH_ps));
+    setText(ff.ps_i, fnum(i_ps,4));
+
+    const K = val('K'), A = val('A'), Q = K * i_ps * A;
+    setText(ff.Q, fnum(Q,6));
+
+    const yMidC = (yUA_bottom + yC_bottom) / 2;
+    const baseX = 740;
+    const len = 220 * Math.max(0, Math.min(1, Math.abs(i_ps) * 45));
+    const dir = i_ps >= 0 ? 1 : -1;
+    const x1 = baseX, x2 = baseX + dir*len, yA = yMidC;
+    const head = 12;
+    const p1 = `${x1},${yA}`, p2 = `${x2},${yA}`, p3 = `${x2 - dir*head},${yA - head/1.8}`, p4 = `${x2 - dir*head},${yA + head/1.8}`;
+    refs.flowArrow.setAttribute('points', `${p1} ${p2} ${p3} ${p2} ${p4}`);
+
+    setText(refs.bubble.i, `iₚₛ = ${fnum(i_ps,4)}`);
+    setText(refs.bubble.Q, `Q = ${fnum(Q,6)} m³/s`);
+  }
+
+  function toggleInputs() {
+    interactiveMode = !interactiveMode;
+    if (toggleBtn) toggleBtn.textContent = `Modo: ${interactiveMode ? 'Interactivo' : 'Manual'}`;
+
+    Object.entries(ctl).forEach(([key, el]) => {
+      if (!el) return;
+      const numberInput = document.querySelector(`input[data-linked='${key}']`);
+      if (interactiveMode) {
+        el.classList.remove('hidden');
+        if (numberInput) numberInput.classList.add('hidden');
+      } else {
+        if (!numberInput) return;
+        numberInput.value = el.value;
+        el.classList.add('hidden');
+        numberInput.classList.remove('hidden');
+      }
+    });
+  }
+  if (toggleBtn) toggleBtn.addEventListener('click', toggleInputs);
+
+  function addListeners(){
+    Object.values(ctl).forEach(el => {
+      if(!el) return;
+      ['input','change'].forEach(ev => el.addEventListener(ev, () => {
+        const key = Object.entries(ctl).find(([,v]) => v === el)?.[0];
+        const numberInput = document.querySelector(`input[data-linked='${key}']`);
+        if (numberInput) numberInput.value = el.value;
+        render();
+      }));
+    });
+
+    document.querySelectorAll('input[data-linked]').forEach(num => {
+      ['input','change'].forEach(ev => num.addEventListener(ev, () => {
+        const key = num.getAttribute('data-linked');
+        if (!key || !ctl[key]) return;
+        ctl[key].value = num.value;
+        render();
+      }));
+    });
+
+    const resetBtns = [document.getElementById('btn-reset')];
+    resetBtns.forEach(btn=> btn && btn.addEventListener('click', () => {
+      ctl.L.value = '700';
+      ctl.wtLeft.value = '20';
+      ctl.wtSlope.value = '2.8';
+      ctl.psLeft.value = '18';
+      ctl.psSlope.value = '1.2';
+      ctl.K.value = '0.00825';
+      ctl.A.value = '0.20';
+      document.querySelectorAll('input[data-linked]').forEach(num => {
+        const key = num.getAttribute('data-linked');
+        if (key && ctl[key]) num.value = ctl[key].value;
+      });
+      render();
+    }));
+
+    const randBtns = [document.getElementById('btn-rand')];
+    randBtns.forEach(btn=> btn && btn.addEventListener('click', () => {
+      const r = (min,max,step=1)=>{
+        const decimals = (String(step).split('.')[1]?.length||0);
+        const v = Math.round((min + Math.random()*(max-min))/step)*step;
+        return v.toFixed(decimals);
+      };
+      ctl.L.value = r(100,1500,10);
+      ctl.wtLeft.value = r(10,40,1);
+      ctl.wtSlope.value = r(-5,5,0.1);
+      ctl.psLeft.value = r(10,40,1);
+      ctl.psSlope.value = r(-5,5,0.1);
+      ctl.K.value = r(0.0001,0.1,0.0001);
+      ctl.A.value = r(0.02,2.0,0.01);
+      document.querySelectorAll('input[data-linked]').forEach(num => {
+        const key = num.getAttribute('data-linked');
+        if (key && ctl[key]) num.value = ctl[key].value;
+      });
+      render();
+    }));
+  }
+
+  addListeners();
+  render();
+}
 </script>
