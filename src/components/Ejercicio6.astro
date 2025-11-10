@@ -40,11 +40,18 @@
     </button>
   </div>
 
-  <div class="relative flex flex-col items-center">
+  <div class="relative flex flex-col items-center" style="width:100%;">
     <canvas
       id="acuiferoCanvas"
       class="border border-gray-300 rounded-lg shadow-md cursor-crosshair bg-white"
+      style="max-width:700px; width:100%; height:auto; display:block;"
     ></canvas>
+
+    <div id="coordBox"
+         style="position:absolute; pointer-events:none; background:rgba(255,255,255,0.9); border:1px solid rgba(0,0,0,0.12);
+                padding:6px 8px; border-radius:6px; font-size:12px; color:#111; display:none; transform:translate(8px,8px);">
+      x: 0, y: 0 <br/> elev: 0
+    </div>
 
     <p id="loadingText" class="text-gray-500 italic mt-2">Cargando imagen...</p>
     <p id="instructionText" class="text-sm text-gray-600 mt-2">Selecciona 3 puntos para crear una línea</p>
@@ -60,10 +67,11 @@
 
 <script is:client>
   const canvas = document.getElementById("acuiferoCanvas");
-  const ctx = canvas?.getContext("2d");
+  const ctx = canvas.getContext("2d");
   const loadingText = document.getElementById("loadingText");
   const instructionText = document.getElementById("instructionText");
   const resultsBox = document.getElementById("resultsBox");
+  const coordBox = document.getElementById("coordBox");
 
   const btnWater = document.getElementById("btnWater");
   const btnEquip = document.getElementById("btnEquip");
@@ -76,11 +84,14 @@
   let baseImg = new Image();
   let baseLoaded = false;
 
-  // Coordenadas de los pozos (ajústalas si cambia el tamaño real)
-  const WELL_A = { x: 120, y: 260, head: 80 };
-  const WELL_B = { x: 580, y: 280, head: 70 };
+  // Coordenadas de los pozos (ajustadas para el nuevo sistema de coordenadas)
+  const WELL_A = { x: 20, y: 260, head: 80 };  // x: 120 original - 100 = 20
+  const WELL_B = { x: 480, y: 280, head: 70 }; // x: 580 original - 100 = 480
 
-  // --- ✅ Carga segura + ajuste real del canvas al tamaño de la imagen
+  // Elevaciones 100..0 cada 10
+  const ELEVATIONS = [];
+  for (let e = 100; e >= 0; e -= 10) ELEVATIONS.push(e);
+
   async function loadImageSafely() {
     const sources = [
       "/src/assets/image33-1.png",
@@ -101,36 +112,153 @@
         baseLoaded = true;
         loadingText.style.display = "none";
 
-        // ✅ Ajustar canvas al tamaño REAL de la imagen
-        canvas.width = baseImg.width;
-        canvas.height = baseImg.height;
+        // Ajustar canvas al tamaño real de la imagen
+        canvas.width = baseImg.naturalWidth || baseImg.width;
+        canvas.height = baseImg.naturalHeight || baseImg.height;
 
-        drawAll();
+        // Detectar eje vertical
+        await detectAxisAndDraw();
         return;
-      } catch {
-        console.warn("Falló cargar:", src);
+      } catch (err) {
+        console.warn("Falló cargar:", src, err);
       }
     }
 
     loadingText.textContent = "Error al cargar la imagen base.";
   }
 
-  loadImageSafely();
+  async function detectAxisAndDraw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(baseImg, 0, 0);
 
-  // --- Eventos del canvas
-  canvas.addEventListener("click", (e) => {
-    if (!baseLoaded) return;
+    let axisTop = null;
+    let axisBottom = null;
 
+    try {
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imgData.data;
+      const w = canvas.width, h = canvas.height;
+
+      const colCounts = new Uint32Array(w);
+      for (let x = 0; x < w; x++) {
+        let cnt = 0;
+        for (let y = 0; y < h; y++) {
+          const idx = (y * w + x) * 4;
+          const r = data[idx], g = data[idx+1], b = data[idx+2];
+          if (r + g + b < 200) cnt++;
+        }
+        colCounts[x] = cnt;
+      }
+      let axisCol = 0, maxc = 0;
+      for (let x = 0; x < w; x++) {
+        if (colCounts[x] > maxc) { maxc = colCounts[x]; axisCol = x; }
+      }
+
+      const windowHalf = Math.min(6, Math.floor(w / 150));
+      const left = Math.max(0, axisCol - windowHalf);
+      const right = Math.min(w - 1, axisCol + windowHalf);
+
+      const rowsWithDark = [];
+      for (let y = 0; y < h; y++) {
+        let rowDark = 0;
+        for (let x = left; x <= right; x++) {
+          const idx = (y * w + x) * 4;
+          if (data[idx] + data[idx+1] + data[idx+2] < 200) rowDark++;
+        }
+        if (rowDark > 0) rowsWithDark.push(y);
+      }
+
+      if (rowsWithDark.length > 0) {
+        axisTop = rowsWithDark[0];
+        axisBottom = rowsWithDark[rowsWithDark.length - 1];
+      }
+    } catch (err) {
+      console.warn("No se pudo leer imageData (CORS?), usando fallback de márgenes:", err);
+    }
+
+    if (axisTop === null || axisBottom === null || axisBottom - axisTop < 40) {
+      axisTop = Math.round(canvas.height * 0.11);
+      axisBottom = Math.round(canvas.height * 0.975);
+    }
+
+    const elevToY = (elev) => {
+      const maxE = 100, minE = 0;
+      const t = (maxE - elev) / (maxE - minE);
+      return axisTop + t * (axisBottom - axisTop);
+    };
+
+    canvas.__axisTop = axisTop;
+    canvas.__axisBottom = axisBottom;
+    canvas.__elevToY = elevToY;
+
+    drawAll();
+  }
+
+  // Función para convertir coordenadas del cliente a coordenadas de imagen con ajuste
+  function clientToImageCoords(clientX, clientY) {
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
-
-    const point = { 
-      x: (e.clientX - rect.left) * scaleX, 
-      y: (e.clientY - rect.top) * scaleY 
+    let x = (clientX - rect.left) * scaleX;
+    const y = (clientY - rect.top) * scaleY;
+    
+    // Aplicar el ajuste: si x >= 100, entonces x = x - 100, sino no mostrar
+    const adjustedX = x >= 100 ? x - 100 : x;
+    
+    return { 
+      x: x, // coordenada original para dibujo
+      y: y, 
+      adjustedX: adjustedX, // coordenada ajustada para mostrar
+      rect: rect,
+      isValid: x >= 100 // indica si está en la región válida
     };
+  }
 
-    if (point.x < WELL_A.x - 20 || point.x > WELL_B.x + 20) {
+  // MOUSE MOVES: actualizar tooltip de coordenadas
+  canvas.addEventListener("mousemove", (e) => {
+    if (!baseLoaded) return;
+    const { x, y, adjustedX, rect, isValid } = clientToImageCoords(e.clientX, e.clientY);
+
+    if (!isValid) {
+      coordBox.style.display = "none";
+      return;
+    }
+
+    // elevación aproximada
+    let elev = null;
+    if (canvas.__elevToY) {
+      const top = canvas.__axisTop, bottom = canvas.__axisBottom;
+      const t = (y - top) / (bottom - top);
+      const computedElev = Math.round((1 - t) * 100);
+      elev = Math.max(0, Math.min(100, computedElev));
+    }
+
+    // mostrar tooltip solo en región válida
+    coordBox.style.display = "block";
+    coordBox.style.left = (e.clientX - rect.left) + "px";
+    coordBox.style.top = (e.clientY - rect.top) + "px";
+    coordBox.innerHTML = `x: ${Math.round(adjustedX)}, y: ${Math.round(y)}<br/>elev: ${elev !== null ? elev : '-'}`;
+  });
+
+  canvas.addEventListener("mouseout", () => {
+    coordBox.style.display = "none";
+  });
+
+  // CLICK para seleccionar puntos
+  canvas.addEventListener("click", (e) => {
+    if (!baseLoaded) return;
+
+    const { x, y, adjustedX, isValid } = clientToImageCoords(e.clientX, e.clientY);
+    
+    if (!isValid) {
+      instructionText.textContent = "Selecciona dentro del área válida (x ≥ 100 en coordenadas originales).";
+      return;
+    }
+
+    const point = { x, y, adjustedX }; // guardamos ambas coordenadas
+
+    // validación rango entre pozos (usa coordenadas ajustadas)
+    if (point.adjustedX < WELL_A.x - 20 || point.adjustedX > WELL_B.x + 20) {
       instructionText.textContent = "Selecciona dentro del rango entre los pozos.";
       return;
     }
@@ -147,7 +275,7 @@
     drawAll();
   });
 
-  // Botones
+  // botones
   btnClear.addEventListener("click", () => {
     lines = [];
     selectedPoints = [];
@@ -168,16 +296,102 @@
     activeButton.classList.add("bg-slate-400", "text-white");
   }
 
-  // --- Dibujo principal
+  /* ---------------- GRID ---------------- */
+  function drawGrid() {
+    if (!ctx) return;
+    ctx.save();
+
+    // Dibujar área no válida (x < 100) con sombreado
+    ctx.fillStyle = "rgba(0,0,0,0.03)";
+    ctx.fillRect(0, 0, 100, canvas.height);
+
+    // Línea divisoria en x=100
+    ctx.strokeStyle = "rgba(255,0,0,0.4)";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 3]);
+    ctx.beginPath();
+    ctx.moveTo(100, 0);
+    ctx.lineTo(100, canvas.height);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Texto indicativo
+    ctx.font = "12px Arial";
+    ctx.fillStyle = "rgba(255,0,0,0.7)";
+    ctx.fillText("x=0", 102, 15);
+
+    // Cuadrícula para el área válida (x ≥ 100)
+    const pxPerUnitX = (canvas.width - 100) / 100;
+
+    // líneas verticales menores
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "rgba(0,0,0,0.08)";
+    for (let i = 0; i <= 100; i++) {
+      const x = 100 + i * pxPerUnitX;
+      ctx.beginPath();
+      ctx.moveTo(Math.round(x) + 0.5, 0);
+      ctx.lineTo(Math.round(x) + 0.5, canvas.height);
+      ctx.stroke();
+    }
+
+    // verticales mayores cada 10 con etiqueta (0-100)
+    ctx.strokeStyle = "rgba(0,0,0,0.18)";
+    ctx.font = "12px Arial";
+    ctx.fillStyle = "rgba(0,0,0,0.8)";
+    for (let v = 0; v <= 100; v += 10) {
+      const x = 100 + v * pxPerUnitX;
+      ctx.beginPath();
+      ctx.moveTo(Math.round(x) + 0.5, 0);
+      ctx.lineTo(Math.round(x) + 0.5, canvas.height);
+      ctx.stroke();
+      // etiqueta X (0-100)
+      ctx.fillText(String(v), Math.round(x) + 3, 12);
+    }
+
+    // horizontales (igual que antes)
+    ctx.strokeStyle = "rgba(0,0,0,0.18)";
+    ctx.lineWidth = 1;
+    ctx.fillStyle = "rgba(0,0,0,0.9)";
+    if (!canvas.__elevToY) {
+      const gap = canvas.height / 10;
+      for (let i = 0; i <= 10; i++) {
+        const y = Math.round(i * gap);
+        ctx.beginPath();
+        ctx.moveTo(0, y + 0.5);
+        ctx.lineTo(canvas.width, y + 0.5);
+        ctx.stroke();
+        const elev = 100 - i * 10;
+        ctx.fillText(String(elev), 5, y - 4);
+      }
+    } else {
+      for (const elev of ELEVATIONS) {
+        const y = Math.round(canvas.__elevToY(elev));
+        ctx.beginPath();
+        ctx.moveTo(0, y + 0.5);
+        ctx.lineTo(canvas.width, y + 0.5);
+        ctx.stroke();
+        ctx.fillText(String(elev), 5, y - 4);
+      }
+    }
+
+    ctx.restore();
+  }
+
+  /* ---------------- DIBUJO PRINCIPAL ---------------- */
   function drawAll() {
     if (!ctx) return;
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (baseLoaded) ctx.drawImage(baseImg, 0, 0); // ✅ sin escalado
+    if (baseLoaded) ctx.drawImage(baseImg, 0, 0);
 
+    drawGrid();
+
+    // dibujar líneas guardadas
     for (const l of lines) drawLine(l.points, l.type);
+
+    // puntos seleccionados
     for (let i = 0; i < selectedPoints.length; i++) drawPoint(selectedPoints[i], i);
+
     if (selectedPoints.length > 1) drawTempLine(selectedPoints);
 
     drawWell(WELL_A, "A");
@@ -186,16 +400,12 @@
 
   function drawLine(points, type) {
     if (points.length < 2) return;
-
     ctx.beginPath();
     ctx.moveTo(points[0].x, points[0].y);
-
     for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
-
     ctx.strokeStyle =
       type === "waterTable" ? "#1E90FF" :
       type === "equipotential" ? "#FFD700" : "#00C853";
-
     ctx.lineWidth = 2.5;
     ctx.stroke();
   }
@@ -206,15 +416,14 @@
     ctx.fillStyle = "#dc2626";
     ctx.fill();
     ctx.font = "12px Arial";
+    ctx.fillStyle = "#000";
     ctx.fillText(i + 1, p.x + 8, p.y - 8);
   }
 
   function drawTempLine(points) {
     ctx.beginPath();
     ctx.moveTo(points[0].x, points[0].y);
-
     for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
-
     ctx.strokeStyle = "#9ca3af";
     ctx.setLineDash([4, 4]);
     ctx.stroke();
@@ -222,23 +431,24 @@
   }
 
   function drawWell(well, label) {
+    // Ajustar coordenada x del pozo para dibujo (sumar 100)
+    const drawX = well.x + 100;
     ctx.fillStyle = "#555";
-    ctx.fillRect(well.x - 3, well.y - 60, 6, 60);
+    ctx.fillRect(drawX - 3, well.y - 60, 6, 60);
     ctx.fillStyle = "#0077b6";
-    ctx.fillRect(well.x - 3, well.y - 10, 6, 10);
+    ctx.fillRect(drawX - 3, well.y - 10, 6, 10);
     ctx.font = "14px Arial";
     ctx.fillStyle = "#000";
-    ctx.fillText(`${label} (${well.head} m)`, well.x - 20, well.y - 70);
+    ctx.fillText(`${label} (${well.head} m)`, drawX - 20, well.y - 70);
   }
 
   function updateInstruction() {
     instructionText.textContent =
       selectedPoints.length === 0
-        ? "Selecciona 3 puntos para crear una línea"
+        ? "Selecciona 3 puntos para crear una línea (solo en área x ≥ 100)"
         : `Seleccionados: ${selectedPoints.length} / 3`;
   }
 
-  // --- Cálculos del flujo subterráneo
   function calculateHydraulicData() {
     const deltaH = WELL_A.head - WELL_B.head;
     const dx = (WELL_B.x - WELL_A.x) * 0.1;
@@ -259,5 +469,10 @@
     `;
   }
 
+  // inicializar herramienta y cargar imagen
   setTool("waterTable", btnWater);
+  loadImageSafely();
+
+  // Exponer función de re-detección si quieres (dev)
+  window.detectAxisAndDraw = detectAxisAndDraw;
 </script>
