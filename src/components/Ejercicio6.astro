@@ -296,87 +296,6 @@
     activeButton.classList.add("bg-slate-400", "text-white");
   }
 
-  /* ---------------- GRID ---------------- */
-  function drawGrid() {
-    if (!ctx) return;
-    ctx.save();
-
-    // Dibujar área no válida (x < 100) con sombreado
-    ctx.fillStyle = "rgba(0,0,0,0.03)";
-    ctx.fillRect(0, 0, 100, canvas.height);
-
-    // Línea divisoria en x=100
-    ctx.strokeStyle = "rgba(255,0,0,0.4)";
-    ctx.lineWidth = 2;
-    ctx.setLineDash([5, 3]);
-    ctx.beginPath();
-    ctx.moveTo(100, 0);
-    ctx.lineTo(100, canvas.height);
-    ctx.stroke();
-    ctx.setLineDash([]);
-
-    // Texto indicativo
-    ctx.font = "12px Arial";
-    ctx.fillStyle = "rgba(255,0,0,0.7)";
-    ctx.fillText("x=0", 102, 15);
-
-    // Cuadrícula para el área válida (x ≥ 100)
-    const pxPerUnitX = (canvas.width - 100) / 100;
-
-    // líneas verticales menores
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "rgba(0,0,0,0.08)";
-    for (let i = 0; i <= 100; i++) {
-      const x = 100 + i * pxPerUnitX;
-      ctx.beginPath();
-      ctx.moveTo(Math.round(x) + 0.5, 0);
-      ctx.lineTo(Math.round(x) + 0.5, canvas.height);
-      ctx.stroke();
-    }
-
-    // verticales mayores cada 10 con etiqueta (0-100)
-    ctx.strokeStyle = "rgba(0,0,0,0.18)";
-    ctx.font = "12px Arial";
-    ctx.fillStyle = "rgba(0,0,0,0.8)";
-    for (let v = 0; v <= 100; v += 10) {
-      const x = 100 + v * pxPerUnitX;
-      ctx.beginPath();
-      ctx.moveTo(Math.round(x) + 0.5, 0);
-      ctx.lineTo(Math.round(x) + 0.5, canvas.height);
-      ctx.stroke();
-      // etiqueta X (0-100)
-      ctx.fillText(String(v), Math.round(x) + 3, 12);
-    }
-
-    // horizontales (igual que antes)
-    ctx.strokeStyle = "rgba(0,0,0,0.18)";
-    ctx.lineWidth = 1;
-    ctx.fillStyle = "rgba(0,0,0,0.9)";
-    if (!canvas.__elevToY) {
-      const gap = canvas.height / 10;
-      for (let i = 0; i <= 10; i++) {
-        const y = Math.round(i * gap);
-        ctx.beginPath();
-        ctx.moveTo(0, y + 0.5);
-        ctx.lineTo(canvas.width, y + 0.5);
-        ctx.stroke();
-        const elev = 100 - i * 10;
-        ctx.fillText(String(elev), 5, y - 4);
-      }
-    } else {
-      for (const elev of ELEVATIONS) {
-        const y = Math.round(canvas.__elevToY(elev));
-        ctx.beginPath();
-        ctx.moveTo(0, y + 0.5);
-        ctx.lineTo(canvas.width, y + 0.5);
-        ctx.stroke();
-        ctx.fillText(String(elev), 5, y - 4);
-      }
-    }
-
-    ctx.restore();
-  }
-
   /* ---------------- DIBUJO PRINCIPAL ---------------- */
   function drawAll() {
     if (!ctx) return;
@@ -384,7 +303,8 @@
 
     if (baseLoaded) ctx.drawImage(baseImg, 0, 0);
 
-    drawGrid();
+    // NOTA: Se ha eliminado completamente la función drawGrid()
+    // pero se mantiene toda la lógica de coordenadas
 
     // dibujar líneas guardadas
     for (const l of lines) drawLine(l.points, l.type);
