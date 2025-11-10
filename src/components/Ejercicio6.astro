@@ -1,3 +1,7 @@
+---
+import imageBase from "../assets/image33-1.png";
+---
+
 <section
   class="flex flex-col items-center justify-center p-6 border border-[var(--borderEjercicio)] 
   bg-[var(--cardEjercicio)] shadow-[var(--shadowEjercicio)] rounded-xl transition-colors duration-300"
@@ -7,17 +11,36 @@
   </h3>
 
   <!-- Controles -->
-  <div class="flex space-x-3 mb-4">
-    <button id="btnWater" class="px-3 py-1 rounded-lg border bg-blue-500 text-white">
+  <div class="flex flex-wrap justify-center gap-3 mb-4">
+    <button
+      id="btnWater"
+      class="px-4 py-2 rounded-lg font-medium bg-slate-200 text-slate-800 border border-slate-300 
+             hover:bg-slate-300 hover:text-slate-900 shadow-sm transition-all duration-200"
+    >
       Línea freática
     </button>
-    <button id="btnEquip" class="px-3 py-1 rounded-lg border border-yellow-400 text-yellow-500">
+
+    <button
+      id="btnEquip"
+      class="px-4 py-2 rounded-lg font-medium bg-gray-100 text-gray-700 border border-gray-300 
+             hover:bg-gray-200 hover:text-gray-900 shadow-sm transition-all duration-200"
+    >
       Equipotencial (70–80 m)
     </button>
-    <button id="btnFlow" class="px-3 py-1 rounded-lg border border-green-500 text-green-500">
+
+    <button
+      id="btnFlow"
+      class="px-4 py-2 rounded-lg font-medium bg-stone-200 text-stone-800 border border-stone-300 
+             hover:bg-stone-300 hover:text-stone-900 shadow-sm transition-all duration-200"
+    >
       Línea de flujo
     </button>
-    <button id="btnClear" class="px-3 py-1 rounded-lg border border-gray-400 text-gray-600 hover:bg-gray-100">
+
+    <button
+      id="btnClear"
+      class="px-4 py-2 rounded-lg font-medium bg-neutral-100 text-neutral-600 border border-neutral-300 
+             hover:bg-neutral-200 hover:text-neutral-800 shadow-sm transition-all duration-200"
+    >
       Limpiar
     </button>
   </div>
@@ -35,6 +58,8 @@
     <p id="instructionText" class="text-sm text-gray-600 mt-2">Selecciona 3 puntos para crear una línea</p>
   </div>
 
+  <div id="resultsBox" class="hidden mt-4 p-3 rounded-lg bg-slate-50 text-sm text-gray-800 border border-slate-200 max-w-md text-center"></div>
+
   <p class="mt-5 text-sm text-[var(--textoCardCanvas)] text-center leading-relaxed max-w-md">
     Selecciona 3 puntos para crear la <b>línea freática</b>, las <b>líneas equipotenciales (70 m, 75 m, 80 m)</b> 
     y las <b>líneas de flujo</b> sobre el esquema del acuífero libre.
@@ -42,20 +67,16 @@
 </section>
 
 <script is:client>
-  // referencias DOM
   const canvas = document.getElementById("acuiferoCanvas");
-  const ctx = canvas?.getContext ? canvas.getContext("2d") : null;
+  const ctx = canvas?.getContext("2d");
   const loadingText = document.getElementById("loadingText");
   const instructionText = document.getElementById("instructionText");
+  const resultsBox = document.getElementById("resultsBox");
 
   const btnWater = document.getElementById("btnWater");
   const btnEquip = document.getElementById("btnEquip");
   const btnFlow = document.getElementById("btnFlow");
   const btnClear = document.getElementById("btnClear");
-
-  if (!canvas || !ctx) {
-    console.error("Canvas o contexto no disponible.");
-  }
 
   let tool = "waterTable";
   let selectedPoints = [];
@@ -63,254 +84,189 @@
   let baseImg = new Image();
   let baseLoaded = false;
 
-  // Estrategia mejorada para cargar la imagen
-  function loadImageWithFallback() {
-    // Intentar cargar desde diferentes fuentes
-    const imageSources = [
-      // URL directa (puede fallar por CORS pero es más rápida)
+  const WELL_A = { x: 120, y: 260, head: 80 };
+  const WELL_B = { x: 580, y: 280, head: 70 };
+
+  // --- ✅ Carga segura de imagen base
+  async function loadImageSafely() {
+    const sources = [
+      "/src/assets/image33-1.png",
       "https://books.gw-project.org/conceptual-and-visual-understanding-of-hydraulic-head-and-groundwater-flow/wp-content/uploads/sites/14/2020/12/image33-1.png",
-      // Proxy 1
-      "https://api.allorigins.win/raw?url=" + encodeURIComponent("https://books.gw-project.org/conceptual-and-visual-understanding-of-hydraulic-head-and-groundwater-flow/wp-content/uploads/sites/14/2020/12/image33-1.png"),
-      // Proxy 2 alternativo
       "https://corsproxy.io/?" + encodeURIComponent("https://books.gw-project.org/conceptual-and-visual-understanding-of-hydraulic-head-and-groundwater-flow/wp-content/uploads/sites/14/2020/12/image33-1.png")
     ];
 
-    let currentAttempt = 0;
-
-    function tryNextSource() {
-      if (currentAttempt >= imageSources.length) {
-        console.error("❌ Todas las fuentes de imagen fallaron");
-        if (loadingText) {
-          loadingText.textContent = "Error: No se pudo cargar la imagen base";
-          loadingText.className = "text-red-500 italic mt-2";
-        }
-        // Crear un canvas con fondo y texto como fallback
-        createFallbackCanvas();
-        return;
-      }
-
-      baseImg = new Image();
-      baseImg.crossOrigin = "anonymous";
-      
-      baseImg.onload = () => {
-        console.log("✅ Imagen cargada desde fuente:", currentAttempt);
+    for (const src of sources) {
+      try {
+        await new Promise((resolve, reject) => {
+          baseImg = new Image();
+          baseImg.crossOrigin = "anonymous";
+          baseImg.src = src;
+          baseImg.onload = () => resolve();
+          baseImg.onerror = reject;
+        });
+        console.log("✅ Imagen cargada desde:", src);
         baseLoaded = true;
-        if (loadingText) loadingText.style.display = "none";
+        loadingText.style.display = "none";
         drawAll();
-      };
-
-      baseImg.onerror = () => {
-        console.warn(`❌ Fuente ${currentAttempt} falló, intentando siguiente...`);
-        currentAttempt++;
-        tryNextSource();
-      };
-
-      console.log(`🔄 Intentando cargar imagen desde fuente ${currentAttempt}:`, imageSources[currentAttempt]);
-      baseImg.src = imageSources[currentAttempt];
+        return;
+      } catch {
+        console.warn("⚠️ Falló:", src);
+      }
     }
 
-    tryNextSource();
+    console.error("❌ No se pudo cargar ninguna fuente de imagen");
+    loadingText.textContent = "Error al cargar la imagen base.";
   }
 
-  function createFallbackCanvas() {
-    if (!ctx) return;
-    
-    // Fondo del canvas
-    ctx.fillStyle = "#f0f8ff";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Dibujar un esquema simple de acuífero
-    ctx.strokeStyle = "#4682b4";
-    ctx.lineWidth = 2;
-    
-    // Línea base (suelo)
-    ctx.beginPath();
-    ctx.moveTo(50, 300);
-    ctx.lineTo(650, 300);
-    ctx.stroke();
-    
-    // Texto informativo
-    ctx.fillStyle = "#666";
-    ctx.font = "16px Arial";
-    ctx.fillText("Esquema de acuífero libre - Imagen no disponible", 180, 180);
-    ctx.font = "14px Arial";
-    ctx.fillText("Usa los controles para dibujar líneas freáticas, equipotenciales y de flujo", 120, 210);
-    
-    baseLoaded = true;
-    if (loadingText) loadingText.style.display = "none";
-  }
+  // Iniciar carga
+  loadImageSafely();
 
-  // Iniciar carga de imagen
-  loadImageWithFallback();
-
-  // --- eventos del canvas
-  canvas?.addEventListener("click", (e) => {
+  // --- Eventos del canvas
+  canvas.addEventListener("click", (e) => {
     if (!baseLoaded) return;
-    
+
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
-    
     const point = { 
       x: (e.clientX - rect.left) * scaleX, 
       y: (e.clientY - rect.top) * scaleY 
     };
-    
-    selectedPoints.push(point);
-    
-    // Si tenemos 3 puntos, creamos la línea
-    if (selectedPoints.length === 3) {
-      lines.push({ 
-        type: tool, 
-        points: [...selectedPoints] 
-      });
-      selectedPoints = [];
-      updateInstruction();
-    } else {
-      updateInstruction();
+
+    if (point.x < WELL_A.x - 20 || point.x > WELL_B.x + 20) {
+      instructionText.textContent = "Selecciona dentro del rango entre los pozos.";
+      return;
     }
-    
+
+    selectedPoints.push(point);
+
+    if (selectedPoints.length === 3) {
+      lines.push({ type: tool, points: [...selectedPoints] });
+      if (tool === "waterTable") calculateHydraulicData();
+      selectedPoints = [];
+    }
+
+    updateInstruction();
     drawAll();
   });
 
-  // botones
-  btnClear?.addEventListener("click", () => {
+  // --- Botones
+  btnClear.addEventListener("click", () => {
     lines = [];
     selectedPoints = [];
-    updateInstruction();
+    resultsBox.classList.add("hidden");
     drawAll();
   });
 
-  btnWater?.addEventListener("click", () => {
-    setTool("waterTable", btnWater);
-    selectedPoints = [];
-    updateInstruction();
-  });
-  
-  btnEquip?.addEventListener("click", () => {
-    setTool("equipotential", btnEquip);
-    selectedPoints = [];
-    updateInstruction();
-  });
-  
-  btnFlow?.addEventListener("click", () => {
-    setTool("flowLine", btnFlow);
-    selectedPoints = [];
-    updateInstruction();
-  });
+  btnWater.addEventListener("click", () => setTool("waterTable", btnWater));
+  btnEquip.addEventListener("click", () => setTool("equipotential", btnEquip));
+  btnFlow.addEventListener("click", () => setTool("flowLine", btnFlow));
 
   function setTool(newTool, activeButton) {
     tool = newTool;
     [btnWater, btnEquip, btnFlow].forEach((b) => {
       if (!b) return;
-      b.classList.remove("bg-blue-500", "bg-yellow-400", "bg-green-500", "text-white");
-      b.classList.add("border");
+      b.classList.remove("bg-slate-400", "bg-gray-300", "bg-stone-300", "text-white");
     });
-    
-    if (activeButton) {
-      activeButton.classList.remove("border");
-      if (newTool === "waterTable") {
-        activeButton.classList.add("bg-blue-500", "text-white");
-      } else if (newTool === "equipotential") {
-        activeButton.classList.add("bg-yellow-400", "text-white");
-      } else if (newTool === "flowLine") {
-        activeButton.classList.add("bg-green-500", "text-white");
-      }
-    }
+    activeButton.classList.add("bg-slate-400", "text-white");
   }
 
-  function updateInstruction() {
-    if (instructionText) {
-      if (selectedPoints.length === 0) {
-        instructionText.textContent = "Selecciona 3 puntos para crear una línea";
-      } else if (selectedPoints.length === 1) {
-        instructionText.textContent = "Selecciona 2 puntos más";
-      } else if (selectedPoints.length === 2) {
-        instructionText.textContent = "Selecciona 1 punto más para completar la línea";
-      }
-    }
-  }
-
-  // dibujo
+  // --- Dibujo
   function drawAll() {
     if (!ctx) return;
-    
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Solo dibujar la imagen base si se cargó correctamente
-    if (baseLoaded && baseImg.complete && baseImg.naturalWidth !== 0) {
-      ctx.drawImage(baseImg, 0, 0, canvas.width, canvas.height);
-    }
 
-    // Dibujar las líneas completadas
-    for (const l of lines) {
-      drawLine(l.points, l.type);
-    }
+    if (baseLoaded) ctx.drawImage(baseImg, 0, 0, canvas.width, canvas.height);
+    for (const l of lines) drawLine(l.points, l.type);
+    for (let i = 0; i < selectedPoints.length; i++) drawPoint(selectedPoints[i], i);
+    if (selectedPoints.length > 1) drawTempLine(selectedPoints);
 
-    // Dibujar los puntos seleccionados actualmente
-    for (let i = 0; i < selectedPoints.length; i++) {
-      drawPoint(selectedPoints[i], i);
-    }
-
-    // Si hay puntos seleccionados, dibujar líneas temporales entre ellos
-    if (selectedPoints.length > 1) {
-      drawTemporaryLine(selectedPoints);
-    }
+    drawWell(WELL_A, "A");
+    drawWell(WELL_B, "B");
   }
 
   function drawLine(points, type) {
-    if (!ctx || !points || points.length < 2) return;
-    
+    if (points.length < 2) return;
     ctx.beginPath();
     ctx.moveTo(points[0].x, points[0].y);
-    
-    // Dibujar línea que conecta los 3 puntos
-    for (let i = 1; i < points.length; i++) {
-      ctx.lineTo(points[i].x, points[i].y);
-    }
-    
+    for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
     ctx.strokeStyle =
-      type === "waterTable"
-        ? "#1E90FF"
-        : type === "equipotential"
-        ? "#FFD700"
-        : "#00C853";
+      type === "waterTable" ? "#1E90FF" :
+      type === "equipotential" ? "#FFD700" : "#00C853";
     ctx.lineWidth = 2.5;
     ctx.stroke();
   }
 
-  function drawTemporaryLine(points) {
-    if (!ctx || !points || points.length < 2) return;
-    
+  function drawPoint(p, i) {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 5, 0, 2 * Math.PI);
+    ctx.fillStyle = "#dc2626";
+    ctx.fill();
+    ctx.font = "12px Arial";
+    ctx.fillText(i + 1, p.x + 8, p.y - 8);
+  }
+
+  function drawTempLine(points) {
     ctx.beginPath();
     ctx.moveTo(points[0].x, points[0].y);
-    
-    // Dibujar línea temporal entre los puntos seleccionados
-    for (let i = 1; i < points.length; i++) {
-      ctx.lineTo(points[i].x, points[i].y);
-    }
-    
-    ctx.strokeStyle = "#888888";
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([5, 5]); // Línea punteada para las temporales
+    for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+    ctx.strokeStyle = "#9ca3af";
+    ctx.setLineDash([4, 4]);
     ctx.stroke();
-    ctx.setLineDash([]); // Restaurar línea sólida
+    ctx.setLineDash([]);
   }
 
-  function drawPoint(point, index) {
-    if (!ctx) return;
-    
-    ctx.beginPath();
-    ctx.arc(point.x, point.y, 5, 0, 2 * Math.PI);
-    ctx.fillStyle = "#FF0000";
-    ctx.fill();
-    
-    // Opcional: mostrar número del punto
-    ctx.fillStyle = "#000000";
-    ctx.font = "12px Arial";
-    ctx.fillText(index + 1, point.x + 8, point.y - 8);
+  function drawWell(well, label) {
+    ctx.fillStyle = "#555";
+    ctx.fillRect(well.x - 3, well.y - 60, 6, 60);
+    ctx.fillStyle = "#0077b6";
+    ctx.fillRect(well.x - 3, well.y - 10, 6, 10);
+    ctx.font = "14px Arial";
+    ctx.fillStyle = "#000";
+    ctx.fillText(`${label} (${well.head} m)`, well.x - 20, well.y - 70);
   }
 
-  // Inicializar el botón activo por defecto
+  function updateInstruction() {
+    instructionText.textContent =
+      selectedPoints.length === 0
+        ? "Selecciona 3 puntos para crear una línea"
+        : `Seleccionados: ${selectedPoints.length} / 3`;
+  }
+
+  // --- 📘 Cálculos completos del flujo subterráneo
+  function calculateHydraulicData() {
+    // Diferencia de cabezas (Δh)
+    const deltaH = WELL_A.head - WELL_B.head;
+
+    // Distancia horizontal entre pozos (en m aprox.)
+    const dx = (WELL_B.x - WELL_A.x) * 0.1; // escala gráfica
+
+    // Gradiente hidráulico (i = Δh / L)
+    const i = deltaH / dx;
+
+    // Conductividad típica (arena fina-media)
+    const K = 1e-4; // m/s
+
+    // Área transversal estimada
+    const A = 40; // m² (valor referencial para simplificación)
+
+    // Caudal según Darcy
+    const Q = K * i * A;
+
+    resultsBox.classList.remove("hidden");
+    resultsBox.innerHTML = `
+      <b>Resultados del cálculo:</b><br/>
+      Diferencia de cabeza (Δh): ${deltaH.toFixed(2)} m<br/>
+      Distancia horizontal (L): ${dx.toFixed(2)} m<br/>
+      Gradiente hidráulico (i): ${i.toFixed(4)}<br/>
+      Conductividad hidráulica (K): ${K.toExponential(2)} m/s<br/>
+      Caudal estimado (Q): ${Q.toExponential(3)} m³/s<br/>
+      Dirección del flujo: del Pozo A → Pozo B
+    `;
+  }
+
+  // Inicializar
   setTool("waterTable", btnWater);
 </script>
+
+
