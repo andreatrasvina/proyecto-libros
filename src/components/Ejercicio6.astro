@@ -1,7 +1,3 @@
----
-import imageBase from "../assets/image33-1.png";
----
-
 <section
   class="flex flex-col items-center justify-center p-6 border border-[var(--borderEjercicio)] 
   bg-[var(--cardEjercicio)] shadow-[var(--shadowEjercicio)] rounded-xl transition-colors duration-300"
@@ -10,7 +6,6 @@ import imageBase from "../assets/image33-1.png";
     Ejercicio 6 – Flujo en un acuífero libre
   </h3>
 
-  <!-- Controles -->
   <div class="flex flex-wrap justify-center gap-3 mb-4">
     <button
       id="btnWater"
@@ -45,12 +40,9 @@ import imageBase from "../assets/image33-1.png";
     </button>
   </div>
 
-  <!-- Canvas -->
   <div class="relative flex flex-col items-center">
     <canvas
       id="acuiferoCanvas"
-      width="700"
-      height="400"
       class="border border-gray-300 rounded-lg shadow-md cursor-crosshair bg-white"
     ></canvas>
 
@@ -84,10 +76,11 @@ import imageBase from "../assets/image33-1.png";
   let baseImg = new Image();
   let baseLoaded = false;
 
+  // Coordenadas de los pozos (ajústalas si cambia el tamaño real)
   const WELL_A = { x: 120, y: 260, head: 80 };
   const WELL_B = { x: 580, y: 280, head: 70 };
 
-  // --- ✅ Carga segura de imagen base
+  // --- ✅ Carga segura + ajuste real del canvas al tamaño de la imagen
   async function loadImageSafely() {
     const sources = [
       "/src/assets/image33-1.png",
@@ -104,21 +97,24 @@ import imageBase from "../assets/image33-1.png";
           baseImg.onload = () => resolve();
           baseImg.onerror = reject;
         });
-        console.log("✅ Imagen cargada desde:", src);
+
         baseLoaded = true;
         loadingText.style.display = "none";
+
+        // ✅ Ajustar canvas al tamaño REAL de la imagen
+        canvas.width = baseImg.width;
+        canvas.height = baseImg.height;
+
         drawAll();
         return;
       } catch {
-        console.warn("⚠️ Falló:", src);
+        console.warn("Falló cargar:", src);
       }
     }
 
-    console.error("❌ No se pudo cargar ninguna fuente de imagen");
     loadingText.textContent = "Error al cargar la imagen base.";
   }
 
-  // Iniciar carga
   loadImageSafely();
 
   // --- Eventos del canvas
@@ -128,6 +124,7 @@ import imageBase from "../assets/image33-1.png";
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
+
     const point = { 
       x: (e.clientX - rect.left) * scaleX, 
       y: (e.clientY - rect.top) * scaleY 
@@ -150,7 +147,7 @@ import imageBase from "../assets/image33-1.png";
     drawAll();
   });
 
-  // --- Botones
+  // Botones
   btnClear.addEventListener("click", () => {
     lines = [];
     selectedPoints = [];
@@ -171,12 +168,14 @@ import imageBase from "../assets/image33-1.png";
     activeButton.classList.add("bg-slate-400", "text-white");
   }
 
-  // --- Dibujo
+  // --- Dibujo principal
   function drawAll() {
     if (!ctx) return;
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (baseLoaded) ctx.drawImage(baseImg, 0, 0, canvas.width, canvas.height);
+    if (baseLoaded) ctx.drawImage(baseImg, 0, 0); // ✅ sin escalado
+
     for (const l of lines) drawLine(l.points, l.type);
     for (let i = 0; i < selectedPoints.length; i++) drawPoint(selectedPoints[i], i);
     if (selectedPoints.length > 1) drawTempLine(selectedPoints);
@@ -187,12 +186,16 @@ import imageBase from "../assets/image33-1.png";
 
   function drawLine(points, type) {
     if (points.length < 2) return;
+
     ctx.beginPath();
     ctx.moveTo(points[0].x, points[0].y);
+
     for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+
     ctx.strokeStyle =
       type === "waterTable" ? "#1E90FF" :
       type === "equipotential" ? "#FFD700" : "#00C853";
+
     ctx.lineWidth = 2.5;
     ctx.stroke();
   }
@@ -209,7 +212,9 @@ import imageBase from "../assets/image33-1.png";
   function drawTempLine(points) {
     ctx.beginPath();
     ctx.moveTo(points[0].x, points[0].y);
+
     for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+
     ctx.strokeStyle = "#9ca3af";
     ctx.setLineDash([4, 4]);
     ctx.stroke();
@@ -233,24 +238,13 @@ import imageBase from "../assets/image33-1.png";
         : `Seleccionados: ${selectedPoints.length} / 3`;
   }
 
-  // --- 📘 Cálculos completos del flujo subterráneo
+  // --- Cálculos del flujo subterráneo
   function calculateHydraulicData() {
-    // Diferencia de cabezas (Δh)
     const deltaH = WELL_A.head - WELL_B.head;
-
-    // Distancia horizontal entre pozos (en m aprox.)
-    const dx = (WELL_B.x - WELL_A.x) * 0.1; // escala gráfica
-
-    // Gradiente hidráulico (i = Δh / L)
+    const dx = (WELL_B.x - WELL_A.x) * 0.1;
     const i = deltaH / dx;
-
-    // Conductividad típica (arena fina-media)
-    const K = 1e-4; // m/s
-
-    // Área transversal estimada
-    const A = 40; // m² (valor referencial para simplificación)
-
-    // Caudal según Darcy
+    const K = 1e-4;
+    const A = 40;
     const Q = K * i * A;
 
     resultsBox.classList.remove("hidden");
@@ -265,8 +259,5 @@ import imageBase from "../assets/image33-1.png";
     `;
   }
 
-  // Inicializar
   setTool("waterTable", btnWater);
 </script>
-
-
