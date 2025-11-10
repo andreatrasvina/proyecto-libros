@@ -1,0 +1,165 @@
+---
+import img1 from "./img/img1.png";
+import img2 from "./img/img2.png";
+import img3 from "./img/img3.png";
+---
+
+<div class="info-section">
+    <h2>Flujo de Agua en Medio Poroso</h2>
+
+    <p>
+        El aparato consiste en un cilindro de área transversal <b>A</b> que está
+        lleno de un medio poroso, como arena. El agua se introduce lentamente en
+        el recipiente de la izquierda y fluye a través del cilindro lleno de arena
+        hasta que los poros se saturan completamente.
+    </p>
+
+    <p>
+        A medida que el agua continúa ingresando, los niveles de agua en ambos
+        recipientes suben gradualmente hasta que el agua en el recipiente
+        derecho alcanza el borde superior y comienza a desbordarse. En ese
+        punto, aunque el agua sigue entrando por el lado izquierdo, el nivel
+        derecho se mantiene constante. El nivel izquierdo continúa aumentando
+        hasta que el caudal de entrada <b>Q<sub>in</sub></b> es igual al caudal de
+        salida <b>Q<sub>out</sub></b>.
+    </p>
+
+    <p>
+        En ese momento se alcanza una condición de <b
+            >flujo en estado estacionario</b
+        >, donde la cantidad de agua que entra es igual a la que sale. El valor
+        de <b>Q</b> representa el caudal volumétrico del agua a través del cilindro
+        (es decir, volumen por unidad de tiempo, como m³/s, L/s o gal/min).
+    </p>
+
+    <img
+        src={img1.src}
+        alt="Aparato experimental de flujo a través de arena"
+        class="info-image"
+    />
+
+    <p>
+        En este experimento, el flujo de agua se mueve desde una zona de mayor
+        energía hidráulica hacia una de menor energía. Esta diferencia de
+        energía se denomina <b>gradiente hidráulico</b>, y puede expresarse
+        mediante la relación:
+    </p>
+
+    <p class="formula">
+        <b>i = ∆h / ∆L</b>
+    </p>
+
+    <p>
+        donde <b>∆h</b> es la diferencia de carga hidráulica entre los dos puntos,
+        y
+        <b>∆L</b> es la distancia entre los piezómetros. El flujo es paralelo al
+        eje del cilindro y depende de las propiedades del medio (porosidad y conductividad
+        hidráulica).
+    </p>
+
+    <img
+        src={img2.src}
+        alt="Medición de alturas h₁ y h₂ en piezómetros"
+        class="info-image"
+    />
+
+    <p>
+        En condiciones naturales, el flujo subterráneo se desarrolla dentro de
+        un medio tridimensional mucho más complejo. Los gradientes hidráulicos y
+        las direcciones de flujo pueden variar tanto en magnitud como en
+        dirección dependiendo de la estructura del subsuelo, la presencia de
+        capas confinantes y la heterogeneidad del terreno.
+    </p>
+
+    <p>
+        Si instalamos pozos para medir el gradiente hidráulico sin conocer la
+        orientación del estrato o la inclinación del medio, sólo podemos deducir
+        que hay un componente de flujo horizontal. Sin embargo, el flujo también
+        podría tener una componente vertical (ascendente o descendente)
+        dependiendo de la inclinación del medio o de la disposición de los
+        límites confinantes.
+    </p>
+
+    <p>
+        En algunos casos, la inclinación puede ser tan pronunciada que el flujo
+        se acerca a una dirección vertical. Este análisis subraya la importancia
+        de conocer la <b>orientación de los límites confinantes</b> y otras características
+        geológicas para interpretar correctamente los datos de carga hidráulica y
+        determinar la dirección real del flujo.
+    </p>
+
+    <img
+        src={img3.src}
+        alt="Casos de inclinación y dirección del flujo"
+        class="info-image"
+    />
+</div>
+
+<style>
+    .info-section {
+        background-color: var(--cardMario);
+        color: var(--titles);
+        border-radius: 1rem;
+        border: 1px solid var(--rayas);
+        box-shadow: 0 4px 12px var(--shadow);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        line-height: 1.7;
+        transition:
+            background-color 0.3s ease,
+            color 0.3s ease,
+            box-shadow 0.3s ease;
+    }
+
+    .info-section h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--pepe);
+    }
+
+    .info-section h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: var(--titles);
+    }
+
+    .info-section p {
+        margin-bottom: 0.8rem;
+    }
+
+    .info-section ol {
+        padding-left: 1.5rem;
+    }
+
+    .info-section ol li {
+        margin-bottom: 0.4rem;
+    }
+
+    .info-section .formula {
+        font-family: monospace;
+        background: var(--titlesnt);
+        border: 1px solid var(--rayas);
+        padding: 0.6rem 1rem;
+        border-radius: 0.5rem;
+        text-align: center;
+        margin: 1rem 0;
+        color: var(--titles);
+    }
+
+    .info-section .image-placeholder {
+        width: 100%;
+        height: 14rem;
+        background-color: var(--titlesnt);
+        border: 1px dashed var(--rayas);
+        border-radius: 0.5rem;
+        color: var(--titles);
+        font-style: italic;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 1.2rem 0;
+    }
+</style>
