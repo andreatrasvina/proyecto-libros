@@ -10,48 +10,45 @@ import "../styles/global.css";
     Interactive Hydraulic Head with Sand Divisions
   </h3>
 
-  <!-- 💧 Contenedor visual -->
-  <div class="relative flex flex-col items-center">
+  <!-- 💧 Contenedor visual RESPONSIVO -->
+  <div class="relative w-[85vw] max-w-[450px] aspect-[4/5] flex flex-col items-center">
+    <!-- Imagen base -->
     <img
       src="/images/exercise3-base.png"
       alt="Hydraulic head diagram"
-      class="max-w-sm rounded-md border border-[var(--borderEjercicio)]"
+      class="absolute inset-0 w-full h-full object-contain rounded-md border border-[var(--borderEjercicio)]"
     />
 
     <!-- Base horizontal -->
     <div
       id="waterBase"
-      class="absolute bottom-[2.91rem] left-[7.2rem] w-[13.35rem] bg-[#55CFFF] opacity-100
-      transition-[height] duration-0 ease-linear will-change-[height]"
-
-      style="height:40px;"
+      class="absolute left-[30%] bottom-[9.8%] w-[55.5%] bg-[#55CFFF]"
+      style="height:10%;"
     ></div>
 
     <!-- Tubo derecho -->
     <div
       id="waterRight"
-      class="absolute bottom-[5.55rem] left-[19.2rem] w-[1.35rem] bg-[#55CFFF] opacity-100
-      transition-[height] duration-0 ease-linear will-change-[height]"
-      style="height:212px;"
+      class="absolute left-[80%] bottom-[18.8%] w-[5.5%] bg-[#55CFFF]"
+      style="height:55%;"
     ></div>
 
     <!-- Tubo izquierdo -->
     <div
       id="waterLeft"
-      class="absolute bottom-[5.55rem] left-[7.21rem] w-[2.48rem] bg-[#55CFFF] opacity-100
-      transition-[height] duration-0 ease-linear will-change-[height]"
-      style="height:270px;"
+      class="absolute left-[30%] bottom-[18.8%] w-[10.5%] bg-[#55CFFF]"
+      style="height:68%;"
     ></div>
 
     <!-- Zona de arena -->
     <div
       id="sandZone"
-      class="absolute bottom-[6.16rem] left-[7.23rem] w-[2.4rem] h-[115px] pointer-events-none overflow-hidden"
+      class="absolute left-[30%] bottom-[20.5%] w-[10.5%] h-[30%] pointer-events-none overflow-hidden"
     ></div>
   </div>
 
   <!-- 🔘 Checkbox modo manual -->
-  <div class="flex items-center justify-center gap-2 my-6">
+  <div class="flex items-center justify-center gap-2 my-6 mt-15">
     <input
       id="manualToggle"
       type="checkbox"
@@ -119,7 +116,7 @@ import "../styles/global.css";
     waterInput.type = manual ? "number" : "range";
     waterInput.min = 0;
     waterInput.max = 12;
-    waterInput.step = 1;
+    waterInput.step = 0.1;
     waterInput.value = currentWater;
     waterInput.className = manual
       ? "w-24 text-center border border-[var(--borderEjercicio)] rounded-md bg-[var(--cards)] text-[var(--titles)]"
@@ -150,8 +147,8 @@ import "../styles/global.css";
   const drawSandDivisions = () => {
     sandZone.innerHTML = "";
     if (currentSand === 0) return;
-    const totalHeight = sandZone.clientHeight || 115;
-    const divisionHeight = totalHeight / 4;
+    const totalHeight = sandZone.clientHeight || 100;
+    const divisionHeight = totalHeight / 5;
     for (let i = 0; i < currentSand; i++) {
       const line = document.createElement("div");
       line.style.position = "absolute";
@@ -171,49 +168,46 @@ import "../styles/global.css";
 
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
+  // ✅ NUEVA FUNCIÓN ADAPTADA A PORCENTAJES
   const updateVisuals = () => {
     const h2 = clamp(currentWater, 0, 12);
     const divisions = clamp(currentSand, 0, 4);
     waterValue.textContent = h2;
     sandValue.textContent = divisions;
 
-    const canalMax = 53;   // altura total del canal (0–6 ft)
-    const tuboMax = 265;   // tubo derecho 0–12 ft
-    const tuboIzqMax = 355; // tubo izquierdo 0–16 ft
+    const canalMax = 9;    // base horizontal (0–6 ft)
+    const tuboMax = 44.3;     // tubo derecho (0–12 ft)
+    const tuboIzqMax = 59.2; // tubo izquierdo (0–16 ft)
 
     if (h2 <= 0) {
-      waterBase.style.height = "0px";
-      waterRight.style.height = "0px";
-      waterLeft.style.height = "0px";
+      waterBase.style.height = "0%";
+      waterRight.style.height = "0%";
+      waterLeft.style.height = "0%";
       drawSandDivisions();
     } else {
-      // base canal
       const baseHeight = h2 <= 6 ? (h2 / 6) * canalMax : canalMax;
 
-      // tubo derecho → inicia a los 6 ft
       let rightHeight = 0;
       if (h2 > 6) {
         const ratio = (h2 - 6) / 6;
         rightHeight = ratio * (tuboMax - canalMax);
       }
 
-      // tubo izquierdo → igual + efecto de arena
       let leftHeight = rightHeight;
       if (divisions > 0 && h2 > 6) {
         const proportionalFactor = h2 / 12;
         const extraFt = divisions * proportionalFactor;
-        const pxPerFtLeft = (tuboIzqMax - tuboMax) / 4;
-        leftHeight += extraFt * pxPerFtLeft;
+        const percentPerFtLeft = (tuboIzqMax - tuboMax) / 4;
+        leftHeight += extraFt * percentPerFtLeft;
       }
 
-      waterBase.style.height = `${Math.max(0, Math.min(baseHeight, canalMax))}px`;
-      waterRight.style.height = `${Math.max(0, Math.min(rightHeight, tuboMax - canalMax))}px`;
-      waterLeft.style.height = `${Math.max(0, Math.min(leftHeight, tuboIzqMax - canalMax))}px`;
+      waterBase.style.height = `${Math.min(baseHeight, canalMax)}%`;
+      waterRight.style.height = `${Math.min(rightHeight, tuboMax - canalMax)}%`;
+      waterLeft.style.height = `${Math.min(leftHeight, tuboIzqMax - canalMax)}%`;
 
       drawSandDivisions();
     }
 
-    // bloqueos
     const waterInput = document.getElementById("waterInput");
     const sandInput = document.getElementById("sandInput");
     const warningMsg = document.getElementById("warningMsg");
@@ -235,11 +229,12 @@ import "../styles/global.css";
     }
   };
 
-  manualToggle.addEventListener("change", (e) => createInput(e.target.checked));
+  manualToggle.addEventListener("change", (e) => {
+    createInput(e.target.checked);
+    updateVisuals();
+  });
 
   createInput(false);
   updateVisuals();
-  // 🧼 Reiniciar el estado del checkbox al cargar la página
   manualToggle.checked = false;
-
 </script>
