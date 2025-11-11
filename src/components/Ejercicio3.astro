@@ -49,7 +49,19 @@ import "../styles/global.css";
     <!-- Piezómetro (se crea/actualiza por JS; dejamos nodos para no tocar tu HTML) -->
     <div id="piezoTube" class="absolute hidden"></div>
     <div id="piezoFill" class="absolute hidden pointer-events-none"></div>
+
+    <!-- Tubo rayado de referencia -->
+    <div id="piezoDashed" class="absolute hidden pointer-events-none"></div>
+    <div id="piezoDashed2" class="absolute hidden pointer-events-none"></div>
+
   </div>
+
+    <!-- 📊 Valores dinámicos de h1, h2 y piezómetro -->
+    <div id="headValues" class="mt-15 text-sm text-[var(--titles)] text-center space-y-1">
+      <p>h₁ (left head): <span id="h1Value" class="font-semibold">0</span> ft</p>
+      <p>h₂ (right head): <span id="h2Value" class="font-semibold">12</span> ft</p>
+      <p>Equipotential height (piezometer): <span id="piezoHeightValue" class="font-semibold">0</span> ft</p>
+    </div>    
 
   <!-- 🔘 Checkbox modo manual -->
   <div class="flex items-center justify-center gap-2 my-6 mt-15">
@@ -112,6 +124,7 @@ import "../styles/global.css";
     Divisions appear only inside the sand zone.<br/>
     Water level can be adjusted between 0 and 12 ft using either input type.
   </p>
+
 </section>
 
 <script is:client>
@@ -139,6 +152,12 @@ import "../styles/global.css";
   const piezoFill = document.getElementById("piezoFill");
   const piezoInputEl = document.getElementById("piezometerInput");
   const piezoValueEl = document.getElementById("piezoValue");
+  const piezoDashed = document.getElementById("piezoDashed");
+  const piezoDashed2 = document.getElementById("piezoDashed2");
+
+  const h1Value = document.getElementById("h1Value");
+  const h2Value = document.getElementById("h2Value"); 
+  const piezoHeightValue = document.getElementById("piezoHeightValue");
 
   let currentWater = 12;
   let currentSand = 4;
@@ -294,24 +313,80 @@ const updateVisuals = () => {
   // 🔹 Fondo del piezómetro (la línea equipotencial)
   const piezoBottomPercent = 20.5 + (currentPiezometer - 1) * percentPerFt;
 
+  // 🔹 Calcular h1 y mostrar valores dinámicos
+  const h1 = h2 + divisions; // según tu definición del libro: h₁ = h₂ + divisiones
+  h1Value.textContent = h1.toFixed(2);
+  h2Value.textContent = h2.toFixed(2);
+  piezoHeightValue.textContent = piezoHeadFt.toFixed(2);
+
+
+
   // 🔹 Actualizar visual del piezómetro
   // 🔹 Actualizar visual del piezómetro con animación
-piezoTube.style.left = `${PIEZO_LEFT_PERCENT}%`;
-piezoTube.style.width = `${PIEZO_WIDTH_PERCENT}%`;
-piezoTube.style.bottom = `${piezoBottomPercent}%`;
-piezoTube.style.height = `${piezoFillPercent}%`;
-piezoTube.style.border = PIEZO_BORDER;
-piezoTube.style.background = "transparent";
-piezoTube.classList.remove("hidden");
-piezoTube.style.transition = "height 0.8s cubic-bezier(0.45,0,0.55,1), bottom 0.8s cubic-bezier(0.45,0,0.55,1)";
+  piezoTube.style.left = `${PIEZO_LEFT_PERCENT}%`;
+  piezoTube.style.width = `${PIEZO_WIDTH_PERCENT}%`;
+  piezoTube.style.bottom = `${piezoBottomPercent}%`;
+  piezoTube.style.height = `${piezoFillPercent}%`;
+  piezoTube.style.border = PIEZO_BORDER;
+  piezoTube.style.background = "transparent";
+  piezoTube.classList.remove("hidden");
+  piezoTube.style.transition = "height 0.8s cubic-bezier(0.45,0,0.55,1), bottom 0.8s cubic-bezier(0.45,0,0.55,1)";
 
-piezoFill.style.left = `${PIEZO_LEFT_PERCENT}%`;
-piezoFill.style.width = `${PIEZO_WIDTH_PERCENT}%`;
-piezoFill.style.bottom = `${piezoBottomPercent}%`;
-piezoFill.style.height = `${piezoFillPercent}%`;
-piezoFill.style.background = PIEZO_FILL_COLOR;
-piezoFill.classList.remove("hidden");
-piezoFill.style.transition = "height 0.8s cubic-bezier(0.45,0,0.55,1), bottom 0.8s cubic-bezier(0.45,0,0.55,1)";
+  piezoFill.style.left = `${PIEZO_LEFT_PERCENT}%`;
+  piezoFill.style.width = `${PIEZO_WIDTH_PERCENT}%`;
+  piezoFill.style.bottom = `${piezoBottomPercent}%`;
+  piezoFill.style.height = `${piezoFillPercent}%`;
+  piezoFill.style.background = PIEZO_FILL_COLOR;
+  piezoFill.classList.remove("hidden");
+  piezoFill.style.transition = "height 0.8s cubic-bezier(0.45,0,0.55,1), bottom 0.8s cubic-bezier(0.45,0,0.55,1)";
+
+  // 🔹 Tubo rayado estilo libro (L invertida punteada, pegada al tubo azul)
+  const Lwidth = PIEZO_WIDTH_PERCENT + 5;   // ancho igual al azul
+  const Lheight = piezoFillPercent + 20;      // alto un poco mayor para cubrir toda la altura
+  const Loffset = PIEZO_LEFT_PERCENT - 0.2;     // lo pega al borde izquierdo del azul
+
+  piezoDashed.style.left = `${Loffset}%`;
+  piezoDashed.style.bottom = `${piezoBottomPercent}%`;
+  piezoDashed.style.width = `${Lwidth}%`;
+  piezoDashed.style.height = `${Lheight}%`;
+
+  // Solo bordes izquierdo e inferior (forma de L cerrada por la izquierda)
+  piezoDashed.style.borderLeft = "2px dashed black";
+  piezoDashed.style.borderBottom = "2px dashed black";
+  piezoDashed.style.borderTop = "none";
+  piezoDashed.style.borderRight = "none";
+  piezoDashed.style.background = "transparent";
+  piezoDashed.style.zIndex = "1"; // detrás del tubo azul
+  piezoDashed.classList.remove("hidden");
+  piezoDashed.style.transition ="height 0.8s cubic-bezier(0.45,0,0.55,1), bottom 0.8s cubic-bezier(0.45,0,0.55,1)";
+
+  // 🔹 Tubo rayado estilo libro (L invertida punteada, pegada al tubo azul)
+  const Lwidth2 = PIEZO_WIDTH_PERCENT + 3;   // ancho igual al azul
+  const Lheight2 = piezoFillPercent + 18;      // alto un poco mayor para cubrir toda la altura
+  const Loffset2 = PIEZO_LEFT_PERCENT - -2.5;     // lo pega al borde izquierdo del azul
+
+  piezoDashed2.style.left = `${Loffset2}%`;
+  piezoDashed2.style.bottom = `${piezoBottomPercent + 2}%`;
+  piezoDashed2.style.width = `${Lwidth2}%`;
+  piezoDashed2.style.height = `${Lheight2}%`;
+
+  // Solo bordes izquierdo e inferior (forma de L cerrada por la izquierda)
+  piezoDashed2.style.borderLeft = "2px dashed black";
+  piezoDashed2.style.borderBottom = "2px dashed black";
+  piezoDashed2.style.borderTop = "none";
+  piezoDashed2.style.borderRight = "none";
+  piezoDashed2.style.background = "transparent";
+  piezoDashed2.style.zIndex = "1"; // detrás del tubo azul
+  piezoDashed2.classList.remove("hidden");
+  piezoDashed2.style.transition ="height 0.8s cubic-bezier(0.45,0,0.55,1), bottom 0.8s cubic-bezier(0.45,0,0.55,1)";
+
+
+
+
+  // Transiciones suaves como el tubo azul
+  piezoDashed.style.transition = "height 0.8s cubic-bezier(0.45,0,0.55,1), bottom 0.8s cubic-bezier(0.45,0,0.55,1)";
+
+
 
 
   // ⚠️ Restricciones inputs
