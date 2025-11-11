@@ -11,7 +11,7 @@ import "../styles/global.css";
   </h3>
 
   <!-- 💧 Contenedor visual RESPONSIVO -->
-  <div class="relative w-[85vw] max-w-[450px] aspect-[4/5] flex flex-col items-center">
+  <div id="diagramContainer" class="relative w-[85vw] max-w-[450px] aspect-[4/5] flex flex-col items-center">
     <!-- Imagen base -->
     <img
       src="/images/exercise3-base.png"
@@ -45,6 +45,10 @@ import "../styles/global.css";
       id="sandZone"
       class="absolute left-[30%] bottom-[20.5%] w-[10.5%] h-[30%] pointer-events-none overflow-hidden"
     ></div>
+
+    <!-- Piezómetro (se crea/actualiza por JS; dejamos nodos para no tocar tu HTML) -->
+    <div id="piezoTube" class="absolute hidden"></div>
+    <div id="piezoFill" class="absolute hidden pointer-events-none"></div>
   </div>
 
   <!-- 🔘 Checkbox modo manual -->
@@ -80,20 +84,47 @@ import "../styles/global.css";
       <div id="sandContainer" class="flex justify-center"></div>
     </div>
 
+    <!-- Piezometer position -->
+    <div id="piezometerContainer" class="flex flex-col items-center mt-2">
+      <label for="piezometerInput" class="text-sm text-[var(--titles)] mb-2">
+        Piezometer position:
+        <span id="piezoValue" class="font-semibold ml-1">0</span>
+      </label>
+      <div class="flex justify-center">
+        <input
+          id="piezometerInput"
+          type="range"
+          min="0"
+          max="0"
+          step="1"
+          value="0"
+          class="w-64 accent-[var(--titles)] cursor-pointer"
+        />
+      </div>
+    </div>
+
     <p id="warningMsg" class="text-xs text-[var(--titles)] mt-2 h-4"></p>
   </div>
 
   <p class="mt-5 text-sm text-[var(--textoCardCanvas)] text-center leading-relaxed max-w-md">
-    Default head on the right (h₂) = 12 ft.  
-    Adding sand divisions increases the left head (h₁) by 1 ft per division.  
-    Divisions appear only inside the sand zone.  
+    Default head on the right (h₂) = 12 ft.<br/>
+    Adding sand divisions increases the left head (h₁) by 1 ft per division.<br/>
+    Divisions appear only inside the sand zone.<br/>
     Water level can be adjusted between 0 and 12 ft using either input type.
   </p>
 </section>
 
 <script is:client>
+  // ----- Constantes visuales del piezómetro (ajusta aquí) -----
+  const PIEZO_LEFT_PERCENT = 25;  // A) 20%
+  const PIEZO_WIDTH_PERCENT = 3;  // ancho 3%
+  const PIEZO_BORDER_PX = 0;      // grosor de borde
+  const PIEZO_BORDER = `${PIEZO_BORDER_PX}px dashed #000`; // D) solo bordes, dashed negro
+  const PIEZO_FILL_COLOR = "#55CFFF"; // C) Mismo color que agua
+
   const manualToggle = document.getElementById("manualToggle");
 
+  const diagramContainer = document.getElementById("diagramContainer");
   const waterContainer = document.getElementById("waterContainer");
   const sandContainer = document.getElementById("sandContainer");
   const waterValue = document.getElementById("waterValue");
@@ -104,13 +135,19 @@ import "../styles/global.css";
   const waterLeft = document.getElementById("waterLeft");
   const sandZone = document.getElementById("sandZone");
 
+  const piezoTube = document.getElementById("piezoTube");
+  const piezoFill = document.getElementById("piezoFill");
+  const piezoInputEl = document.getElementById("piezometerInput");
+  const piezoValueEl = document.getElementById("piezoValue");
+
   let currentWater = 12;
   let currentSand = 4;
+  let currentPiezometer = 0;
 
+  // Crear inputs dinámicos (conmutan entre slider y number sin romper estilos/animación)
   const createInput = (manual) => {
+    // Agua
     waterContainer.innerHTML = "";
-    sandContainer.innerHTML = "";
-
     const waterInput = document.createElement("input");
     waterInput.id = "waterInput";
     waterInput.type = manual ? "number" : "range";
@@ -127,6 +164,8 @@ import "../styles/global.css";
     });
     waterContainer.appendChild(waterInput);
 
+    // Arena
+    sandContainer.innerHTML = "";
     const sandInput = document.createElement("input");
     sandInput.id = "sandInput";
     sandInput.type = manual ? "number" : "range";
@@ -142,25 +181,29 @@ import "../styles/global.css";
       updateVisuals();
     });
     sandContainer.appendChild(sandInput);
+
+    // Piezometer position
+    piezoInputEl.type = manual ? "number" : "range";
+    piezoInputEl.step = 1;
+    piezoInputEl.value = currentPiezometer || 0;
+    piezoInputEl.className = manual
+      ? "w-24 text-center border border-[var(--borderEjercicio)] rounded-md bg-[var(--cards)] text-[var(--titles)]"
+      : "w-64 accent-[var(--titles)] cursor-pointer";
   };
 
+  // 🏖️ Dibujar divisiones de arena (no tocado)
   const drawSandDivisions = () => {
     sandZone.innerHTML = "";
     if (currentSand === 0) return;
 
-    // 🔹 Referencia común: el contenedor principal (mismo que usa el agua)
     const container = sandZone.offsetParent || sandZone.parentElement;
     const totalContainerHeight = container.clientHeight || 100;
 
-    // Escala base (59% = 16 ft)
     const tuboIzqMaxPercent = 59;
     const tuboIzqMaxFt = 16;
-    const percentPerFt = tuboIzqMaxPercent / tuboIzqMaxFt; // 3.6875% por ft
-
-    // Cuántos px son 1 ft en la escala general
+    const percentPerFt = tuboIzqMaxPercent / tuboIzqMaxFt;
     const pxPorFt = (totalContainerHeight * percentPerFt) / 100;
 
-    // 🔸 Ahora dibujar dentro del sandZone, pero usando la escala global
     for (let i = 0; i < currentSand; i++) {
       const line = document.createElement("div");
       line.style.position = "absolute";
@@ -168,8 +211,6 @@ import "../styles/global.css";
       line.style.width = "100%";
       line.style.height = `${Math.max(2, Math.round(pxPorFt) - 1)}px`;
       line.style.bottom = `${Math.round(i * pxPorFt)}px`;
-
-      // Estilo igual al original
       line.style.background = `
         radial-gradient(circle at 3px 3px, rgba(0,0,0,0.9) 0.6px, transparent 1px),
         radial-gradient(circle at 7px 7px, rgba(0,0,0,0.9) 0.6px, transparent 1px),
@@ -178,93 +219,154 @@ import "../styles/global.css";
       line.style.backgroundSize = "8px 8px";
       line.style.borderTop = "1px solid rgba(0,0,0,0.25)";
       line.style.boxSizing = "border-box";
-
       sandZone.appendChild(line);
     }
   };
 
-
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
-  // ✅ NUEVA FUNCIÓN ADAPTADA A PORCENTAJES
-  // ✅ FUNCIÓN FINAL ACTUALIZADA — escala 59% = 16 ft y regla de no subir agua si h₂ ≤ 3 ft
-  // ✅ FUNCIÓN FINAL CON ESCALA, CONDICIÓN Y ANIMACIÓN SUAVE
-  const updateVisuals = () => {
-    const h2 = clamp(currentWater, 0, 12);
-    const divisions = clamp(currentSand, 0, 4);
-    waterValue.textContent = h2;
-    sandValue.textContent = divisions;
+  // 💧 Actualización visual principal (manteniendo tus animaciones y restricciones)
+  // ✅ FUNCIÓN COMPLETA con cálculo real de presión hidráulica y depuración
+const updateVisuals = () => {
+  const h2 = clamp(currentWater, 0, 12);
+  const divisions = clamp(currentSand, 0, 4);
+  waterValue.textContent = h2;
+  sandValue.textContent = divisions;
 
-    // 🔹 Configuración de escalas y límites
-    const canalMaxPercent = 9;      // base horizontal (visual)
-    const tuboDerMaxPercent = 16;   // tubo derecho visual (12 ft)
-    const tuboIzqMaxPercent = 59;   // tubo izquierdo visual (16 ft)
-    const tuboIzqMaxFt = 16;
-    const percentPerFt = tuboIzqMaxPercent / tuboIzqMaxFt; // 59/16 = 3.6875 % por ft
+  // 🔹 Escala visual
+  const tuboIzqMaxPercent = 59; // 16 ft = 59%
+  const tuboIzqMaxFt = 16;
+  const percentPerFt = tuboIzqMaxPercent / tuboIzqMaxFt; // ≈ 3.6875 %/ft
 
-    const canalMaxFt = 2.4;
-    const tuboDerMaxFt = 12;
-    const tuboIzqMaxFtConst = 16;
+  // 🔹 Alturas agua (no se modifican)
+  const canalMaxFt = 2.4;
+  const tuboDerMaxFt = 12;
+  const tuboIzqMaxFtConst = 16;
 
-    // 🔹 Alturas proporcionales
-    const baseHeightPercent = Math.min(h2 * percentPerFt, canalMaxFt * percentPerFt);
-    const rightHeightPercent = Math.min(h2 * percentPerFt, tuboDerMaxFt * percentPerFt);
+  const baseHeightPercent  = Math.min(h2 * percentPerFt, canalMaxFt * percentPerFt);
+  const rightHeightPercent = Math.min(h2 * percentPerFt, tuboDerMaxFt * percentPerFt);
 
-    // 🔹 Condición: el tubo izquierdo no sube si h₂ ≤ 3 ft
-    let leftFt = h2;
-    if (h2 > 3) {
-      leftFt += divisions;
-    }
+  let leftFt = h2;
+  if (h2 > 3) leftFt += divisions;
 
-    const leftHeightPercent = Math.min(leftFt * percentPerFt, tuboIzqMaxFtConst * percentPerFt);
+  const leftHeightPercent = Math.min(leftFt * percentPerFt, tuboIzqMaxFtConst * percentPerFt);
 
-    // 💧 Aplicar alturas con animación
-    [waterBase, waterRight, waterLeft].forEach(el => {
-      el.style.transition = "height 0.8s cubic-bezier(0.45, 0, 0.55, 1)";
-    });
+  [waterBase, waterRight, waterLeft].forEach(el => {
+    el.style.transition = "height 0.8s cubic-bezier(0.45,0,0.55,1)";
+  });
 
-    waterBase.style.height = `${baseHeightPercent}%`;
-    waterRight.style.height = `${rightHeightPercent}%`;
-    waterLeft.style.height = `${leftHeightPercent}%`;
+  waterBase.style.height  = `${baseHeightPercent}%`;
+  waterRight.style.height = `${rightHeightPercent}%`;
+  waterLeft.style.height  = `${leftHeightPercent}%`;
 
-    // 🔹 Redibujar divisiones de arena
-    drawSandDivisions();
+  // 🏖️ Dibujar arena
+  drawSandDivisions();
 
-    // 🔹 Control de inputs y mensajes
-    const waterInput = document.getElementById("waterInput");
-    const sandInput = document.getElementById("sandInput");
-    const warningMsg = document.getElementById("warningMsg");
+  // 🔹 Piezo disabled si no hay arena
+  if (divisions === 0) {
+    piezoInputEl.disabled = true;
+    piezoInputEl.min = 0;
+    piezoInputEl.max = 0;
+    piezoInputEl.value = 0;
+    piezoValueEl.textContent = 0;
+    piezoTube.classList.add("hidden");
+    piezoFill.classList.add("hidden");
+    return;
+  }
 
-    if (h2 <= 0) {
-      sandInput.disabled = true;
-      sandInput.classList.add("opacity-50", "cursor-not-allowed");
-      warningMsg.textContent = "⚠️ No puedes agregar arena sin agua presente.";
-    } else if (divisions > 0 ) {
-      waterInput.disabled = true;
-      waterInput.classList.add("opacity-50", "cursor-not-allowed");
-      warningMsg.textContent = "⚠️ Vacía la arena antes de ajustar el nivel de agua.";
-    } else {
-      waterInput.disabled = false;
-      sandInput.disabled = false;
-      waterInput.classList.remove("opacity-50", "cursor-not-allowed");
-      sandInput.classList.remove("opacity-50", "cursor-not-allowed");
-      warningMsg.textContent = "";
-    }
-  };
+  // 🔹 Configurar input piezómetro
+  piezoInputEl.disabled = false;
+  piezoInputEl.min = 1;
+  piezoInputEl.max = divisions + 1;
+  currentPiezometer = clamp(currentPiezometer || 1, 1, divisions + 1);
+  piezoInputEl.value = currentPiezometer;
+  piezoValueEl.textContent = currentPiezometer;
 
-  // ✅ Inicialización
+  // 🧮 --- Cálculo del piezómetro ---
+  const piezoHeadFt = h2 + (currentPiezometer - 1); // Head en la línea seleccionada
+
+  // 🔹 Altura real del piezómetro según la fórmula que diste
+  const piezoHeightFt = piezoHeadFt - 3 - (currentPiezometer - 1);
+
+  // 🔹 Conversión pies → %
+  const piezoFillPercent = Math.max(piezoHeightFt * percentPerFt, 0);
+
+  // 🔹 Fondo del piezómetro (la línea equipotencial)
+  const piezoBottomPercent = 20.5 + (currentPiezometer - 1) * percentPerFt;
+
+  // 🔹 Actualizar visual del piezómetro
+  // 🔹 Actualizar visual del piezómetro con animación
+piezoTube.style.left = `${PIEZO_LEFT_PERCENT}%`;
+piezoTube.style.width = `${PIEZO_WIDTH_PERCENT}%`;
+piezoTube.style.bottom = `${piezoBottomPercent}%`;
+piezoTube.style.height = `${piezoFillPercent}%`;
+piezoTube.style.border = PIEZO_BORDER;
+piezoTube.style.background = "transparent";
+piezoTube.classList.remove("hidden");
+piezoTube.style.transition = "height 0.8s cubic-bezier(0.45,0,0.55,1), bottom 0.8s cubic-bezier(0.45,0,0.55,1)";
+
+piezoFill.style.left = `${PIEZO_LEFT_PERCENT}%`;
+piezoFill.style.width = `${PIEZO_WIDTH_PERCENT}%`;
+piezoFill.style.bottom = `${piezoBottomPercent}%`;
+piezoFill.style.height = `${piezoFillPercent}%`;
+piezoFill.style.background = PIEZO_FILL_COLOR;
+piezoFill.classList.remove("hidden");
+piezoFill.style.transition = "height 0.8s cubic-bezier(0.45,0,0.55,1), bottom 0.8s cubic-bezier(0.45,0,0.55,1)";
+
+
+  // ⚠️ Restricciones inputs
+  const waterInput = document.getElementById("waterInput");
+  const sandInput  = document.getElementById("sandInput");
+  const warningMsg = document.getElementById("warningMsg");
+
+  // if (h2 <= 0) {
+  //   sandInput.disabled = true;
+  //   sandInput.classList.add("opacity-50", "cursor-not-allowed");
+  //   warningMsg.textContent = "⚠️ No puedes agregar arena sin agua presente.";
+  // } else if (divisions > 0) {
+  //   waterInput.disabled = true;
+  //   waterInput.classList.add("opacity-50", "cursor-not-allowed");
+  //   warningMsg.textContent = "⚠️ Vacía la arena antes de ajustar el nivel de agua.";
+  // } else {
+  //   waterInput.disabled = false;
+  //   sandInput.disabled = false;
+  //   waterInput.classList.remove("opacity-50", "cursor-not-allowed");
+  //   sandInput.classList.remove("opacity-50", "cursor-not-allowed");
+  //   warningMsg.textContent = "";
+  // }
+
+  // 🧾 Debug
+  console.log(
+    `📏 Piezómetro pos ${currentPiezometer} | Head línea = ${piezoHeadFt.toFixed(2)} ft | Altura piezo = ${piezoHeightFt.toFixed(2)} ft | bottom = ${piezoBottomPercent.toFixed(2)}% | altura = ${piezoFillPercent.toFixed(2)}%`
+  );
+};
+
+
+  // Eventos
   manualToggle.addEventListener("change", (e) => {
     createInput(e.target.checked);
     updateVisuals();
   });
 
-  // Aplicar transición inicial a los niveles de agua
+  // Cambios del piezómetro
+  piezoInputEl.addEventListener("input", (e) => {
+    currentPiezometer = parseInt(e.target.value || "0");
+    piezoValueEl.textContent = currentPiezometer;
+    updateVisuals();
+  });
+
+  // Transiciones iniciales de agua
   [waterBase, waterRight, waterLeft].forEach(el => {
     el.style.transition = "height 0.8s cubic-bezier(0.45, 0, 0.55, 1)";
   });
 
+  // Init
   createInput(false);
   updateVisuals();
   manualToggle.checked = false;
 
+  // 📝 Dónde cambiar la altura del piezómetro:
+  // - La altura que alcanza el agua en el piezómetro está en 'piezoFillPercent'
+  //   que se calcula con la MISMA escala ft->%: piezoHeadFt * percentPerFt.
+  // - Si necesitas otro mapeo, modifica esa línea en updateVisuals (sección "Altura del relleno del piezómetro").
 </script>
