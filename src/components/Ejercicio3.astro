@@ -22,21 +22,21 @@ import "../styles/global.css";
     <!-- Base horizontal -->
     <div
       id="waterBase"
-      class="absolute left-[30%] bottom-[9.8%] w-[55.5%] bg-[#55CFFF]"
+      class="absolute left-[40%] bottom-[9.8%] w-[40%] bg-[#55CFFF]"
       style="height:10%;"
     ></div>
 
     <!-- Tubo derecho -->
     <div
       id="waterRight"
-      class="absolute left-[80%] bottom-[18.8%] w-[5.5%] bg-[#55CFFF]"
+      class="absolute left-[80%] bottom-[9.8%] w-[5.5%] bg-[#55CFFF]"
       style="height:55%;"
     ></div>
 
     <!-- Tubo izquierdo -->
     <div
       id="waterLeft"
-      class="absolute left-[30%] bottom-[18.8%] w-[10.5%] bg-[#55CFFF]"
+      class="absolute left-[30%] bottom-[9.8%] w-[10.5%] bg-[#55CFFF]"
       style="height:68%;"
     ></div>
 
@@ -147,67 +147,90 @@ import "../styles/global.css";
   const drawSandDivisions = () => {
     sandZone.innerHTML = "";
     if (currentSand === 0) return;
-    const totalHeight = sandZone.clientHeight || 100;
-    const divisionHeight = totalHeight / 5;
+
+    // 🔹 Referencia común: el contenedor principal (mismo que usa el agua)
+    const container = sandZone.offsetParent || sandZone.parentElement;
+    const totalContainerHeight = container.clientHeight || 100;
+
+    // Escala base (59% = 16 ft)
+    const tuboIzqMaxPercent = 59;
+    const tuboIzqMaxFt = 16;
+    const percentPerFt = tuboIzqMaxPercent / tuboIzqMaxFt; // 3.6875% por ft
+
+    // Cuántos px son 1 ft en la escala general
+    const pxPorFt = (totalContainerHeight * percentPerFt) / 100;
+
+    // 🔸 Ahora dibujar dentro del sandZone, pero usando la escala global
     for (let i = 0; i < currentSand; i++) {
       const line = document.createElement("div");
       line.style.position = "absolute";
       line.style.left = "0";
       line.style.width = "100%";
-      line.style.height = `${divisionHeight - 1}px`;
-      line.style.bottom = `${i * divisionHeight}px`;
+      line.style.height = `${Math.max(2, Math.round(pxPorFt) - 1)}px`;
+      line.style.bottom = `${Math.round(i * pxPorFt)}px`;
+
+      // Estilo igual al original
       line.style.background = `
-        radial-gradient(circle at 3px 3px, rgba(0,0,0,1) 0.5px, transparent 1px),
-        radial-gradient(circle at 7px 7px, rgba(0,0,0,1) 0.5px, transparent 1px),
+        radial-gradient(circle at 3px 3px, rgba(0,0,0,0.9) 0.6px, transparent 1px),
+        radial-gradient(circle at 7px 7px, rgba(0,0,0,0.9) 0.6px, transparent 1px),
         #BEF7FE
       `;
       line.style.backgroundSize = "8px 8px";
+      line.style.borderTop = "1px solid rgba(0,0,0,0.25)";
+      line.style.boxSizing = "border-box";
+
       sandZone.appendChild(line);
     }
   };
 
+
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
   // ✅ NUEVA FUNCIÓN ADAPTADA A PORCENTAJES
+  // ✅ FUNCIÓN FINAL ACTUALIZADA — escala 59% = 16 ft y regla de no subir agua si h₂ ≤ 3 ft
+  // ✅ FUNCIÓN FINAL CON ESCALA, CONDICIÓN Y ANIMACIÓN SUAVE
   const updateVisuals = () => {
     const h2 = clamp(currentWater, 0, 12);
     const divisions = clamp(currentSand, 0, 4);
     waterValue.textContent = h2;
     sandValue.textContent = divisions;
 
-    const canalMax = 9;    // base horizontal (0–6 ft)
-    const tuboMax = 44.3;     // tubo derecho (0–12 ft)
-    const tuboIzqMax = 59.2; // tubo izquierdo (0–16 ft)
+    // 🔹 Configuración de escalas y límites
+    const canalMaxPercent = 9;      // base horizontal (visual)
+    const tuboDerMaxPercent = 16;   // tubo derecho visual (12 ft)
+    const tuboIzqMaxPercent = 59;   // tubo izquierdo visual (16 ft)
+    const tuboIzqMaxFt = 16;
+    const percentPerFt = tuboIzqMaxPercent / tuboIzqMaxFt; // 59/16 = 3.6875 % por ft
 
-    if (h2 <= 0) {
-      waterBase.style.height = "0%";
-      waterRight.style.height = "0%";
-      waterLeft.style.height = "0%";
-      drawSandDivisions();
-    } else {
-      const baseHeight = h2 <= 6 ? (h2 / 6) * canalMax : canalMax;
+    const canalMaxFt = 2.4;
+    const tuboDerMaxFt = 12;
+    const tuboIzqMaxFtConst = 16;
 
-      let rightHeight = 0;
-      if (h2 > 6) {
-        const ratio = (h2 - 6) / 6;
-        rightHeight = ratio * (tuboMax - canalMax);
-      }
+    // 🔹 Alturas proporcionales
+    const baseHeightPercent = Math.min(h2 * percentPerFt, canalMaxFt * percentPerFt);
+    const rightHeightPercent = Math.min(h2 * percentPerFt, tuboDerMaxFt * percentPerFt);
 
-      let leftHeight = rightHeight;
-      if (divisions > 0 && h2 > 6) {
-        const proportionalFactor = h2 / 12;
-        const extraFt = divisions * proportionalFactor;
-        const percentPerFtLeft = (tuboIzqMax - tuboMax) / 4;
-        leftHeight += extraFt * percentPerFtLeft;
-      }
-
-      waterBase.style.height = `${Math.min(baseHeight, canalMax)}%`;
-      waterRight.style.height = `${Math.min(rightHeight, tuboMax - canalMax)}%`;
-      waterLeft.style.height = `${Math.min(leftHeight, tuboIzqMax - canalMax)}%`;
-
-      drawSandDivisions();
+    // 🔹 Condición: el tubo izquierdo no sube si h₂ ≤ 3 ft
+    let leftFt = h2;
+    if (h2 > 3) {
+      leftFt += divisions;
     }
 
+    const leftHeightPercent = Math.min(leftFt * percentPerFt, tuboIzqMaxFtConst * percentPerFt);
+
+    // 💧 Aplicar alturas con animación
+    [waterBase, waterRight, waterLeft].forEach(el => {
+      el.style.transition = "height 0.8s cubic-bezier(0.45, 0, 0.55, 1)";
+    });
+
+    waterBase.style.height = `${baseHeightPercent}%`;
+    waterRight.style.height = `${rightHeightPercent}%`;
+    waterLeft.style.height = `${leftHeightPercent}%`;
+
+    // 🔹 Redibujar divisiones de arena
+    drawSandDivisions();
+
+    // 🔹 Control de inputs y mensajes
     const waterInput = document.getElementById("waterInput");
     const sandInput = document.getElementById("sandInput");
     const warningMsg = document.getElementById("warningMsg");
@@ -216,7 +239,7 @@ import "../styles/global.css";
       sandInput.disabled = true;
       sandInput.classList.add("opacity-50", "cursor-not-allowed");
       warningMsg.textContent = "⚠️ No puedes agregar arena sin agua presente.";
-    } else if (divisions > 0) {
+    } else if (divisions > 0 ) {
       waterInput.disabled = true;
       waterInput.classList.add("opacity-50", "cursor-not-allowed");
       warningMsg.textContent = "⚠️ Vacía la arena antes de ajustar el nivel de agua.";
@@ -229,12 +252,19 @@ import "../styles/global.css";
     }
   };
 
+  // ✅ Inicialización
   manualToggle.addEventListener("change", (e) => {
     createInput(e.target.checked);
     updateVisuals();
   });
 
+  // Aplicar transición inicial a los niveles de agua
+  [waterBase, waterRight, waterLeft].forEach(el => {
+    el.style.transition = "height 0.8s cubic-bezier(0.45, 0, 0.55, 1)";
+  });
+
   createInput(false);
   updateVisuals();
   manualToggle.checked = false;
+
 </script>
