@@ -1,7 +1,3 @@
----
-import imageBase from "../assets/image33-1.png";
----
-
 <section
   class="flex flex-col items-center justify-center p-6 border border-[var(--borderEjercicio)] 
   bg-[var(--cardEjercicio)] shadow-[var(--shadowEjercicio)] rounded-xl transition-colors duration-300"
@@ -80,6 +76,7 @@ let selectedPoints = [];
 let lines = [];
 let baseImg = new Image();
 let baseLoaded = false;
+let waterTableCompleted = false; // Nueva variable para controlar estado
 
 // pozos (coordenadas internas, mantenidas como antes)
 const WELL_A = { x: 20, y: 260, head: 80 };
@@ -259,6 +256,13 @@ canvas.addEventListener("mouseout", () => { coordBox.style.display = "none"; });
 // CLICK - selección de puntos (ahora 2 puntos para waterTable)
 canvas.addEventListener("click", (e) => {
   if (!baseLoaded) return;
+  
+  // Validación: si ya se completó la línea freática, no permitir más selecciones
+  if (waterTableCompleted && tool === "waterTable") {
+    instructionText.textContent = "Ya has completado la línea freática. Presiona 'Limpiar' para empezar de nuevo.";
+    return;
+  }
+
   const { x, y, adjustedX, isValid } = clientToImageCoords(e.clientX, e.clientY);
   if (!isValid) {
     instructionText.textContent = "Selecciona dentro del área válida (x ≥ 100)";
@@ -278,6 +282,10 @@ canvas.addEventListener("click", (e) => {
   selectedPoints.push(point);
 
   if (tool === "waterTable" && selectedPoints.length === 2) {
+    // Calcular elevaciones de los puntos seleccionados (como enteros)
+    const elevation1 = calculateElevation(selectedPoints[0].y);
+    const elevation2 = calculateElevation(selectedPoints[1].y);
+    
     // Extender la línea desde segundo punto hacia el río, pero sin sobrepasarlo
     const [p1, p2] = selectedPoints;
     // calcular recta (slope) y extender hasta RIVER_X - margin
@@ -293,11 +301,13 @@ canvas.addEventListener("click", (e) => {
     const extendedPoint = { x: targetX, y: extendedY };
     lines.push({ type: "waterTable", points: [p1, p2, extendedPoint] });
 
-    // calcular datos hidráulicos dinámicos basados en p1,p2 (función separada)
-    calculateHydraulicData(p1, p2);
+    // calcular datos hidráulicos dinámicos basados en las elevaciones de p1,p2
+    calculateHydraulicData(p1, p2, elevation1, elevation2);
 
-    // limpiar selección para siguiente trazado
+    // limpiar selección para siguiente trazado y marcar como completado
     selectedPoints = [];
+    waterTableCompleted = true;
+    instructionText.textContent = "Línea freática completada. Presiona 'Limpiar' para empezar de nuevo.";
   } else if (tool !== "waterTable" && selectedPoints.length === 3) {
     lines.push({ type: tool, points: [...selectedPoints] });
     selectedPoints = [];
@@ -307,16 +317,36 @@ canvas.addEventListener("click", (e) => {
   drawAll();
 });
 
+// Función para calcular elevación basada en posición Y (como entero)
+function calculateElevation(y) {
+  if (!canvas.__axisTop || !canvas.__axisBottom) return null;
+  
+  const top = canvas.__axisTop;
+  const bottom = canvas.__axisBottom;
+  const t = (y - top) / (bottom - top);
+  const computedElev = (1 - t) * 100;
+  // Redondear al entero más cercano
+  return Math.round(Math.max(0, Math.min(100, computedElev)));
+}
+
 // botones
 btnClear.addEventListener("click", () => {
   lines = [];
   selectedPoints = [];
   resultsBox.classList.add("hidden");
+  waterTableCompleted = false; // Resetear el estado de completado
   updateInstruction();
   drawAll();
 });
 
-btnWater.addEventListener("click", () => setTool("waterTable", btnWater));
+btnWater.addEventListener("click", () => {
+  if (!waterTableCompleted) {
+    setTool("waterTable", btnWater);
+  } else {
+    instructionText.textContent = "Ya has completado la línea freática. Presiona 'Limpiar' para empezar de nuevo.";
+  }
+});
+
 btnEquip.addEventListener("click", () => setTool("equipotential", btnEquip));
 btnFlow.addEventListener("click", () => setTool("flowLine", btnFlow));
 
@@ -331,7 +361,9 @@ function setTool(newTool, activeButton) {
 }
 
 function updateInstruction() {
-  if (tool === "waterTable") {
+  if (waterTableCompleted && tool === "waterTable") {
+    instructionText.textContent = "Línea freática completada. Presiona 'Limpiar' para empezar de nuevo.";
+  } else if (tool === "waterTable") {
     instructionText.textContent = `Selecciona ${Math.max(0, 2 - selectedPoints.length)} punto(s) más para la línea freática`;
   } else {
     instructionText.textContent = `Selecciona ${Math.max(0, 3 - selectedPoints.length)} punto(s) más`;
@@ -358,10 +390,6 @@ function drawAll() {
 
   // linea temporal entre puntos seleccionados
   if (selectedPoints.length > 1) drawTempLine(selectedPoints);
-
-  // dibujar pozos (usamos drawText con compensación de 100 como tu diseño)
-  drawWell(WELL_A, "A");
-  drawWell(WELL_B, "B");
 }
 
 function drawLine(points, type) {
@@ -407,24 +435,19 @@ function drawWell(well, label) {
   ctx.fillText(`${label} (${well.head} m)`, drawX - 20, well.y - 70);
 }
 
-/* ---------------- CÁLCULOS (basados en puntos reales) ---------------- */
-function calculateHydraulicData(p1, p2) {
-  // p1,p2 son objetos con x,y (pixeles del canvas)
-  // Usamos conversiones/escalas simples que ya tenías (puedes ajustar factor horizontal/vertical)
+/* ---------------- CÁLCULOS (basados en elevaciones reales de los puntos seleccionados) ---------------- */
+function calculateHydraulicData(p1, p2, elev1, elev2) {
+  // Usamos las elevaciones reales de los puntos seleccionados (enteros)
+  const deltaH = Math.abs(elev1 - elev2); // diferencia de elevación en metros
+
   // dx en pixeles, dy en pixeles
   const dx_pix = p2.x - p1.x;
   const dy_pix = p1.y - p2.y; // diferencia vertical en pixeles (note: screen y increases downward)
   const dist_pix = Math.sqrt(dx_pix * dx_pix + dy_pix * dy_pix);
 
-  // Escalas: aquí convertimos pix -> m. Mantengo la conv. que usabas (ejemplo: *0.1 o /100)
-  // Puedes ajustar metersPerPixel si tienes la distancia real entre pozos.
+  // Escalas: aquí convertimos pix -> m.
   const metersPerPixel = 0.1; // EJEMPLO: 0.1 m por pixel (ajusta según tu escala real)
   const L_m = dist_pix * metersPerPixel; // distancia real aproximada en metros
-
-  // Para elevar/heads: en tu version previa usabas una diferencia teórica de 10m (80-70)
-  // Si quieres usar las alturas reales basadas en pixel->head, podríamos mapear usando canvas.__axisTop/bottom
-  // Aquí calculamos deltaH con las heads conocidas de pozos (ya definidas)
-  const deltaH = WELL_A.head - WELL_B.head; // normalmente 10 m
 
   // gradiente i = deltaH / L
   const i = L_m > 0 ? deltaH / L_m : 0;
@@ -435,16 +458,18 @@ function calculateHydraulicData(p1, p2) {
 
   const Q = K * i * A; // m^3/s
 
-  // Mostrar resultados (dinámicos)
+  // Mostrar resultados (dinámicos) - elevaciones como enteros
   resultsBox.classList.remove("hidden");
   resultsBox.innerHTML = `
     <b>Resultados (basados en los puntos seleccionados):</b><br/>
-    Δh (hA-hB): ${deltaH.toFixed(2)} m<br/>
-    Distancia entre puntos (pix): ${dist_pix.toFixed(2)} px ≈ ${L_m.toFixed(2)} m<br/>
+    Elevación punto 1: ${elev1} m<br/>
+    Elevación punto 2: ${elev2} m<br/>
+    Δh (diferencia de elevación): ${deltaH} m<br/>
+    Distancia entre puntos: ${dist_pix.toFixed(0)} px ≈ ${L_m.toFixed(1)} m<br/>
     Gradiente hidráulico (i): ${i.toExponential(3)} m/m<br/>
     Conductividad hidráulica (K): ${K.toExponential(2)} m/s<br/>
     Caudal estimado (Q): ${Q.toExponential(3)} m³/s<br/>
-    Dirección del flujo: ${deltaH > 0 ? "del punto con mayor cabeza → menor cabeza" : "del punto derecho → izquierdo"}
+    Dirección del flujo: ${elev1 > elev2 ? "del punto 1 → punto 2" : "del punto 2 → punto 1"}
   `;
 }
 
