@@ -32,6 +32,14 @@ function draw() {
 
   fillBelowCurve(ctx, waterTableCurve, w, h, waterTableCurve.color); //Relleno del nivel freatico  
   drawCurve(ctx, waterTableCurve, w, h);    // nivel freatico
+
+  const meters = [120, 110, 100, 90, 80, 70]; // Niveles de agua en metros
+  const waterLevelXs = [0.32, 0.478, 0.669, 0.80, 0.90, 0.955];
+  waterLevelXs.forEach((xNorm, i) => {
+    drawWaterLevelLine(ctx, waterTableCurve, meters[i], w, h, xNorm, "#000", 2);
+  });
+
+  wells.forEach(well => drawWell(ctx, well, w, h));
 }
 
 // Definición del eje de elevación
@@ -112,6 +120,7 @@ function drawCurve(ctx, curve, w, h) {
   const pts = curve.points;
   if (!pts.length) return;
   ctx.strokeStyle = curve.color;
+  ctx.lineWidth = 3;
 
   ctx.beginPath();
   ctx.moveTo(pts[0].x * w, pts[0].y * h);
@@ -122,6 +131,7 @@ function drawCurve(ctx, curve, w, h) {
 
   ctx.stroke();
 
+  ctx.lineWidth = 1;
   ctx.strokeStyle = "#000";
 }
 
@@ -194,6 +204,139 @@ function fillBelowCurveDots(ctx, curve, w, h, dotColor = "#666", dotRadius = 1.2
     }
   }
 }
+
+// Dibuja una línea vertical desde el nivel del agua hasta la parte inferior del canvas para mostrar el nivel del agua
+function drawWaterLevelLine(ctx, curve, metersValue, w, h, xNorm, color = "#000", lineWidth = 3) {
+  const yNorm = getYOnCurve(curve, xNorm);
+  if (yNorm == null) return;
+
+  const x = xNorm * w;
+  const y = yNorm * h;
+
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = lineWidth;
+
+  ctx.beginPath();
+  ctx.moveTo(x, h);
+  ctx.lineTo(x, y);
+  ctx.stroke();
+
+   const text = metersValue.toString();
+  ctx.font = "14px Arial";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+
+  const paddingX = 6;
+  const paddingY = 3;
+
+  // Medidas del texto
+  const metrics = ctx.measureText(text);
+  const textWidth = metrics.width;
+  const textHeight = 14; // tamaño aproximado de la fuente
+
+  // Coordenadas del rectángulo
+  const rectX = x - (textWidth / 2) - paddingX;
+  const rectY = h*0.92;
+  const rectW = textWidth + paddingX * 2;
+  const rectH = textHeight + paddingY * 2;
+
+  // Fondo blanco semitransparente
+  ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+  ctx.fillRect(rectX, rectY, rectW, rectH);
+
+  // Texto encima
+  ctx.fillStyle = color;
+  ctx.fillText(text, x, h*0.95);
+
+  ctx.restore();
+}
+
+// Definicion y dibujo de los pozos
+const wells = [
+  {
+    xNorm: 0.55,
+    yNorm: 0.50,
+    lengthNorm: 0.4,
+    thickness: 10,  
+    angleDeg: 270, 
+    fill: "#ffffff",
+    stroke: "#000000"
+  }
+];
+
+function drawWell(ctx, well, w, h) {
+  const { xNorm, yNorm, lengthNorm, thickness, angleDeg = 90, fill, stroke } = well;
+
+  const x0 = xNorm * w;
+  const y0 = yNorm * h;
+
+  const lengthPx = lengthNorm * Math.min(w, h);
+  const rad = angleDeg * Math.PI / 180;
+
+  // dirección del pozo
+  const dirx = Math.cos(rad);
+  const diry = Math.sin(rad);
+
+  const dx = dirx * lengthPx;
+  const dy = diry * lengthPx;
+
+  // vector normal (para el grosor)
+  const nx = -diry;
+  const ny =  dirx;
+  const hx = (nx * thickness) / 2;
+  const hy = (ny * thickness) / 2;
+
+  // 4 vértices del rectángulo
+  const p1x = x0 + hx;
+  const p1y = y0 + hy;
+
+  const p2x = x0 - hx;
+  const p2y = y0 - hy;
+
+  const p3x = x0 + dx - hx;
+  const p3y = y0 + dy - hy;
+
+  const p4x = x0 + dx + hx;
+  const p4y = y0 + dy + hy;
+
+  ctx.save();
+  ctx.fillStyle = fill;
+  ctx.strokeStyle = stroke;
+  ctx.lineWidth = 2;
+
+  ctx.beginPath();
+  ctx.moveTo(p1x, p1y);
+  ctx.lineTo(p2x, p2y);
+  ctx.lineTo(p3x, p3y);
+  ctx.lineTo(p4x, p4y);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  const stripeLen = thickness * 0.8;
+  const stripeGap = thickness * 0.4;
+
+  for (let i = -1; i <= 1; i++) {
+    const t = i * stripeGap;   
+    const cx = x0 + dirx * t;     
+    const cy = y0 + diry * t - 5;
+
+    const sx1 = cx - nx * (stripeLen / 2);
+    const sy1 = cy - ny * (stripeLen / 2);
+
+    const sx2 = cx + nx * (stripeLen / 2);
+    const sy2 = cy + ny * (stripeLen / 2);
+
+    ctx.beginPath();
+    ctx.moveTo(sx1, sy1);
+    ctx.lineTo(sx2, sy2);
+    ctx.stroke();
+  }
+
+  ctx.restore();
+}
+
 
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
