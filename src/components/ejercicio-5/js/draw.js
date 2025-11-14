@@ -256,77 +256,168 @@ function drawWaterLevelLine(ctx, curve, metersValue, w, h, xNorm, color = "#000"
 const wells = [
   {
     xNorm: 0.55,
-    yNorm: 0.50,
-    lengthNorm: 0.4,
+    yNorm: 0.40,
+    lengthNorm: 0.2,
     thickness: 10,  
-    angleDeg: 270, 
+    angleDeg: 0, 
     fill: "#ffffff",
-    stroke: "#000000"
+    stroke: "#000000",
+    waterColor: "#50a2ff"
   }
 ];
 
 function drawWell(ctx, well, w, h) {
-  const { xNorm, yNorm, lengthNorm, thickness, angleDeg = 90, fill, stroke } = well;
+  const {
+    xNorm,
+    yNorm,
+    lengthNorm,
+    thickness,
+    angleDeg = 0,
+    fill,
+    stroke,
+    waterColor
+  } = well;
 
-  const x0 = xNorm * w;
-  const y0 = yNorm * h;
+  // --- 1. Definimos el pozo en coordenadas locales ---
+  // Origen (0,0) = esquina INFERIOR IZQUIERDA (eje de giro)
+  const baseX = xNorm * w;      // eje en X = borde izquierdo inferior
+  const baseY = yNorm * h;      // fondo del pozo
 
-  const lengthPx = lengthNorm * Math.min(w, h);
+  const height = lengthNorm * Math.min(w, h);
+  const t = thickness;
+
+  // Rectángulo sin rotar (local)
+  const BL = { x: 0,   y: 0 };         // Bottom Left  (eje)
+  const BR = { x: t,   y: 0 };         // Bottom Right
+  const TL = { x: 0,   y: -height };   // Top Left
+  const TR = { x: t,   y: -height };   // Top Right
+
   const rad = angleDeg * Math.PI / 180;
+  const cos = Math.cos(rad);
+  const sin = Math.sin(rad);
 
-  // dirección del pozo
-  const dirx = Math.cos(rad);
-  const diry = Math.sin(rad);
+  function rot(p) {
+    return {
+      x: baseX + p.x * cos - p.y * sin,
+      y: baseY + p.x * sin + p.y * cos,
+    };
+  }
 
-  const dx = dirx * lengthPx;
-  const dy = diry * lengthPx;
-
-  // vector normal (para el grosor)
-  const nx = -diry;
-  const ny =  dirx;
-  const hx = (nx * thickness) / 2;
-  const hy = (ny * thickness) / 2;
-
-  // 4 vértices del rectángulo
-  const p1x = x0 + hx;
-  const p1y = y0 + hy;
-
-  const p2x = x0 - hx;
-  const p2y = y0 - hy;
-
-  const p3x = x0 + dx - hx;
-  const p3y = y0 + dy - hy;
-
-  const p4x = x0 + dx + hx;
-  const p4y = y0 + dy + hy;
+  // Pasar a coordenadas de canvas
+  const BLw = rot(BL);
+  const BRw = rot(BR);
+  const TLw = rot(TL);
+  const TRw = rot(TR);
 
   ctx.save();
+
+  // === A) Tubo del pozo (blanco) ===
   ctx.fillStyle = fill;
   ctx.strokeStyle = stroke;
   ctx.lineWidth = 2;
 
   ctx.beginPath();
-  ctx.moveTo(p1x, p1y);
-  ctx.lineTo(p2x, p2y);
-  ctx.lineTo(p3x, p3y);
-  ctx.lineTo(p4x, p4y);
+  ctx.moveTo(TLw.x, TLw.y);
+  ctx.lineTo(TRw.x, TRw.y);
+  ctx.lineTo(BRw.x, BRw.y);
+  ctx.lineTo(BLw.x, BLw.y);
   ctx.closePath();
   ctx.fill();
+
+  // === B) Agua dentro del pozo, con superficie HORIZONTAL ===
+  const yNormWater = getYOnCurve(waterTableCurve, xNorm); // usamos x del borde izquierdo
+  if (yNormWater != null) {
+    const yWater = yNormWater * h;  // coordenada global de la superficie
+
+    // Y mínimo y máximo dentro del tubo
+    const wellTopY = Math.min(TLw.y, TRw.y);
+    const wellBottomY = Math.max(BLw.y, BRw.y);
+
+    // Si el agua está por debajo del fondo → no se ve
+    if (yWater <= wellBottomY) {
+      // Si el agua supera la boca, consideramos el tubo lleno:
+      if (yWater <= wellTopY) {
+        // Agua llena todo el tubo
+        ctx.fillStyle = waterColor || "#50a2ff";
+        ctx.globalAlpha = 0.6;
+        ctx.beginPath();
+        ctx.moveTo(TLw.x, TLw.y);
+        ctx.lineTo(TRw.x, TRw.y);
+        ctx.lineTo(BRw.x, BRw.y);
+        ctx.lineTo(BLw.x, BLw.y);
+        ctx.closePath();
+        ctx.fill();
+        ctx.globalAlpha = 1.0;
+      } else {
+        // Agua parcial: top horizontal en y = yWater
+        // Intersecciones con paredes izquierda (TL-BL) y derecha (TR-BR)
+        const tL = (yWater - BLw.y) / (TLw.y - BLw.y);
+        const tR = (yWater - BRw.y) / (TRw.y - BRw.y);
+
+        const waterTopLeft = {
+          x: BLw.x + (TLw.x - BLw.x) * tL,
+          y: yWater
+        };
+
+        const waterTopRight = {
+          x: BRw.x + (TRw.x - BRw.x) * tR,
+          y: yWater
+        };
+
+        // topRight.y === topLeft.y  ✅
+        ctx.fillStyle = waterColor || "#50a2ff";
+        ctx.globalAlpha = 0.6;
+
+        ctx.beginPath();
+        ctx.moveTo(waterTopLeft.x,  waterTopLeft.y);
+        ctx.lineTo(waterTopRight.x, waterTopRight.y);
+        ctx.lineTo(BRw.x,           BRw.y);
+        ctx.lineTo(BLw.x,           BLw.y);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.globalAlpha = 1.0;
+      }
+    }
+  }
+
+  // === C) Contorno del tubo por encima del agua ===
+  ctx.strokeStyle = stroke;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(TLw.x, TLw.y);
+  ctx.lineTo(TRw.x, TRw.y);
+  ctx.lineTo(BRw.x, BRw.y);
+  ctx.lineTo(BLw.x, BLw.y);
+  ctx.closePath();
   ctx.stroke();
 
-  const stripeLen = thickness * 0.8;
-  const stripeGap = thickness * 0.4;
+  // === D) Rayitas en el fondo (perpendiculares al pozo) ===
+  const stripeLen = t * 0.8;
+  const stripeGap = t * 0.4;
 
-  for (let i = -1; i <= 1; i++) {
-    const t = i * stripeGap;   
-    const cx = x0 + dirx * t;     
-    const cy = y0 + diry * t - 5;
+  // vector eje (de TL a BL)
+  const axis = { x: BLw.x - TLw.x, y: BLw.y - TLw.y };
+  const axisLen = Math.hypot(axis.x, axis.y) || 1;
+  const ux = axis.x / axisLen;
+  const uy = axis.y / axisLen;
 
-    const sx1 = cx - nx * (stripeLen / 2);
-    const sy1 = cy - ny * (stripeLen / 2);
+  // normal para las rayas
+  const nx = -uy;
+  const ny =  ux;
 
-    const sx2 = cx + nx * (stripeLen / 2);
-    const sy2 = cy + ny * (stripeLen / 2);
+  // centro del fondo (entre BL y BR)
+  const baseCenter = { x: (BLw.x + BRw.x) / 2, y: (BLw.y + BRw.y) / 2 };
+
+  for (let i = 0; i < 3; i++) {
+    const d = (i + 1) * stripeGap;
+    const cxStripe = baseCenter.x - ux * d;
+    const cyStripe = baseCenter.y - uy * d;
+
+    const sx1 = cxStripe - nx * (stripeLen / 2);
+    const sy1 = cyStripe - ny * (stripeLen / 2);
+    const sx2 = cxStripe + nx * (stripeLen / 2);
+    const sy2 = cyStripe + ny * (stripeLen / 2);
 
     ctx.beginPath();
     ctx.moveTo(sx1, sy1);
@@ -336,7 +427,6 @@ function drawWell(ctx, well, w, h) {
 
   ctx.restore();
 }
-
 
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
