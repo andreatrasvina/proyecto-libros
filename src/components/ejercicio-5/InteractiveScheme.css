@@ -53,3 +53,8 @@
   .inputRange{
     accent-color: var(--titles);
   }
+
+  .inputError {
+  border: 2px solid #ff5555 !important;
+  background-color: rgba(255, 0, 0, 0.15);
+}

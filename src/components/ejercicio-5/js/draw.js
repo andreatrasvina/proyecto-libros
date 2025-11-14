@@ -34,7 +34,7 @@ function draw() {
   drawCurve(ctx, waterTableCurve, w, h);    // nivel freatico
 
   const meters = [120, 110, 100, 90, 80, 70]; // Niveles de agua en metros
-  const waterLevelXs = [0.32, 0.478, 0.669, 0.80, 0.90, 0.955];
+  const waterLevelXs = [0.32, 0.478, 0.669, 0.80, 0.90, 0.955]; // Posiciones X normalizadas
   waterLevelXs.forEach((xNorm, i) => {
     drawWaterLevelLine(ctx, waterTableCurve, meters[i], w, h, xNorm, "#000", 2);
   });
@@ -54,6 +54,7 @@ const elevationAxis = {
 function drawElevationAxis(ctx, axis) {
   const { x, y, height, max, step } = axis;
 
+  ctx.fillStyle = "#000";
   ctx.beginPath();
   ctx.moveTo(x, y - height);
   ctx.lineTo(x, y);
@@ -257,7 +258,7 @@ const wells = [
   {
     xNorm: 0.55,
     yNorm: 0.40,
-    lengthNorm: 0.2,
+    lengthNorm: 0.3,
     thickness: 10,  
     angleDeg: 0, 
     fill: "#ffffff",
@@ -278,19 +279,16 @@ function drawWell(ctx, well, w, h) {
     waterColor
   } = well;
 
-  // --- 1. Definimos el pozo en coordenadas locales ---
-  // Origen (0,0) = esquina INFERIOR IZQUIERDA (eje de giro)
-  const baseX = xNorm * w;      // eje en X = borde izquierdo inferior
-  const baseY = yNorm * h;      // fondo del pozo
+  const baseX = xNorm * w;
+  const baseY = yNorm * h; 
 
   const height = lengthNorm * Math.min(w, h);
   const t = thickness;
 
-  // Rectángulo sin rotar (local)
-  const BL = { x: 0,   y: 0 };         // Bottom Left  (eje)
-  const BR = { x: t,   y: 0 };         // Bottom Right
-  const TL = { x: 0,   y: -height };   // Top Left
-  const TR = { x: t,   y: -height };   // Top Right
+  const BL = { x: 0, y: 0 };
+  const BR = { x: t, y: 0 };
+  const TL = { x: 0, y: -height };
+  const TR = { x: t, y: -height };  
 
   const rad = angleDeg * Math.PI / 180;
   const cos = Math.cos(rad);
@@ -303,7 +301,6 @@ function drawWell(ctx, well, w, h) {
     };
   }
 
-  // Pasar a coordenadas de canvas
   const BLw = rot(BL);
   const BRw = rot(BR);
   const TLw = rot(TL);
@@ -311,7 +308,6 @@ function drawWell(ctx, well, w, h) {
 
   ctx.save();
 
-  // === A) Tubo del pozo (blanco) ===
   ctx.fillStyle = fill;
   ctx.strokeStyle = stroke;
   ctx.lineWidth = 2;
@@ -324,20 +320,15 @@ function drawWell(ctx, well, w, h) {
   ctx.closePath();
   ctx.fill();
 
-  // === B) Agua dentro del pozo, con superficie HORIZONTAL ===
-  const yNormWater = getYOnCurve(waterTableCurve, xNorm); // usamos x del borde izquierdo
+  const yNormWater = getYOnCurve(waterTableCurve, xNorm);
   if (yNormWater != null) {
-    const yWater = yNormWater * h;  // coordenada global de la superficie
+    const yWater = yNormWater * h;  
 
-    // Y mínimo y máximo dentro del tubo
     const wellTopY = Math.min(TLw.y, TRw.y);
     const wellBottomY = Math.max(BLw.y, BRw.y);
 
-    // Si el agua está por debajo del fondo → no se ve
     if (yWater <= wellBottomY) {
-      // Si el agua supera la boca, consideramos el tubo lleno:
       if (yWater <= wellTopY) {
-        // Agua llena todo el tubo
         ctx.fillStyle = waterColor || "#50a2ff";
         ctx.globalAlpha = 0.6;
         ctx.beginPath();
@@ -349,8 +340,7 @@ function drawWell(ctx, well, w, h) {
         ctx.fill();
         ctx.globalAlpha = 1.0;
       } else {
-        // Agua parcial: top horizontal en y = yWater
-        // Intersecciones con paredes izquierda (TL-BL) y derecha (TR-BR)
+
         const tL = (yWater - BLw.y) / (TLw.y - BLw.y);
         const tR = (yWater - BRw.y) / (TRw.y - BRw.y);
 
@@ -364,7 +354,6 @@ function drawWell(ctx, well, w, h) {
           y: yWater
         };
 
-        // topRight.y === topLeft.y  ✅
         ctx.fillStyle = waterColor || "#50a2ff";
         ctx.globalAlpha = 0.6;
 
@@ -381,7 +370,6 @@ function drawWell(ctx, well, w, h) {
     }
   }
 
-  // === C) Contorno del tubo por encima del agua ===
   ctx.strokeStyle = stroke;
   ctx.lineWidth = 2;
   ctx.beginPath();
@@ -392,21 +380,17 @@ function drawWell(ctx, well, w, h) {
   ctx.closePath();
   ctx.stroke();
 
-  // === D) Rayitas en el fondo (perpendiculares al pozo) ===
   const stripeLen = t * 0.8;
   const stripeGap = t * 0.4;
 
-  // vector eje (de TL a BL)
   const axis = { x: BLw.x - TLw.x, y: BLw.y - TLw.y };
   const axisLen = Math.hypot(axis.x, axis.y) || 1;
   const ux = axis.x / axisLen;
   const uy = axis.y / axisLen;
 
-  // normal para las rayas
   const nx = -uy;
   const ny =  ux;
 
-  // centro del fondo (entre BL y BR)
   const baseCenter = { x: (BLw.x + BRw.x) / 2, y: (BLw.y + BRw.y) / 2 };
 
   for (let i = 0; i < 3; i++) {
@@ -427,6 +411,157 @@ function drawWell(ctx, well, w, h) {
 
   ctx.restore();
 }
+
+const well = wells[0];
+
+const xRange = document.querySelector('input[type="range"]#xPosWell');
+const xNumber = document.querySelector('input[type="number"]#xPosWell');
+const xText = xRange.closest('.inputCont').querySelector('.dinamicText');
+
+const yRange = document.querySelector('input[type="range"]#yPosWell');
+const yNumber = yRange.closest('.inputCont').querySelector('input[type="number"]');
+const yText = yRange.closest('.inputCont').querySelector('.dinamicText');
+
+const angleRange = document.querySelector('input[type="range"]#xExitWell');
+const angleNumber = document.querySelector('input[type="number"]#xExitWell');
+const angleText = angleRange.closest('.inputCont').querySelector('.dinamicText');
+
+function updateWellFromInputs() {
+  const xVal = Number(xRange.value) + 18;
+  const yVal = Number(yRange.value);
+  const angleVal = Number(angleRange.value);
+
+  xText.textContent = xVal - 18;
+  yText.textContent = yVal;
+  angleText.textContent = angleVal;
+
+  if (xNumber) xNumber.value = xVal;
+  if (yNumber) yNumber.value = yVal;
+  if (angleNumber) angleNumber.value = angleVal;
+
+  well.xNorm = xVal / 120;
+
+  const t = (yVal - 10) / (80 - 10);
+  well.yNorm = 1 - t;
+
+  well.angleDeg = angleVal;
+
+  draw();
+}
+
+xRange.addEventListener('input', updateWellFromInputs);
+yRange.addEventListener('input', updateWellFromInputs);
+angleRange.addEventListener('input', updateWellFromInputs);
+
+const confirmBtn = document.getElementById("confirmButton");
+
+let pendingManual = {
+  x: null,
+  y: null,
+  angle: null
+};
+
+// Cuando el usuario escribe manualmente
+if (xNumber) {
+  xNumber.addEventListener("input", () => {
+    pendingManual.x = Number(xNumber.value);
+  });
+}
+
+if (yNumber) {
+  yNumber.addEventListener("input", () => {
+    pendingManual.y = Number(yNumber.value);
+  });
+}
+
+if (angleNumber) {
+  angleNumber.addEventListener("input", () => {
+    pendingManual.angle = Number(angleNumber.value);
+  });
+}
+
+// Funcion para limitar valores de inputs manuales
+function clampManualInput(inputElement, min, max) {
+  let raw = inputElement.value.trim();
+  let val = Number(raw);
+
+  // Si no es número → marcar error visual
+  if (raw === "" || isNaN(val)) {
+    inputElement.classList.add("inputError");
+    return null;
+  }
+
+  // Si está fuera del rango → error visual
+  if (val < min || val > max) {
+    inputElement.classList.add("inputError");
+    return null;
+  }
+
+  // Si es válido → quitar error visual
+  inputElement.classList.remove("inputError");
+
+  return val;                  
+}
+
+// Al confirmar los valores manuales
+confirmBtn.addEventListener("click", () => {
+  // Validacion y correccion al escribir manualmente
+  const validX = clampManualInput(xNumber, 0, 100);
+  pendingManual.x = validX;
+
+  const validY = clampManualInput(yNumber, 10, 50);
+  pendingManual.y = validY;
+
+  const validAngle = clampManualInput(angleNumber, 0, 15);
+  pendingManual.angle = validAngle;
+  // Si no hay cambios manuales, no hacemos nada
+  if (pendingManual.x === null &&
+    pendingManual.y === null &&
+    pendingManual.angle === null) {
+    return;
+  }
+
+  // Aplicar valores escritos manualmente
+  if (pendingManual.x !== null) {
+    const xVal = pendingManual.x + 18;
+    xRange.value = xVal;
+    xText.textContent = xVal;
+    well.xNorm = xVal / 120;
+    pendingManual.x = null;
+  }
+
+  if (pendingManual.y !== null) {
+    const yVal = pendingManual.y;
+    yRange.value = yVal;
+    yText.textContent = yVal;
+
+    const t = (yVal - 10) / (80 - 10);
+    well.yNorm = 1 - t;
+
+    pendingManual.y = null;
+  }
+
+  if (pendingManual.angle !== null) {
+    const angleVal = pendingManual.angle;
+    angleRange.value = angleVal;
+    angleText.textContent = angleVal;
+
+    well.angleDeg = angleVal;
+
+    pendingManual.angle = null;
+  }
+
+  draw();
+});
+
+const resetBtn = document.getElementById("reset-btn");
+if (resetBtn) {
+  resetBtn.addEventListener("click", () => {
+    updateWellFromInputs();
+  });
+}
+
+updateWellFromInputs();
 
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
