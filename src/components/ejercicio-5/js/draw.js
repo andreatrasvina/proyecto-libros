@@ -1,222 +1,199 @@
-function initCanvas() {
-  const canvas = document.getElementById('canvas');
-  const ctx = canvas.getContext('2d');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const rect = canvas.getBoundingClientRect();
+const dpr = window.devicePixelRatio || 1;
+let width = rect.width * dpr;
+let height = rect.height * dpr;
 
-  function resizeAndDraw() {
-    const container = canvas.parentElement;
-    const size = Math.min(container.clientWidth, container.clientHeight);
+function resizeCanvas() {
 
-    canvas.width = size;
-    canvas.height = size;
+  // Ajusta el tamaño interno del canvas a su tamaño en CSS * DPR
+  canvas.width = width;
+  canvas.height = height;
 
-    draw();
-  }
+  // Corrige la escala para que las coordenadas estén en "CSS píxeles"
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-
-
-  function drawTerrain(size) {
-
-    ctx.strokeStyle = '#432004';
-    ctx.lineWidth = Math.max(0.1, size * 0.01);
-    ctx.lineCap = 'round';
-
-    ctx.beginPath();
-    ctx.moveTo(size * 0, size * 0.3);
-
-    ctx.quadraticCurveTo(
-      size * 0.5, size * 0.3,
-      size, size * 0.6
-    );
-
-    ctx.stroke();
-  }
-
-  function drawGroundParticles(size) {
-    const particleCount = 250;
-    const particleSize = 2;
-    const minDistance = size * 0.03;
-
-    ctx.fillStyle = '#432004';
-
-    const particles = [];
-
-    function getTerrainY(x) {
-      const startY = size * 0.3;
-      const controlY = size * 0.3;
-      const endY = size * 0.6;
-
-      const t = x / size;
-      const y = Math.pow(1 - t, 2) * startY +
-        2 * (1 - t) * t * controlY +
-        Math.pow(t, 2) * endY;
-      return y;
-    }
-
-    function isTooClose(newX, newY) {
-      for (const particle of particles) {
-        const distance = Math.sqrt(
-          Math.pow(newX - particle.x, 2) +
-          Math.pow(newY - particle.y, 2)
-        );
-        if (distance < minDistance) {
-          return true;
-        }
-      }
-      return false;
-    }
-
-    for (let i = 0; i < particleCount; i++) {
-      let attempts = 0;
-      let placed = false;
-
-      while (!placed && attempts < 100) {
-        const x = Math.random() * size;
-
-        const minY = getTerrainY(x);
-
-        const y = minY + Math.random() * (size - minY);
-
-        if (!isTooClose(x, y)) {
-          particles.push({ x, y });
-          placed = true;
-        }
-
-        attempts++;
-      }
-    }
-
-    for (const particle of particles) {
-      ctx.beginPath();
-      ctx.arc(particle.x, particle.y, particleSize, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
-
-  function drawFreaticLevel(size) {
-
-    ctx.fillStyle = 'rgba(80, 162, 255, 0.3)';
-
-    ctx.beginPath();
-
-    ctx.moveTo(size * 0, size * 0.4);
-
-
-    ctx.quadraticCurveTo(
-      size * 0.5, size * 0.4,
-      size, size * 0.7
-    );
-
-    ctx.lineTo(size, size);
-    ctx.lineTo(0, size);
-    ctx.lineTo(size * 0, size * 0.4);
-
-    ctx.fill();
-
-    ctx.strokeStyle = '#50a2ff';
-    ctx.lineWidth = Math.max(0.1, size * 0.01);
-    ctx.lineCap = 'round';
-
-    ctx.beginPath();
-    ctx.moveTo(size * 0, size * 0.4);
-
-    ctx.quadraticCurveTo(
-      size * 0.5, size * 0.4,
-      size, size * 0.7
-    );
-
-    ctx.stroke();
-  }
-
-  function drawPotentiometricContours(size) {
-    ctx.strokeStyle = 'Black';
-    ctx.lineWidth = Math.max(0.5, size * 0.003);
-    ctx.setLineDash([size * 0.01, size * 0.005]);
-    ctx.lineCap = 'round';
-    ctx.textAlign = 'center';
-
-    const contours = [
-      { level: -120, x: size * 0.1 },
-      { level: -110, x: size * 0.25 },
-      { level: -100, x: size * 0.4 },
-      { level: -95, x: size * 0.525 },
-      { level: -90, x: size * 0.65 },
-      { level: -80, x: size * 0.8 },
-      { level: -70, x: size * 0.95 }
-    ];
-
-    function getFreaticY(x) {
-      const t = x / size;
-      const y = Math.pow(1 - t, 2) * (size * 0.4) +
-        2 * (1 - t) * t * (size * 0.4) +
-        Math.pow(t, 2) * (size * 0.7);
-      return y;
-    }
-    function drawTextWithBackground(text, x, y, fontSize) {
-      ctx.font = `${fontSize}px Arial`;
-      const textMetrics = ctx.measureText(text);
-      const textWidth = textMetrics.width;
-      const textHeight = fontSize;
-
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-      const padding = fontSize * 0.3;
-      ctx.fillRect(
-        x - textWidth / 2 - padding,
-        y - textHeight - padding + 50,
-        textWidth + padding * 2,
-        textHeight + padding * 2
-      );
-
-      ctx.strokeStyle = 'Black';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(
-        x - textWidth / 2 - padding,
-        y - textHeight - padding + 50,
-        textWidth + padding * 2,
-        textHeight + padding * 2
-      );
-
-      ctx.fillStyle = 'Black';
-      ctx.fillText(text, x, y + 50);
-    }
-
-    contours.forEach(contour => {
-      ctx.beginPath();
-
-      const yPosition = size * 0.3 + ((contour.level + 120) / 50) * size * 0.3;
-
-      const freaticY = getFreaticY(contour.x);
-
-      const finalY = Math.min(yPosition, freaticY - size * 0.02);
-
-      ctx.moveTo(contour.x, size);
-      ctx.lineTo(contour.x, finalY+45);
-      ctx.stroke();
-
-      ctx.fillStyle = 'Black';
-      ctx.beginPath();
-      ctx.arc(contour.x, finalY, Math.max(2, size * 0.005), 0, Math.PI * 2);
-      ctx.fill();
-
-      const fontSize = Math.max(10, size * 0.02);
-      drawTextWithBackground(`${contour.level} m`, contour.x, finalY - size * 0.02, fontSize);
-    });
-
-    ctx.setLineDash([]);
-    ctx.textAlign = 'left';
-  }
-
-  function draw() {
-    const size = canvas.width;
-    ctx.clearRect(0, 0, size, size);
-
-    drawTerrain(size);
-    drawFreaticLevel(size);
-    drawGroundParticles(size);
-    drawPotentiometricContours(size);
-  }
-
-  window.addEventListener('resize', resizeAndDraw);
-  resizeAndDraw();
+  draw();
 }
 
-document.addEventListener('DOMContentLoaded', initCanvas);
+//Funcion principal del dibujado
+function draw() {
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.width / dpr;
+  const h = canvas.height / dpr;
+
+  ctx.clearRect(0, 0, w, h);
+
+  drawElevationAxis(ctx, elevationAxis); // Eje de elevacion
+
+  fillBelowCurveDots(ctx, terrainCurve, w, h, "#432004", 1, 8); // Relleno con puntos bajo la superficie del terreno
+  drawCurve(ctx, terrainCurve, w, h);         // superficie terreno
+
+  fillBelowCurve(ctx, waterTableCurve, w, h, waterTableCurve.color); //Relleno del nivel freatico  
+  drawCurve(ctx, waterTableCurve, w, h);    // nivel freatico
+}
+
+// Definición del eje de elevación
+const elevationAxis = {
+  x: width * 0.1,
+  y: height - 10,
+  height: height * 0.85,
+  max: 140,
+  step: 10
+};
+
+function drawElevationAxis(ctx, axis) {
+  const { x, y, height, max, step } = axis;
+
+  ctx.beginPath();
+  ctx.moveTo(x, y - height);
+  ctx.lineTo(x, y);
+  ctx.stroke();
+
+  ctx.save();
+  ctx.textAlign = "center";
+  ctx.textBaseline = "bottom";
+  ctx.font = "14px Arial";
+  ctx.fillText("Elevation", x, y - height - 20);
+  ctx.fillText("(ft)", x, y - height - 5);
+  ctx.restore();
+
+  ctx.font = "12px Arial";
+  ctx.textAlign = "right";
+  ctx.textBaseline = "middle";
+
+  const numSteps = max / step;
+  const pxPerStep = height / numSteps;
+
+  for (let i = 0; i <= numSteps; i++) {
+    const value = i * step;
+    const ty = y - i * pxPerStep;
+
+    ctx.beginPath();
+    ctx.moveTo(x, ty);
+    ctx.lineTo(x + 10, ty);
+    ctx.stroke();
+
+    ctx.fillText(value.toString(), x - 5, ty);
+  }
+}
+
+// Definicion de la curva de la superficie del terreno
+const terrainCurve = {
+  color: "#432004",
+  points: [
+    { x: 0.15, y: 0.15 },
+    { x: 0.30, y: 0.19 },
+    { x: 0.45, y: 0.25 },
+    { x: 0.60, y: 0.29 },
+    { x: 0.75, y: 0.35 },
+    { x: 0.90, y: 0.44 },
+    { x: 1.00, y: 0.55 }
+  ]
+};
+
+// Definicion de la curva del nivel freático
+const waterTableCurve = {
+  color: "#50a2ff",
+  points: [
+    { x: 0.15, y: 0.20 },
+    { x: 0.30, y: 0.24 },
+    { x: 0.45, y: 0.30 },
+    { x: 0.60, y: 0.34 },
+    { x: 0.75, y: 0.40 },
+    { x: 0.90, y: 0.49 },
+    { x: 1.00, y: 0.60 }
+  ]
+};
+
+//Funcion para dibujar curvas
+function drawCurve(ctx, curve, w, h) {
+  const pts = curve.points;
+  if (!pts.length) return;
+  ctx.strokeStyle = curve.color;
+
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x * w, pts[0].y * h);
+
+  for (let i = 1; i < pts.length; i++) {
+    ctx.lineTo(pts[i].x * w, pts[i].y * h);
+  }
+
+  ctx.stroke();
+
+  ctx.strokeStyle = "#000";
+}
+
+//Rellena el area bajo la curva con agua
+function fillBelowCurve(ctx, curve, w, h, fillColor) {
+  const pts = curve.points;
+  if (!pts.length) return;
+
+  ctx.beginPath();
+
+  ctx.moveTo(pts[0].x * w, pts[0].y * h);
+
+  for (let i = 1; i < pts.length; i++) {
+    ctx.lineTo(pts[i].x * w, pts[i].y * h);
+  }
+
+  const lastX = pts[pts.length - 1].x * w;
+  const firstX = pts[0].x * w;
+
+  ctx.lineTo(lastX, h);
+  ctx.lineTo(firstX, h);
+  ctx.closePath();
+
+  ctx.fillStyle = fillColor;
+  ctx.globalAlpha = 0.25; 
+  ctx.fill();
+  ctx.globalAlpha = 1.0;
+}
+
+// Obtiene la coordenada Y normalizada en la curva para una X normalizada dada
+function getYOnCurve(curve, xNorm) {
+  const pts = curve.points;
+
+  if (xNorm < pts[0].x || xNorm > pts[pts.length - 1].x) return null;
+
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i];
+    const p1 = pts[i + 1];
+
+    if (xNorm >= p0.x && xNorm <= p1.x) {
+      const t = (xNorm - p0.x) / (p1.x - p0.x);
+      return p0.y + (p1.y - p0.y) * t;
+    }
+  }
+  return null;
+}
+
+// Rellena con puntos el area bajo el nivel del terreno
+function fillBelowCurveDots(ctx, curve, w, h, dotColor = "#666", dotRadius = 1.2, spacing = 10) {
+  ctx.fillStyle = dotColor;
+
+  for (let row = 0; ; row++) {
+    const y = row * spacing;
+    if (y > h) break;
+
+    const offset = (row % 2) ? spacing / 2 : 0;
+
+    for (let x = offset; x <= w; x += spacing) {
+      const xNorm = x / w;
+      const yNormCurve = getYOnCurve(curve, xNorm);
+      if (yNormCurve == null) continue;
+
+      const yCurve = yNormCurve * h;
+
+      if (y >= yCurve) {
+        ctx.beginPath();
+        ctx.arc(x, y, dotRadius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+}
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
