@@ -13,6 +13,12 @@
       Línea Equipotencial
     </button>
 
+    <button id="btnAdditionalPoints"
+      class="px-4 py-2 rounded-lg font-medium bg-purple-200 text-purple-800 border border-purple-300
+             hover:bg-purple-300 hover:text-purple-900 shadow-sm transition-all duration-200">
+      Puntos Adicionales
+    </button>
+
     <button id="btnClear"
       class="px-4 py-2 rounded-lg font-medium bg-neutral-100 text-neutral-600 border border-neutral-300
              hover:bg-neutral-200 hover:text-neutral-800 shadow-sm transition-all duration-200">
@@ -45,6 +51,15 @@
 
   <!-- Nuevo: formulario de ingreso de coordenadas (visible en modo coordenadas) -->
   <div id="coordForm" class="mt-4 p-3 rounded-lg bg-slate-50 text-sm text-gray-800 border border-slate-200 max-w-xl hidden">
+    <!-- Selector de tipo de elemento -->
+    <div class="mb-4">
+      <label class="font-medium">Tipo de elemento:</label>
+      <select id="coordElementType" class="ml-2 p-1 border rounded">
+        <option value="equipotential">Línea Equipotencial</option>
+        <option value="additional">Puntos Adicionales</option>
+      </select>
+    </div>
+
     <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
       <div>
         <div class="font-medium">Punto 1</div>
@@ -86,12 +101,14 @@ const resultsBox = document.getElementById("resultsBox");
 const coordBox = document.getElementById("coordBox");
 
 const btnEquipotential = document.getElementById("btnEquipotential");
+const btnAdditionalPoints = document.getElementById("btnAdditionalPoints");
 const btnClear = document.getElementById("btnClear");
 
 const btnModeManual = document.getElementById("btnModeManual");
 const btnModeCoords = document.getElementById("btnModeCoords");
 const coordForm = document.getElementById("coordForm");
 const btnApplyCoords = document.getElementById("btnApplyCoords");
+const coordElementType = document.getElementById("coordElementType");
 
 // inputs
 const in_x1 = document.getElementById("in_x1");
@@ -103,10 +120,12 @@ const in_z2 = document.getElementById("in_z2");
 
 let tool = "equipotential";
 let selectedPoints = [];
+let additionalPoints = [];
 let lines = [];
 let baseImg = new Image();
 let baseLoaded = false;
 let equipotentialCompleted = false;
+let additionalPointsCompleted = false;
 
 // Modos: "manual" o "coords" (por defecto manual)
 let modeMode = "manual";
@@ -220,6 +239,8 @@ function setMode(newMode) {
     coordForm.classList.remove("hidden");
     btnModeCoords.classList.add("opacity-90");
     btnModeManual.classList.remove("opacity-90");
+    // Actualizar el selector de tipo según la herramienta activa
+    coordElementType.value = tool === "additionalPoints" ? "additional" : "equipotential";
   } else {
     coordForm.classList.add("hidden");
     btnModeManual.classList.add("opacity-90");
@@ -294,8 +315,15 @@ canvas.addEventListener("click", (e) => {
     return;
   }
 
+  // Verificar si ya se completó la selección de puntos adicionales
+  if (additionalPointsCompleted && tool === "additionalPoints") {
+    instructionText.textContent = "Ya has completado la selección de puntos adicionales. Presiona 'Limpiar' para empezar de nuevo.";
+    return;
+  }
+
+  // Verificar si ya se completó la línea equipotencial y estamos en modo puntos adicionales
   if (equipotentialCompleted && tool === "equipotential") {
-    instructionText.textContent = "Ya has completado la línea equipotencial. Presiona 'Limpiar' para empezar de nuevo.";
+    instructionText.textContent = "Ya has completado la línea equipotencial. Cambia a 'Puntos Adicionales' o presiona 'Limpiar' para empezar de nuevo.";
     return;
   }
 
@@ -315,34 +343,85 @@ canvas.addEventListener("click", (e) => {
     return;
   }
 
-  const point = { x, y, adjustedX: adj };
-  selectedPoints.push(point);
+  const point = { x, y, adjustedX: adj, elevation: calculateElevation(y) };
 
-  if (tool === "equipotential" && selectedPoints.length === 2) {
-    const elevation1 = calculateElevation(selectedPoints[0].y);
-    const elevation2 = calculateElevation(selectedPoints[1].y);
+  if (tool === "equipotential") {
+    selectedPoints.push(point);
 
-    const [p1, p2] = selectedPoints;
-    
-    // Calcular punto extendido que se detenga en el río o límites
-    let extendedPoint = calculateExtendedPoint(p1, p2);
-    
-    const equipotentialLine = { type: "equipotential", points: [p1, p2, extendedPoint] };
+    if (selectedPoints.length === 2) {
+      const elevation1 = selectedPoints[0].elevation;
+      const elevation2 = selectedPoints[1].elevation;
 
-    // borrar previos patrones y lines de tipo generados para evitar acumulación
-    lines = lines.filter(l => l.type === "equipotential"); // conserva solo linea equipotencial previa si la hay
-    lines.push(equipotentialLine);
+      const [p1, p2] = selectedPoints;
+      
+      // Calcular punto extendido que se detenga en el río o límites
+      let extendedPoint = calculateExtendedPoint(p1, p2);
+      
+      const equipotentialLine = { type: "equipotential", points: [p1, p2, extendedPoint] };
 
-    calculateHydraulicData(p1, p2, elevation1, elevation2);
+      // NUEVO: Calcular punto medio y elevación promedio
+      const midPoint = {
+        x: (p1.x + p2.x) / 2,
+        y: (p1.y + p2.y) / 2
+      };
+      const avgElevation = (elevation1 + elevation2) / 2;
+      
+      // Almacenar el punto medio para dibujarlo después
+      equipotentialLine.midPoint = midPoint;
+      equipotentialLine.avgElevation = avgElevation;
 
-    selectedPoints = [];
-    equipotentialCompleted = true;
-    instructionText.textContent = "Línea equipotencial completada. Presiona 'Limpiar' para empezar de nuevo.";
+      // borrar previos patrones y lines de tipo generados para evitar acumulación
+      lines = lines.filter(l => l.type === "equipotential"); // conserva solo linea equipotencial previa si la hay
+      lines.push(equipotentialLine);
+
+      calculateHydraulicData(p1, p2, elevation1, elevation2, midPoint, avgElevation);
+
+      selectedPoints = [];
+      equipotentialCompleted = true;
+      instructionText.textContent = "Línea equipotencial completada. Ahora puedes seleccionar 'Puntos Adicionales'.";
+    }
+  } else if (tool === "additionalPoints") {
+    // Solo permitir puntos adicionales si ya se completó la línea equipotencial
+    if (!equipotentialCompleted) {
+      instructionText.textContent = "Primero completa la línea equipotencial antes de agregar puntos adicionales.";
+      return;
+    }
+
+    additionalPoints.push(point);
+
+    if (additionalPoints.length === 2) {
+      additionalPointsCompleted = true;
+      instructionText.textContent = "Puntos adicionales completados. Presiona 'Limpiar' para empezar de nuevo.";
+      
+      // Mostrar información de los puntos adicionales
+      showAdditionalPointsInfo();
+    }
   }
 
   updateInstruction();
   drawAll();
 });
+
+/* ---------------- NUEVA FUNCIÓN: Mostrar información de puntos adicionales ---------------- */
+function showAdditionalPointsInfo() {
+  if (additionalPoints.length < 2) return;
+  
+  const p1 = additionalPoints[0];
+  const p2 = additionalPoints[1];
+  const elev1 = p1.elevation;
+  const elev2 = p2.elevation;
+  
+  const infoDiv = document.createElement("div");
+  infoDiv.className = "mt-3 p-3 rounded-lg bg-purple-50 text-sm text-purple-800 border border-purple-200";
+  infoDiv.innerHTML = `
+    <b>Puntos Adicionales:</b><br/>
+    Punto A: Elevación ${elev1} m (x:${Math.round(p1.adjustedX)}, y:${Math.round(p1.y)})<br/>
+    Punto B: Elevación ${elev2} m (x:${Math.round(p2.adjustedX)}, y:${Math.round(p2.y)})<br/>
+    Diferencia de elevación: ${Math.abs(elev1 - elev2)} m
+  `;
+  
+  resultsBox.appendChild(infoDiv);
+}
 
 /* ---------------- NUEVA FUNCIÓN: Calcular punto extendido que se detenga en límites ---------------- */
 function calculateExtendedPoint(p1, p2) {
@@ -381,7 +460,7 @@ function calculateElevation(y) {
   return Math.round(Math.max(0, Math.min(100, computedElev)));
 }
 
-function calculateHydraulicData(p1, p2, elev1, elev2) {
+function calculateHydraulicData(p1, p2, elev1, elev2, midPoint, avgElevation) {
   const deltaH = Math.abs(elev1 - elev2);
   const dx_pix = p2.x - p1.x;
   const dy_pix = p1.y - p2.y;
@@ -393,11 +472,12 @@ function calculateHydraulicData(p1, p2, elev1, elev2) {
     Elevación punto 1: ${elev1} m<br/>
     Elevación punto 2: ${elev2} m<br/>
     Δh (diferencia de elevación): ${deltaH} m<br/>
+    Elevación promedio: ${avgElevation.toFixed(1)} m<br/>
     Dirección del flujo: ${elev1 > elev2 ? "del punto 1 → punto 2" : "del punto 2 → punto 1"}
   `;
 }
 
-/* ---------------- DIBUJO - ACTUALIZADO ---------------- */
+/* ---------------- DIBUJO - ACTUALIZADO CON PUNTO MEDIO Y PUNTOS ADICIONALES ---------------- */
 function drawAll() {
   if (!ctx) return;
   // Limpiar y dibujar imagen base
@@ -417,11 +497,158 @@ function drawAll() {
   // Dibujar línea equipotencial
   lines.filter(line => line.type === "equipotential").forEach(line => {
     drawEquipotentialLine(line.points);
+    // NUEVO: Dibujar punto medio si existe
+    if (line.midPoint) {
+      drawMidPoint(line.midPoint, line.avgElevation);
+    }
+  });
+
+  // Dibujar puntos adicionales
+  additionalPoints.forEach((point, index) => {
+    drawAdditionalPoint(point, index);
   });
 
   // Puntos seleccionados (solo en manual)
   for (let i = 0; i < selectedPoints.length; i++) drawPoint(selectedPoints[i], i);
   if (selectedPoints.length > 1) drawTempLine(selectedPoints);
+}
+
+// NUEVA FUNCIÓN: Dibujar punto adicional
+function drawAdditionalPoint(point, index) {
+  // Dibujar punto circular
+  ctx.beginPath();
+  ctx.arc(point.x, point.y, 6, 0, 2 * Math.PI);
+  ctx.fillStyle = "#8B5CF6"; // Color violeta para puntos adicionales
+  ctx.fill();
+  ctx.strokeStyle = "#FFFFFF";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  
+  // Etiqueta del punto
+  ctx.font = "bold 12px Arial";
+  ctx.fillStyle = "#8B5CF6";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(String.fromCharCode(65 + index), point.x, point.y);
+  
+  // Label con elevación
+  ctx.font = "bold 11px Arial";
+  ctx.textBaseline = "bottom";
+  
+  const text = `${point.elevation}m`;
+  const textWidth = ctx.measureText(text).width;
+  const padding = 4;
+  
+  // Fondo del label
+  ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+  ctx.fillRect(
+    point.x - textWidth/2 - padding, 
+    point.y - 25 - padding, 
+    textWidth + padding * 2, 
+    14 + padding
+  );
+  
+  // Borde del label
+  ctx.strokeStyle = "#8B5CF6";
+  ctx.lineWidth = 1;
+  ctx.strokeRect(
+    point.x - textWidth/2 - padding, 
+    point.y - 25 - padding, 
+    textWidth + padding * 2, 
+    14 + padding
+  );
+  
+  // Texto de elevación
+  ctx.fillStyle = "#8B5CF6";
+  ctx.fillText(text, point.x, point.y - 20);
+}
+
+// NUEVA FUNCIÓN: Dibujar punto medio con label
+function drawMidPoint(midPoint, avgElevation) {
+  if (!midPoint) return;
+  
+  // Dibujar punto circular
+  ctx.beginPath();
+  ctx.arc(midPoint.x, midPoint.y, 6, 0, 2 * Math.PI);
+  ctx.fillStyle = "#FF6B00"; // Color naranja para destacar
+  ctx.fill();
+  ctx.strokeStyle = "#FFFFFF";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  
+  // Dibujar label con la elevación promedio
+  ctx.font = "bold 12px Arial";
+  ctx.fillStyle = "#FF6B00";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "bottom";
+  
+  // Fondo del label para mejor legibilidad
+  const text = `${avgElevation.toFixed(1)}`;
+  const textWidth = ctx.measureText(text).width;
+  const padding = 6;
+  
+  ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+  ctx.fillRect(
+    midPoint.x - textWidth/2 - padding, 
+    midPoint.y - 30 - padding, 
+    textWidth + padding * 2, 
+    20 + padding
+  );
+  
+  // Borde del label
+  ctx.strokeStyle = "#FF6B00";
+  ctx.lineWidth = 1;
+  ctx.strokeRect(
+    midPoint.x - textWidth/2 - padding, 
+    midPoint.y - 30 - padding, 
+    textWidth + padding * 2, 
+    20 + padding
+  );
+  
+  // Texto
+  ctx.fillStyle = "#FF6B00";
+  ctx.fillText(text, midPoint.x, midPoint.y - 20);
+  
+  // Línea conectora desde el punto al label
+  ctx.beginPath();
+  ctx.moveTo(midPoint.x, midPoint.y - 6);
+  ctx.lineTo(midPoint.x, midPoint.y - 25);
+  ctx.strokeStyle = "#FF6B00";
+  ctx.lineWidth = 1;
+  ctx.setLineDash([2, 2]);
+  ctx.stroke();
+  ctx.setLineDash([]);
+}
+
+/* ---------- Dibujo de elementos (sin cambios en las demás funciones) ---------- */
+function drawEquipotentialLine(points) {
+  if (!points || points.length < 2) return;
+  ctx.beginPath();
+  ctx.moveTo(points[0].x, points[0].y);
+  for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+  ctx.strokeStyle = "#1E40AF";
+  ctx.lineWidth = 3;
+  ctx.stroke();
+}
+
+function drawPoint(p, i) {
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, 5, 0, 2 * Math.PI);
+  ctx.fillStyle = "#dc2626";
+  ctx.fill();
+  ctx.font = "12px Arial";
+  ctx.fillStyle = "#000";
+  ctx.fillText(i + 1, p.x + 8, p.y - 8);
+}
+
+function drawTempLine(points) {
+  ctx.beginPath();
+  ctx.moveTo(points[0].x, points[0].y);
+  for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+  ctx.strokeStyle = "#9ca3af";
+  ctx.setLineDash([4, 4]);
+  ctx.stroke();
+  ctx.setLineDash([]);
 }
 
 /* ---------------- DIBUJO: Plano cartesiano overlay - ACTUALIZADO ---------------- */
@@ -517,43 +744,14 @@ function drawCartesianOverlay() {
   }
 }
 
-/* ---------- Dibujo de elementos (sin cambios) ---------- */
-function drawEquipotentialLine(points) {
-  if (!points || points.length < 2) return;
-  ctx.beginPath();
-  ctx.moveTo(points[0].x, points[0].y);
-  for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
-  ctx.strokeStyle = "#1E40AF";
-  ctx.lineWidth = 3;
-  ctx.stroke();
-}
-
-function drawPoint(p, i) {
-  ctx.beginPath();
-  ctx.arc(p.x, p.y, 5, 0, 2 * Math.PI);
-  ctx.fillStyle = "#dc2626";
-  ctx.fill();
-  ctx.font = "12px Arial";
-  ctx.fillStyle = "#000";
-  ctx.fillText(i + 1, p.x + 8, p.y - 8);
-}
-
-function drawTempLine(points) {
-  ctx.beginPath();
-  ctx.moveTo(points[0].x, points[0].y);
-  for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
-  ctx.strokeStyle = "#9ca3af";
-  ctx.setLineDash([4, 4]);
-  ctx.stroke();
-  ctx.setLineDash([]);
-}
-
 /* ---------------- Botón Limpiar ---------------- */
 btnClear.addEventListener("click", () => {
   lines = [];
   selectedPoints = [];
+  additionalPoints = [];
   resultsBox.classList.add("hidden");
   equipotentialCompleted = false;
+  additionalPointsCompleted = false;
   generatedPattern = null;
   updateInstruction();
   drawAll();
@@ -564,22 +762,55 @@ btnEquipotential.addEventListener("click", () => {
   if (!equipotentialCompleted) {
     setTool("equipotential", btnEquipotential);
   } else {
-    instructionText.textContent = "Ya has completado la línea equipotencial. Presiona 'Limpiar' para empezar de nuevo.";
+    instructionText.textContent = "Ya has completado la línea equipotencial. Cambia a 'Puntos Adicionales' o presiona 'Limpiar' para empezar de nuevo.";
+  }
+});
+
+btnAdditionalPoints.addEventListener("click", () => {
+  if (!additionalPointsCompleted) {
+    setTool("additionalPoints", btnAdditionalPoints);
+  } else {
+    instructionText.textContent = "Ya has completado la selección de puntos adicionales. Presiona 'Limpiar' para empezar de nuevo.";
   }
 });
 
 function setTool(newTool, activeButton) {
   tool = newTool;
+  
+  // Resetear estilos de todos los botones
   btnEquipotential.classList.remove("bg-slate-400", "text-white");
-  if (activeButton) activeButton.classList.add("bg-slate-400", "text-white");
+  btnAdditionalPoints.classList.remove("bg-purple-400", "text-white");
+  
+  // Aplicar estilo al botón activo
+  if (activeButton) {
+    if (newTool === "equipotential") {
+      activeButton.classList.add("bg-slate-400", "text-white");
+    } else if (newTool === "additionalPoints") {
+      activeButton.classList.add("bg-purple-400", "text-white");
+    }
+  }
+  
+  // Actualizar el selector en el formulario de coordenadas si estamos en modo coordenadas
+  if (modeMode === "coords") {
+    coordElementType.value = newTool === "additionalPoints" ? "additional" : "equipotential";
+  }
+  
   updateInstruction();
 }
 
 function updateInstruction() {
   if (equipotentialCompleted && tool === "equipotential") {
-    instructionText.textContent = "Línea equipotencial completada. Presiona 'Limpiar' para empezar de nuevo.";
+    instructionText.textContent = "Línea equipotencial completada. Cambia a 'Puntos Adicionales' para agregar más puntos.";
+  } else if (additionalPointsCompleted && tool === "additionalPoints") {
+    instructionText.textContent = "Puntos adicionales completados. Presiona 'Limpiar' para empezar de nuevo.";
   } else if (tool === "equipotential") {
     instructionText.textContent = `Selecciona ${Math.max(0, 2 - selectedPoints.length)} punto(s) más para la línea equipotencial`;
+  } else if (tool === "additionalPoints") {
+    if (!equipotentialCompleted) {
+      instructionText.textContent = "Primero completa la línea equipotencial antes de agregar puntos adicionales.";
+    } else {
+      instructionText.textContent = `Selecciona ${Math.max(0, 2 - additionalPoints.length)} punto(s) adicionales`;
+    }
   }
 }
 
@@ -587,8 +818,10 @@ function updateInstruction() {
 btnModeManual.addEventListener("click", () => setMode("manual"));
 btnModeCoords.addEventListener("click", () => setMode("coords"));
 
-/* ---------------- Aplicar coordenadas desde el formulario - ACTUALIZADO ---------------- */
+/* ---------------- Aplicar coordenadas desde el formulario - ACTUALIZADO PARA SOPORTAR PUNTOS ADICIONALES ---------------- */
 btnApplyCoords.addEventListener("click", () => {
+  const elementType = coordElementType.value;
+
   // leer inputs - AHORA EL USUARIO INGRESA COORDENADAS REALES
   const x1 = in_x1.value ? Number(in_x1.value) : null;
   const y1 = in_y1.value ? Number(in_y1.value) : null;
@@ -619,8 +852,8 @@ btnApplyCoords.addEventListener("click", () => {
   const adjustedX2 = x2 - ORIGIN_X;
 
   // construir puntos (usando coordenadas reales para dibujo, ajustadas para validación)
-  const p1 = { x: x1, y: p1y, adjustedX: adjustedX1 };
-  const p2 = { x: x2, y: p2y, adjustedX: adjustedX2 };
+  const p1 = { x: x1, y: p1y, adjustedX: adjustedX1, elevation: calculateElevation(p1y) };
+  const p2 = { x: x2, y: p2y, adjustedX: adjustedX2, elevation: calculateElevation(p2y) };
 
   // MODIFICADO: Validación con las nuevas coordenadas, ahora hasta X:464
   const minX = 1;  // Ahora empieza desde 1
@@ -630,25 +863,62 @@ btnApplyCoords.addEventListener("click", () => {
     return;
   }
 
-  // elevaciones finales (usar z si el usuario lo proporcionó, si no usar calculateElevation)
-  const elev1 = (z1 !== null && !isNaN(z1)) ? Math.round(z1) : calculateElevation(p1.y);
-  const elev2 = (z2 !== null && !isNaN(z2)) ? Math.round(z2) : calculateElevation(p2.y);
+  if (elementType === "equipotential") {
+    // Validar que no se haya completado ya la línea equipotencial
 
-  // Usar la misma función calculateExtendedPoint para consistencia
-  let extendedPoint = calculateExtendedPoint(p1, p2);
+    // elevaciones finales (usar z si el usuario lo proporcionó, si no usar calculateElevation)
+    const elev1 = (z1 !== null && !isNaN(z1)) ? Math.round(z1) : calculateElevation(p1.y);
+    const elev2 = (z2 !== null && !isNaN(z2)) ? Math.round(z2) : calculateElevation(p2.y);
 
-  const equipotentialLine = { type: "equipotential", points: [p1, p2, extendedPoint] };
+    // Usar la misma función calculateExtendedPoint para consistencia
+    let extendedPoint = calculateExtendedPoint(p1, p2);
 
-  // eliminar previos de tipo equipotential para evitar acumulación
-  lines = lines.filter(l => l.type === "equipotential");
-  lines.push(equipotentialLine);
+    const equipotentialLine = { type: "equipotential", points: [p1, p2, extendedPoint] };
 
-  calculateHydraulicData(p1, p2, elev1, elev2);
+    // NUEVO: Calcular punto medio y elevación promedio también para modo coordenadas
+    const midPoint = {
+      x: (p1.x + p2.x) / 2,
+      y: (p1.y + p2.y) / 2
+    };
+    const avgElevation = (elev1 + elev2) / 2;
+    
+    // Almacenar el punto medio para dibujarlo después
+    equipotentialLine.midPoint = midPoint;
+    equipotentialLine.avgElevation = avgElevation;
 
-  // marcar completado, ocultar formulario y actualizar UI
-  equipotentialCompleted = true;
-  coordForm.classList.add("hidden");
-  instructionText.textContent = "Línea equipotencial completada (modo Coordenadas). Presiona 'Limpiar' para empezar de nuevo.";
+    // eliminar previos de tipo equipotential para evitar acumulación
+    lines = lines.filter(l => l.type === "equipotential");
+    lines.push(equipotentialLine);
+
+    calculateHydraulicData(p1, p2, elev1, elev2, midPoint, avgElevation);
+
+    // marcar completado, ocultar formulario y actualizar UI
+    equipotentialCompleted = true;
+    coordForm.classList.add("hidden");
+    instructionText.textContent = "Línea equipotencial completada (modo Coordenadas). Ahora puedes seleccionar 'Puntos Adicionales'.";
+  } else if (elementType === "additional") {
+    // Validar que ya se haya completado la línea equipotencial
+    if (!equipotentialCompleted) {
+      alert("Primero debes completar la línea equipotencial antes de agregar puntos adicionales.");
+      return;
+    }
+
+    // Validar que no se hayan completado ya los puntos adicionales
+    if (additionalPointsCompleted) {
+      alert("Ya se han completado los puntos adicionales. Limpia para empezar de nuevo.");
+      return;
+    }
+
+    // Agregar los puntos adicionales
+    additionalPoints.push(p1, p2);
+    additionalPointsCompleted = true;
+
+    // Mostrar información de los puntos adicionales
+    showAdditionalPointsInfo();
+
+    instructionText.textContent = "Puntos adicionales completados (modo Coordenadas). Presiona 'Limpiar' para empezar de nuevo.";
+  }
+
   drawAll();
 });
 
@@ -661,6 +931,7 @@ window.__exercise6 = {
   canvas,
   lines,
   selectedPoints,
+  additionalPoints,
   redraw: drawAll,
   detectAxisAndDraw
 };
