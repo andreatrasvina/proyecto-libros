@@ -279,21 +279,26 @@ function drawWell(ctx, well, w, h) {
     waterColor
   } = well;
 
-  const baseX = xNorm * w;
-  const baseY = yNorm * h; 
+  // Punto base del pozo
+  const baseX = xNorm * w;   // esquina inferior izquierda del tubo
+  const baseY = yNorm * h;
 
+  // Tamaño real del pozo
   const height = lengthNorm * Math.min(w, h);
   const t = thickness;
 
+  // Coordenadas locales del rectángulo sin rotar
   const BL = { x: 0, y: 0 };
   const BR = { x: t, y: 0 };
   const TL = { x: 0, y: -height };
-  const TR = { x: t, y: -height };  
+  const TR = { x: t, y: -height };
 
+  // Rotación
   const rad = angleDeg * Math.PI / 180;
   const cos = Math.cos(rad);
   const sin = Math.sin(rad);
 
+  // Función para transformar puntos locales → canvas
   function rot(p) {
     return {
       x: baseX + p.x * cos - p.y * sin,
@@ -301,6 +306,7 @@ function drawWell(ctx, well, w, h) {
     };
   }
 
+  // Convertir todas las esquinas
   const BLw = rot(BL);
   const BRw = rot(BR);
   const TLw = rot(TL);
@@ -308,6 +314,9 @@ function drawWell(ctx, well, w, h) {
 
   ctx.save();
 
+  // =========================================================
+  //  A) Tubo del pozo (pared)
+  // =========================================================
   ctx.fillStyle = fill;
   ctx.strokeStyle = stroke;
   ctx.lineWidth = 2;
@@ -320,17 +329,25 @@ function drawWell(ctx, well, w, h) {
   ctx.closePath();
   ctx.fill();
 
+  // =========================================================
+  //  B) Agua en el pozo (superficie horizontal)
+  // =========================================================
   const yNormWater = getYOnCurve(waterTableCurve, xNorm);
+
   if (yNormWater != null) {
-    const yWater = yNormWater * h;  
+    const yWater = yNormWater * h;
 
     const wellTopY = Math.min(TLw.y, TRw.y);
     const wellBottomY = Math.max(BLw.y, BRw.y);
 
     if (yWater <= wellBottomY) {
+      let waterTopLeft, waterTopRight;
+
+      // Si el agua sobrepasa la boca → tubo lleno
       if (yWater <= wellTopY) {
         ctx.fillStyle = waterColor || "#50a2ff";
         ctx.globalAlpha = 0.6;
+
         ctx.beginPath();
         ctx.moveTo(TLw.x, TLw.y);
         ctx.lineTo(TRw.x, TRw.y);
@@ -338,18 +355,23 @@ function drawWell(ctx, well, w, h) {
         ctx.lineTo(BLw.x, BLw.y);
         ctx.closePath();
         ctx.fill();
-        ctx.globalAlpha = 1.0;
-      } else {
 
+        ctx.globalAlpha = 1.0;
+
+        waterTopLeft = { x: TLw.x, y: TLw.y };
+        waterTopRight = { x: TRw.x, y: TRw.y };
+
+      } else {
+        // Agua parcial → superficie horizontal en yWater
         const tL = (yWater - BLw.y) / (TLw.y - BLw.y);
         const tR = (yWater - BRw.y) / (TRw.y - BRw.y);
 
-        const waterTopLeft = {
+        waterTopLeft = {
           x: BLw.x + (TLw.x - BLw.x) * tL,
           y: yWater
         };
 
-        const waterTopRight = {
+        waterTopRight = {
           x: BRw.x + (TRw.x - BRw.x) * tR,
           y: yWater
         };
@@ -367,9 +389,58 @@ function drawWell(ctx, well, w, h) {
 
         ctx.globalAlpha = 1.0;
       }
+
+      // =====================================================
+      //  B.2) Cuadro con la altura real del agua
+      // =====================================================
+      const elevationValue = getElevationFromY(waterTopLeft.y);
+      const label = "h: " + elevationValue.toFixed(1);
+
+      ctx.font = "12px Arial";
+      ctx.textAlign = "left";
+      ctx.textBaseline = "middle";
+
+      const padX = 6;
+      const padY = 4;
+
+      const metrics = ctx.measureText(label);
+      const textW = metrics.width;
+      const textH = 12;
+
+      let labelXAux;
+      let labelYAux;
+      if (waterTopRight.x > 250) {
+        // Si el pozo está muy a la derecha, poner el cuadro a la izquierda
+        labelXAux = waterTopLeft.x - 10 - textW;
+        labelYAux = waterTopLeft.y - 10;
+      }
+      else {
+        labelXAux = waterTopRight.x + 10;
+        labelYAux = waterTopRight.y - 10;
+      }
+
+      const labelX = labelXAux;
+      const labelY = labelYAux;
+
+      const rectX = labelX - padX;
+      const rectY = labelY - textH / 2 - padY;
+      const rectW = textW + padX * 2;
+      const rectH = textH + padY * 2;
+
+      ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+      ctx.fillRect(rectX, rectY, rectW, rectH);
+
+      ctx.strokeStyle = "#000";
+      ctx.strokeRect(rectX, rectY, rectW, rectH);
+
+      ctx.fillStyle = "#000";
+      ctx.fillText(label, labelX, labelY);
     }
   }
 
+  // =========================================================
+  //  C) Contorno del tubo encima del agua
+  // =========================================================
   ctx.strokeStyle = stroke;
   ctx.lineWidth = 2;
   ctx.beginPath();
@@ -380,6 +451,9 @@ function drawWell(ctx, well, w, h) {
   ctx.closePath();
   ctx.stroke();
 
+  // =========================================================
+  //  D) Rayitas de la boca (perpendiculares al pozo)
+  // =========================================================
   const stripeLen = t * 0.8;
   const stripeGap = t * 0.4;
 
@@ -391,17 +465,21 @@ function drawWell(ctx, well, w, h) {
   const nx = -uy;
   const ny =  ux;
 
-  const baseCenter = { x: (BLw.x + BRw.x) / 2, y: (BLw.y + BRw.y) / 2 };
+  const baseCenter = {
+    x: (BLw.x + BRw.x) / 2,
+    y: (BLw.y + BRw.y) / 2
+  };
 
   for (let i = 0; i < 3; i++) {
     const d = (i + 1) * stripeGap;
-    const cxStripe = baseCenter.x - ux * d;
-    const cyStripe = baseCenter.y - uy * d;
 
-    const sx1 = cxStripe - nx * (stripeLen / 2);
-    const sy1 = cyStripe - ny * (stripeLen / 2);
-    const sx2 = cxStripe + nx * (stripeLen / 2);
-    const sy2 = cyStripe + ny * (stripeLen / 2);
+    const cx = baseCenter.x - ux * d;
+    const cy = baseCenter.y - uy * d;
+
+    const sx1 = cx - nx * (stripeLen / 2);
+    const sy1 = cy - ny * (stripeLen / 2);
+    const sx2 = cx + nx * (stripeLen / 2);
+    const sy2 = cy + ny * (stripeLen / 2);
 
     ctx.beginPath();
     ctx.moveTo(sx1, sy1);
@@ -410,6 +488,14 @@ function drawWell(ctx, well, w, h) {
   }
 
   ctx.restore();
+}
+
+
+function getElevationFromY(yCanvas) {
+  const { y, height, max } = elevationAxis;
+  const ratio = (y - yCanvas) / height;
+  const value = ratio * max;
+  return Math.max(0, Math.min(max, value));
 }
 
 const well = wells[0];
