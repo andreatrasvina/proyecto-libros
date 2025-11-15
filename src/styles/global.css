@@ -34,7 +34,7 @@
   --navfooternt: #e6e7eb;
 
   /* Para las rayas del sitio */
-  --rayas: #e8e8ec;
+  --rayas: #e0e0e0;
 
   /* Para boton positivo u oscuro */
   --botonOscuro: #131314;
@@ -51,7 +51,7 @@
   /* color para el texto del sidebar */
   --sidebarText: #565c6d;
 
-  --color-background: #fdfdfd;
+  --color-background: #ffffff;
   --color-primary: #000;
 
   /* color para el hover de los elementos del sidebar */
@@ -76,6 +76,12 @@
   /* Color del agua */
   --water: #a4d8f2;
 
+  /* Estilos para los titulos y subtitulos de los ejercicios */
+  --book-title-1: #3769c5;
+  --subtitle-bg: #eaf6ff;
+  --subtitle-text: #333;
+  --images-bg: #eaf6ff;
+
   /* Color claro para el blur del ejercicio */
   /* --blurMario: #ffffff8c; */
 }
@@ -88,7 +94,7 @@ body.dark-mode {
   --footernew: #f2f2f2;
 
   /* Para las rayas del sitio */
-  --rayas: #16191c;
+  --rayas: #3d4044;
 
   /* Para boton positivo u oscuro */
   --botonOscuro: #131314;
@@ -135,6 +141,11 @@ body.dark-mode {
   /* Color del agua */
   --water: #a4d8f2;
 
+  --book-title-1: #78b2fa;
+  --subtitle-bg: #263a59;
+  --subtitle-text: #fff;
+  --images-bg: #eaf6ff;
+
   /* /* Color oscuro para el blur del mario */
   /* --blurMario: #0f172a8c; */
 }
@@ -163,4 +174,50 @@ body.dark-mode .dark-mode-logo {
 
 body.dark-mode .light-mode-logo {
   display: none;
+}
+
+/* Estos estilos son para el ejercicio 1 propiamente */
+
+.book-section {
+  font-family: "Lato", sans-serif;
+}
+
+.book-title {
+  font-weight: 600;
+  font-family: "Lato", sans-serif;
+  /* margin: ;  */
+}
+
+.etiqueta-guia {
+  display: inline-block;
+  /* border: 1px solid #eaf6ff; */
+
+  padding: 6px 12px;
+  border-radius: 4px;
+
+  font-size: 24px;
+  font-weight: 700;
+
+  /* margin-top: 0; */
+  margin-bottom: .60rem;
+}
+
+.divisor {
+  border: none;
+  height: 2px;
+  background-color: #3399ff;
+  margin: 0;
+}
+
+.linea-delgada {
+  border: none;
+  height: 1px;
+  margin-bottom: 3rem;
+}
+
+.pie-foto {
+  display: inline-block;
+  border-radius: 4px;
+
+  padding: 10px;
 }
