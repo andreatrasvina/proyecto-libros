@@ -38,11 +38,13 @@ const initA = 5;
             <div class="water"><h3>h₁</h3></div>
             <!-- línea punteada para h1 -->
             <div class="dotted-line" id="line-h1"></div>
+            <div class="value-bubble" id="bubble-h1">h₁: 0.00m</div>
           </div>
           <div class="piezometer" id="pm-right">
             <div class="water"><h3>h₂</h3></div>
             <!-- línea punteada para h2 -->
             <div class="dotted-line" id="line-h2"></div>
+            <div class="value-bubble" id="bubble-h2">h₂: 0.00m</div>
           </div>
         </div>
 
@@ -57,9 +59,6 @@ const initA = 5;
           <span class="delta-text">∆L</span>
         </div>
       </div>
-      <!-- 🔹 Etiquetas flotantes de h₁ y h₂ -->
-      <div class="value-bubble" id="bubble-h1">h₁: 0.00m</div>
-      <div class="value-bubble" id="bubble-h2">h₂: 0.00m</div>
     </div>
   </div>
 
@@ -406,7 +405,7 @@ const initA = 5;
 
       // Alturas dinámicas
       const waterLeftHeight = waterLeft.offsetHeight;
-      let waterRightHeight =
+      waterRightHeight =
         waterLeftHeight - (flowRate * distance) / (conductivity * area);
       if (waterRightHeight <= 0) waterRightHeight = 0;
 
@@ -439,9 +438,27 @@ const initA = 5;
       lineH1.style.marginLeft = -lineH1Width + "px";
       lineH2.style.marginLeft = -lineH2Width + "px";
 
-      // 🔹 Actualiza burbujas después de todo
-      // 🔹 Actualiza burbujas después de que el navegador aplique el layout
-    actualizarBurbujas(waterLeftHeight, waterRightHeight);
+      // Actualiza texto de las burbujas
+      bubbleH1.textContent = "h₁: " + waterLeftHeight.toFixed(2) + "m";
+      bubbleH2.textContent = "h₂: " + waterRightHeight.toFixed(2) + "m";
+
+    let bubble1 = bubbleH1.getBoundingClientRect()
+    let bubble2 = bubbleH2.getBoundingClientRect()
+      // Coordenadas base
+      bubbleH1.style.marginRight = lineH1Width + pmLeftcoords.width + 10 + "px"
+      bubbleH1.style.marginLeft = -lineH1Width - pmLeftcoords.width - 10 -(bubble1.width/1.5) + "px"
+      bubbleH1.style.marginBottom = -(bubble1.height/2) + "px"
+
+      bubbleH2.style.marginRight = lineH2Width + pmRightCoords.width + 10 + "px"
+      bubbleH2.style.marginLeft = -lineH2Width - pmRightCoords.width - 10 -(bubble2.width/1.5) + "px"
+      bubbleH2.style.marginBottom = -(bubble2.height/2) + "px"
+
+        if(waterRightHeight > 100){
+            
+            let diff = (waterRightHeight - 100) / 2
+            bubbleH1.style.marginBottom = -(bubble2.height/2) + diff + "px"
+            bubbleH2.style.marginBottom = -(bubble1.height/2) - diff + "px"
+        }
     }
 
     function actualizarInclinacion() {
@@ -474,62 +491,6 @@ const initA = 5;
       }
     }
 
-    // === Burbujas flotantes de h₁ y h₂ ===
-
-    function actualizarBurbujas(
-      waterLeftHeight: number,
-      waterRightHeight: number,
-    ): void {
-
-      // Actualiza texto de las burbujas
-      bubbleH1.textContent = "h₁: " + waterLeftHeight.toFixed(2) + "m";
-      bubbleH2.textContent = "h₂: " + waterRightHeight.toFixed(2) + "m";
-
-      // Coordenadas base
-      const graphRect = graph.getBoundingClientRect();
-      const heightLine = document.querySelector(
-        ".height-line",
-      ) as HTMLDivElement;
-      const leftLineRect = heightLine.getBoundingClientRect();
-      const pm1Rect = pmLeft.getBoundingClientRect();
-      const pm2Rect = pmRight.getBoundingClientRect();
-
-      // Alturas relativas del agua (desde la base del gráfico)
-      const pm1Bottom = pm1Rect.bottom;
-      const pm2Bottom = pm2Rect.bottom;
-
-      const topH1 = pm1Bottom - waterLeftHeight - graphRect.top - 15;
-      const topH2 = pm2Bottom - waterRightHeight - graphRect.top - 15;
-
-      // Posicionamos las burbujas pegadas a la línea de la izquierda
-      const leftOffset =
-        leftLineRect.left - graphRect.left - bubbleH1.offsetWidth - 10;
-
-      bubbleH1.style.position = "absolute";
-      bubbleH1.style.left = `${leftOffset}px`;
-
-      bubbleH2.style.position = "absolute";
-      bubbleH2.style.left = `${leftOffset}px`;
-      bubbleH2.style.top = `${topH2}px`;
-
-      const overlapThreshold = 25; // px de separación mínima
-      const diff = Math.abs(topH1 - topH2);
-
-      if (diff < overlapThreshold) {
-        if (topH1 < topH2) {
-          // h1 está arriba → mueve h1 un poco más arriba y h2 más abajo
-          bubbleH1.style.top = `${topH1 - (overlapThreshold - diff) / 2}px`;
-          bubbleH2.style.top = `${topH2 + (overlapThreshold - diff) / 2}px`;
-        } else {
-          // h2 está arriba → mueve h2 más arriba y h1 más abajo
-          bubbleH2.style.top = `${topH2 - (overlapThreshold - diff) / 2}px`;
-          bubbleH1.style.top = `${topH1 + (overlapThreshold - diff) / 2}px`;
-        }
-      }
-    }
-
-    actualizarBurbujas(waterLeftHeight, waterRightHeight);
-
     function actualizarTodo() {
       actualizarInputType();
       actualizarEstado();
@@ -559,8 +520,8 @@ const initA = 5;
   <style>
     /* === Burbujas flotantes de h₁ y h₂ === */
     .value-bubble {
-      position: absolute;
       background: white;
+        width: max-content;
       border: 1px solid black;
       border-radius: 12px;
       padding: 3px 8px;
@@ -568,6 +529,10 @@ const initA = 5;
       font-weight: bold;
       color: black;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+      transition: margin-bottom 0.5s ease;
+    }
+
+    #bubble-h1 {
       transition: 0.5s ease;
     }
 
