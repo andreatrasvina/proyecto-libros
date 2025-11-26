@@ -409,8 +409,8 @@ function drawWell(ctx, well, w, h) {
 
       let labelXAux;
       let labelYAux;
+      // Decidir si poner el cuadro a la izquierda o derecha del pozo dependiendo de su posicion
       if (waterTopRight.x > 250) {
-        // Si el pozo está muy a la derecha, poner el cuadro a la izquierda
         labelXAux = waterTopLeft.x - 10 - textW;
         labelYAux = waterTopLeft.y - 10;
       }
