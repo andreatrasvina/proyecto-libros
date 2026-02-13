@@ -13,10 +13,30 @@ const { exercises = [], currentBookSlug } = Astro.props;
     <title>Libro interactivo</title>
   </head>
 
-  <body class="flex flex-col min-h-screen">
-    <div class="w-full h-[2px] rainbow-bar"></div>
+  <body class="flex flex-col min-h-screen sidebar-open">
+    <div class="fixed w-full h-[2px] rainbow-bar"></div>
 
     <div class="fixed top-4 right-4 z-50 flex items-center space-x-2">
+      <button
+        id="sidebar-toggle"
+        class="flex items-center justify-center w-10 h-10 ml-1 bg-[var(--cards)] text-white rounded-md shadow-lg transition-transform transform hover:scale-110"
+        aria-label="Toggle Sidebar"
+      >
+        <svg
+          id="toggle-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6 text-[var(--titles)]"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+
       <a
         href="https://github.com/andreatrasvina/proyecto-libros"
         class="flex items-center justify-center w-10 h-10 bg-[var(--cards)] text-white rounded-md shadow-lg transition-transform transform hover:scale-110"
@@ -50,17 +70,23 @@ const { exercises = [], currentBookSlug } = Astro.props;
           <path
             class="moon-path"
             d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"></path>
+
           <path
             class="sun-path hidden"
-            d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm-9-7a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1zm16 0a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1zm-8-15a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1zm0 16a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1zM7.05 6.05a1 1 0 0 1-.707-1.707l1.414-1.414a1 1 0 0 1 1.414 1.414L7.05 6.05zm9.9-9.9a1 1 0 0 1-.707-1.707l1.414-1.414a1 1 0 0 1 1.414 1.414l-1.414 1.414zM4.93 18.36a1 1 0 0 1-.707-1.707L5.64 15.24a1 1 0 0 1 1.414 1.414l-1.414 1.414zM16.36 5.64a1 1 0 0 1-.707-1.707l1.414-1.414a1 1 0 0 1 1.414 1.414L16.36 5.64z"
-          ></path>
+            d="M12 4V2m0 20v-2m8-8h2M2 12h2m15.364-7.364l1.414-1.414M4.222 19.778l1.414-1.414m0-12.728L4.222 4.222m14.142 14.142l1.414 1.414M12 6a6 6 0 1 1 0 12 6 6 0 0 1 0-12z"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            fill="none"></path>
         </svg>
       </button>
     </div>
 
-    <div class="flex flex-1">
+    <div class="flex flex-1 overflow-hidden">
       <aside
-        class="flex flex-col bg-clip-border rounded-xl bg-[var(--titlesnt)] text-gray-700 w-78 p-4 shadow-xl shadow-blue-gray-900/5 fixed top-2 h-full"
+        id="sidebar"
+        class="flex flex-col bg-clip-border rounded-xl bg-[var(--titlesnt)] text-gray-700 w-78 p-4 fixed top-2 h-[calc(100vh-16px)] transition-all duration-300 ease-in-out z-40"
       >
         <div class="mb-2 p-4">
           <h5
@@ -70,12 +96,12 @@ const { exercises = [], currentBookSlug } = Astro.props;
           </h5>
         </div>
         <nav
-          class="flex flex-col gap-1 p-2 font-sans lato-regular text-gray-700"
+          class="flex flex-col gap-1 p-2 font-sans lato-regular text-gray-700 overflow-y-auto"
         >
           <a
             href={`/books/${currentBookSlug}`}
             class={`text-[var(--sidebarText)] flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-[var(--hoverSidebar)] hover:bg-opacity-80 focus:bg-[var(--hoverSidebar)] focus:bg-opacity-80 active:bg-[var(--hoverSidebar)] active:bg-opacity-80 hover:text-[var(--textoHover)] focus:text-[var(--textoHover)] active:text-[var(--textoHover)] outline-none
-  ${Astro.url.pathname === `/books/${currentBookSlug}/` ? "bg-[var(--hoverSidebar)] bg-opacity-80 !text-[var(--textoHover)]" : ""}`}
+  ${Astro.url.pathname === `/books/${currentBookSlug}/` ? "bg-[var(--hoverSidebar)] bg-opacity-80 !text-[var(--textoHover)]" : ""}`}
           >
             <div class="grid place-items-center mr-4">
               <svg
@@ -97,7 +123,7 @@ const { exercises = [], currentBookSlug } = Astro.props;
               <a
                 href={`/books/${currentBookSlug}/${ex.slug.split("/").pop()}`}
                 class={`text-[var(--sidebarText)] flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-[var(--hoverSidebar)] hover:bg-opacity-80 focus:bg-[var(--hoverSidebar)] focus:bg-opacity-80 active:bg-[var(--hoverSidebar)] active:bg-opacity-80 hover:text-[var(--textoHover)] focus:text-[var(--textoHover)] active:text-[var(--textoHover)] outline-none
-  ${Astro.url.pathname.includes(ex.slug.split("/").pop() as string) ? "bg-[var(--hoverSidebar)] bg-opacity-80 !text-[var(--textoHover)]" : ""}`}
+  ${Astro.url.pathname.includes(ex.slug.split("/").pop() as string) ? "bg-[var(--hoverSidebar)] bg-opacity-80 !text-[var(--textoHover)]" : ""}`}
               >
                 <div class="grid place-items-center mr-4">
                   <svg
@@ -138,7 +164,7 @@ const { exercises = [], currentBookSlug } = Astro.props;
           </a>
         </nav>
 
-        <hr class="border-0 h-[3px] mt-3 bg-[var(--rayas)]" />
+        <hr class="border-0 h-[2px] mt-3 bg-[var(--rayas)]" />
 
         <div
           class="mt-8 flex items-center gap-2 border border-green-500 rounded-md p-4 text-[#206f47] bg-[#dbede6] max-w-md"
@@ -149,13 +175,14 @@ const { exercises = [], currentBookSlug } = Astro.props;
         </div>
       </aside>
 
+      <!-- Aqui va el spacer -->
       <div
-        id="resizer"
-        class="w-[2px] bg-[var(--rayas)] cursor-col-resize hover:bg-gray-400"
+        id="sidebar-spacer"
+        class="w-[330px] transition-all duration-300 ease-in-out flex-shrink-0"
       >
       </div>
 
-      <main class="flex-1 overflow-y-auto ml-42">
+      <main class="flex-1 overflow-y-auto">
         <div class="max-w-4xl mx-auto p-8 prose prose-invert mt-10">
           <slot name="introduction" />
           <slot name="main" />
@@ -169,10 +196,32 @@ const { exercises = [], currentBookSlug } = Astro.props;
   const themeToggle = document.getElementById("theme-toggle");
   const body = document.body;
 
+  // Elementos para alternar el icono
+  const sunPath = document.querySelector(".sun-path");
+  const moonPath = document.querySelector(".moon-path");
+
+  // Función para actualizar los iconos
+  const updateIcon = () => {
+    // Si el body contiene la clase dark-mode mostrar el sol
+    if (body.classList.contains("dark-mode")) {
+      sunPath.classList.remove("hidden");
+      moonPath.classList.add("hidden");
+    } else {
+      // si no, pues muestra la luna
+      sunPath.classList.add("hidden");
+      moonPath.classList.remove("hidden");
+    }
+  };
+
   //Preferencia por localstorage
   const currentTheme = localStorage.getItem("theme");
   if (currentTheme) {
     body.classList.add(currentTheme);
+    // Llamar a updateIcon para establecer el icono correcto al cargar
+    updateIcon();
+  } else {
+    // Asegurar que el icono inicial (luna) es correcto si no hay tema guardado
+    updateIcon();
   }
 
   // Agrega el "listener" para el clic en el botón
@@ -185,13 +234,93 @@ const { exercises = [], currentBookSlug } = Astro.props;
     } else {
       localStorage.removeItem("theme");
     }
+
+    updateIcon();
   });
+
+  // Script para el Sidebar Abatible
+  const sidebarToggle = document.getElementById("sidebar-toggle");
+  const sidebar = document.getElementById("sidebar");
+  const sidebarSpacer = document.getElementById("sidebar-spacer");
+  const toggleIcon = document.getElementById("toggle-icon");
+
+  // Definir el ancho del sidebar para las transiciones
+  const SIDEBAR_WIDTH = "312px";
+  const COLLAPSED_MARGIN = "0px";
+
+  // Variable para el estado del sidebar
+  let isSidebarOpen = true;
+
+  // Añadimos una clase al body para deshabilitar las transiciones temporalmente
+  body.classList.add("no-transition");
+
+  const applySidebarState = (isOpen, animate = true) => {
+    isSidebarOpen = isOpen;
+
+    // Si no debe animar, temporalmente desactiva la clase de transición en los elementos
+    if (!animate) {
+      sidebar.classList.add("no-transition-element");
+      sidebarSpacer.classList.add("no-transition-element");
+      sidebarToggle.classList.add("no-transition-element");
+    }
+
+    // 2. Aplicar/remover la clase en el body
+    body.classList.toggle("sidebar-collapsed", !isOpen);
+
+    // 3. Actualizar el ancho del espaciador
+    sidebarSpacer.style.width = isOpen ? SIDEBAR_WIDTH : COLLAPSED_MARGIN;
+
+    // 4. Actualizar el ícono de la flecha
+    if (isOpen) {
+      toggleIcon.innerHTML = `<path d="M15 18l-6-6 6-6"></path>`;
+    } else {
+      toggleIcon.innerHTML = `<path d="M9 18l6-6-6-6"></path>`;
+    }
+
+    // Si no estaba animando, la volvemos a habilitar después de un pequeño retraso
+    if (!animate) {
+      // Usamos setTimeout para que se apliquen los estilos sin transición primero,
+      // y luego se quite la clase para las siguientes interacciones del usuario.
+      setTimeout(() => {
+        sidebar.classList.remove("no-transition-element");
+        sidebarSpacer.classList.remove("no-transition-element");
+        sidebarToggle.classList.remove("no-transition-element");
+      }, 50); // Un pequeño retraso
+    }
+  };
+
+  const toggleSidebar = () => {
+    const newState = !isSidebarOpen;
+    applySidebarState(newState, true); // Aplicar con animación, el click
+
+    // Guardar la preferencia en localStorage
+    if (newState) {
+      localStorage.removeItem("sidebarState");
+    } else {
+      localStorage.setItem("sidebarState", "collapsed");
+    }
+  };
+
+  const savedSidebarState = localStorage.getItem("sidebarState");
+
+  if (savedSidebarState === "collapsed") {
+    // Aplicar estado colapsado SIN animación al cargar
+    applySidebarState(false, false);
+  } else {
+    // Asegurar que está abierto (puede ser con o sin animación, no es visible si ya está abierto)
+    applySidebarState(true, false);
+  }
+
+  // Listener para el botón de alternancia
+  sidebarToggle.addEventListener("click", toggleSidebar);
 </script>
+
 <style>
   .centrar {
     margin: 0 auto;
   }
 
+  /* Animación Rainbow (existente) */
   @keyframes rainbow {
     0% {
       background-position: 0% 50%;
@@ -214,5 +343,46 @@ const { exercises = [], currentBookSlug } = Astro.props;
     );
     background-size: 200% 200%;
     animation: rainbow 4s linear infinite;
+  }
+
+  /* Estilos del Sidebar */
+
+  /* Sidebar: Usamos fixed y left: 0 para la posición inicial. */
+  #sidebar {
+    width: 312px;
+    left: 0;
+  }
+
+  /* Es importante que el espaciador refleje el ancho real de la barra lateral */
+  #sidebar-spacer {
+    width: 312px;
+  }
+
+  /* Ajuste para el botón de alternancia para que no se mueva con el scroll */
+  #sidebar-toggle {
+    position: fixed;
+    left: 312px; /* esta es la posicion que tendra al final del sidebar jeje */
+    transition: left 0.3s ease-in-out;
+    z-index: 50;
+    margin-bottom: 14px;
+  }
+
+  /* Estado cuando el sidebar está colapsado en el body */
+  .sidebar-collapsed #sidebar {
+    left: -312px; /* Mueve el sidebar completamente fuera de la pantalla */
+  }
+
+  /* Mueve el botón de alternancia al borde izquierdo cuando está colapsado */
+  .sidebar-collapsed #sidebar-toggle {
+    left: 0.5rem;
+  }
+
+  /* Esto ya se maneja con js, pero por si acaso ponemos la referencia */
+  .sidebar-collapsed #sidebar-spacer {
+    width: 0px !important; /*El espaciador no ocupa espacio */
+  }
+
+  .no-transition-element {
+    transition: none !important;
   }
 </style>

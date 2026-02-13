@@ -45,14 +45,12 @@ import "../styles/global.css";
           >
         </li>
 
-        <!-- seleccionar idioma -->
         <li class="relative group">
           <a
             href="#"
             class="flex items-center gap-2 font-regular text-[var(--titles)] hover:text-blue-400 transition-colors duration-300 cursor-pointer"
           >
-            English
-
+            Español
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="w-4 h-4 transition-transform duration-300 group-hover:rotate-180"
@@ -68,7 +66,6 @@ import "../styles/global.css";
             </svg>
           </a>
 
-          <!--submenu de opciones-->
           <ul
             class="absolute left-0 mt-2 w-32 bg-white border border-gray-200 rounded shadow-lg opacity-0 translate-y-2 scale-95 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 invisible group-hover:visible transition-all duration-300 z-10"
           >
@@ -84,11 +81,33 @@ import "../styles/global.css";
           </ul>
         </li>
 
-        <!-- cambio de colorsito -->
         <li>
-          <a href="#" class="text-[var(--titles)]" id="theme-toggle"
-            >Modo Oscuro</a
+          <button
+            id="theme-toggle"
+            class="flex items-center justify-center w-10 h-10 rounded-md shadow-lg transition-transform transform hover:scale-110"
+            aria-label="Toggle dark mode"
           >
+            <svg
+              id="theme-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-6 h-6"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path
+                class="moon-path"
+                d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"></path>
+
+              <path
+                class="sun-path hidden"
+                d="M12 4V2m0 20v-2m8-8h2M2 12h2m15.364-7.364l1.414-1.414M4.222 19.778l1.414-1.414m0-12.728L4.222 4.222m14.142 14.142l1.414 1.414M12 6a6 6 0 1 1 0 12 6 6 0 0 1 0-12z"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                fill="none"></path>
+            </svg>
+          </button>
         </li>
       </ul>
     </div>
@@ -99,10 +118,32 @@ import "../styles/global.css";
   const themeToggle = document.getElementById("theme-toggle");
   const body = document.body;
 
+  // Elementos para alternar el icono
+  const sunPath = document.querySelector(".sun-path");
+  const moonPath = document.querySelector(".moon-path");
+
+  // Función para actualizar los iconos
+  const updateIcon = () => {
+    // Si el body contiene la clase dark-mode mostrar el sol
+    if (body.classList.contains("dark-mode")) {
+      sunPath.classList.remove("hidden");
+      moonPath.classList.add("hidden");
+    } else {
+      // si no, pues muestra la luna
+      sunPath.classList.add("hidden");
+      moonPath.classList.remove("hidden");
+    }
+  };
+
   //Preferencia por localstorage
   const currentTheme = localStorage.getItem("theme");
   if (currentTheme) {
     body.classList.add(currentTheme);
+    // Llamar a updateIcon para establecer el icono correcto al cargar
+    updateIcon();
+  } else {
+    // Asegurar que el icono inicial (luna) es correcto si no hay tema guardado
+    updateIcon();
   }
 
   // Agrega el "listener" para el clic en el botón
@@ -112,11 +153,11 @@ import "../styles/global.css";
 
     if (body.classList.contains("dark-mode")) {
       localStorage.setItem("theme", "dark-mode");
-      themeToggle.textContent = "Modo claro";
     } else {
       localStorage.removeItem("theme");
-      themeToggle.textContent = "Modo oscuro";
     }
+
+    updateIcon();
   });
 </script>
 
@@ -139,5 +180,13 @@ import "../styles/global.css";
   .ul {
     justify-content: flex-end;
     width: 100%;
+  }
+
+  #theme-toggle {
+    color: var(--titles);
+  }
+
+  #theme-toggle:hover {
+    color: #60a5fa;
   }
 </style>
