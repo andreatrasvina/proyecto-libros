@@ -1,7 +1,7 @@
 ---
 title: Example
 author: Example
-img: book2.webp
+img: genericcover.jpg
 date: Example
 place: Example
 publisher: Example
