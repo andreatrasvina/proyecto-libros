@@ -31,7 +31,7 @@ console.log(books);
         <div class="flex gap-8 p-6 bg-[var(--cards)] max-w-[75%] mx-auto mt-8 border-t border-[var(--rayas)]">
           {/* <!-- imagen del libro --> */}
           <div>
-            <a href={`/books/${slug}`}>
+            <a href={`/proyecto-libros/books/${slug}`}>
               <img
                 src={`${img}`}
                 alt="Portada del libro"
@@ -75,7 +75,7 @@ console.log(books);
             {/* <!-- botones --> */}
             <div class="flex gap-3">
               <a
-                href={`/books/${slug}`}
+                href={`/proyecto-libros/books/${slug}`}
                 class="bg-[var(--botonOscuro)] border border-gray-400 text-white px-4 py-2 rounded hover:bg-gray-800 transition"
               >
                 Ir al libro
@@ -90,7 +90,7 @@ console.log(books);
   <!-- BOTÓN VER TODOS -->
   <div class="mt-24 mb-24 ver-mas flex justify-center">
     <a
-      href="/books"
+      href="/proyecto-libros/books"
       class="px-6 py-2 border border-gray-400 rounded hover:bg-[var(--navfooternt)] bg-[var(--cards)] text-[var(--titles)] transition-colors duration-300 ease-in-out"
     >
       Ver más
