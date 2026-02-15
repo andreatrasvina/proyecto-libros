@@ -1,0 +1,82 @@
+---
+title: "Ejercicio 4"
+bookSlug: "book-01"
+---
+
+<section class="prose prose-slate dark:prose-invert max-w-none">
+  <p class="text-xs text-slate-500 mb-2">
+    Conceptual & Visual Understanding of Hydraulic Head & Groundwater Flow — Andrew J.B. Cohen and John A. Cherry.
+    The Groundwater Project. Free download from gw-project.org. ©The Authors.
+  </p>
+
+  <h2 class="mt-0">5 Saturated Steady Flow at the Field Scale</h2>
+
+  <p>
+    On a field scale, hydraulic head can be measured using various types of wells (either installed separately, in a
+    spatially clustered arrangement, or at the same horizontal location but at varying depths). Groundwater wells are
+    essentially large-scale versions of the laboratory-scale piezometers used to illustrate Darcy’s law in preceding
+    sections. The following presents the relationship of hydraulic head and flow in three basic formation types
+    (confined aquifer, aquitard, unconfined aquifer) in the saturated zone, and Figure 19 provides a schematic overview.
+  </p>
+
+  <p>
+    A <strong>confined aquifer</strong> is bounded above and below by an <em>aquitard</em>, a semi-pervious formation
+    that restricts flow between overlying and/or underlying aquifers. Interpolation of water levels measured in wells
+    screened in a confined aquifer defines the <strong>potentiometric surface</strong>.
+  </p>
+
+  <p>
+    An <strong>unconfined aquifer</strong> is bounded only at its base by an aquitard. The top of the unconfined aquifer
+    is the <strong>water table</strong>, which equals the observed water level in a screened well just deep enough to
+    encounter standing water.
+  </p>
+
+  <img 
+    src="/proyecto-libros/figure19.png" 
+    alt="Schematic cross section of an unconfined and a confined aquifer" 
+    class="mx-auto rounded-lg shadow-md w-full max-w-2xl dark:shadow-slate-700"
+  />
+
+  <figure class="not-prose border rounded-xl p-4 bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700">
+
+    <figcaption class="text-sm text-slate-600">
+      <strong>Figure 19</strong> — Schematic cross section of an unconfined and a confined aquifer separated by an
+      aquitard. All units are saturated and therefore hydraulically connected (Cohen and Cherry, 2020).
+    </figcaption>
+  </figure>
+
+  <h3>5.1 Hydraulics of Flow in Confined Aquifers</h3>
+
+  <p>
+    The experimental setups used to illustrate head and flow resemble conditions in a confined aquifer, because low-K
+    confining layers bound it. When those layers have much lower hydraulic conductivity than the aquifer, they behave
+    nearly as no-flow boundaries (as in the earlier experiments), although under most natural conditions some cross-flow
+    through aquitards can still occur where gradients exist (Darcy’s law).
+  </p>
+
+  <p>
+    Central to confined systems is the <strong>potentiometric surface</strong>, an imaginary surface (Figure 20a)
+    represented with equipotential contours in plan view (Figure 20b) and as a line in cross section (Figure 20c).
+    Section 5.3 discusses aquitard effects in more detail.
+  </p>
+  
+    <img 
+    src="/proyecto-libros/figure20.png" 
+    alt="Schematic cross section of an unconfined and a confined aquifer" 
+    class="mx-auto rounded-lg shadow-md w-full max-w-2xl dark:shadow-slate-700"
+  />
+
+  <figure class="not-prose border rounded-xl p-4 bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700">
+    <figcaption class="text-sm text-slate-600">
+      <strong>Figure 20</strong> — Potentiometric surface of a confined aquifer: a) perspective, b) plan (equipotential
+      lines), c) cross section. Plan-view equipotentials are analogous to topographic contours for ground surface
+      elevation (Cohen and Cherry, 2020).
+    </figcaption>
+  </figure>
+</section>
+
+<hr class="my-8" />
+
+import Ejercicio4 from '../../../components/book-01/Ejercicio_4.astro';
+
+<Ejercicio4 />

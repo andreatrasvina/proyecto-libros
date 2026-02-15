@@ -7,16 +7,18 @@ const allExercises = await getCollection("exercises");
 export async function getStaticPaths() {
   const allExercises = await getCollection("exercises");
 
-  return allExercises.map((exercise: { data: { bookSlug: any; }; slug: string; }) => ({
-    params: {
-      slug: exercise.data.bookSlug,
-      // Usamos .split('/').pop() para obtener solo la última parte del slug
-      exercise: exercise.slug.split("/").pop(),
-    },
-    props: {
-      exercise,
-    },
-  }));
+  return allExercises.map(
+    (exercise: { data: { bookSlug: any }; slug: string }) => ({
+      params: {
+        slug: exercise.data.bookSlug,
+        // Usamos .split('/').pop() para obtener solo la última parte del slug
+        exercise: exercise.slug.split("/").pop(),
+      },
+      props: {
+        exercise,
+      },
+    }),
+  );
 }
 
 type Props = {
@@ -27,7 +29,8 @@ const { exercise } = Astro.props as Props;
 
 //filtra todos los ejercicios del mismo libro
 const bookExercises = allExercises.filter(
-  (ex: { data: { bookSlug: any; }; }) => ex.data.bookSlug === exercise.data.bookSlug
+  (ex: { data: { bookSlug: any } }) =>
+    ex.data.bookSlug === exercise.data.bookSlug,
 );
 
 const { Content } = await exercise.render();
@@ -36,9 +39,8 @@ const currentBookSlug = exercise.data.bookSlug;
 ---
 
 <BookLayout exercises={bookExercises} currentBookSlug={currentBookSlug}>
-
   <div slot="introduction">
-    <h1>{exercise.data.title}</h1>
+    <!-- <h1>{exercise.data.title}</h1> -->
     <Content />
   </div>
 </BookLayout>

@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import.meta.env.BASE_URL;
 // import Footer from "../components/Footer.astro";
 // import BookPreview from "../components/BookPreview.astro";
 // import BookGrid from "../components/BookGrid.astro";
@@ -33,7 +34,7 @@ import Layout from "../layouts/Layout.astro";
             Explorar
           </a>
           <a
-            href="/books"
+            href="/proyecto-libros/books"
             class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300 transition"
             >Iniciar</a
           >
@@ -44,7 +45,7 @@ import Layout from "../layouts/Layout.astro";
     <!--iamgen de la uabcs-->
     <div>
       <img
-        src="/public/uabcsimage.png"
+        src="uabcsimage.png"
         alt="Campus UABCS"
         class="w-full rounded shadow"
       />
@@ -53,9 +54,7 @@ import Layout from "../layouts/Layout.astro";
     <div class="contenedor w-full flex justify-center mt-24">
       <div class="text-center">
         <p class="lato-regular mb-6">Portafolio</p>
-        <h1 class="text-4xl lato-bold">
-          Descubre nuestros libros interactivos
-        </h1>
+        <h1 class="text-4xl lato-bold">Explora la biblioteca interactiva</h1>
         <p class="mt-8 lato-regular">
           Explora una variedad de libros interactivos
         </p>
@@ -70,7 +69,7 @@ import Layout from "../layouts/Layout.astro";
           >
             <img
               class="w-full h-88 object-cover"
-              src="/book1.jpg"
+              src="book1.jpg"
               alt="Book Cover"
             />
 
@@ -101,7 +100,7 @@ import Layout from "../layouts/Layout.astro";
 
               <!-- Boton ver proyecto -->
               <a
-                href="/books/book-01"
+                href="/proyecto-libros/books/book-01"
                 class="text-blue-600 font-semibold hover:underline"
                 >Ver proyecto →</a
               >
@@ -114,16 +113,13 @@ import Layout from "../layouts/Layout.astro";
           >
             <img
               class="w-full h-88 object-cover"
-              src="/book2.webp"
+              src="genericcover.jpg"
               alt="Book Cover"
             />
 
             <div class="p-6 text-left">
-              <h1 class="text-lg lato-bold mb-2">
-                A Conceptual Overview Of Surface and Near-Surface Brines and
-                Evaporate Minerals
-              </h1>
-              <h3 class="text-gray-500 mb-4">Warren W. Wood</h3>
+              <h1 class="text-lg lato-bold mb-2">Lorem Ipsum dolor sit amet</h1>
+              <h3 class="text-gray-500 mb-4">Hazael Flores</h3>
 
               <!-- Etiquetas -->
               <div class="flex flex-wrap gap-2 mb-4">
@@ -143,7 +139,7 @@ import Layout from "../layouts/Layout.astro";
 
               <!-- Boton ver proyecto -->
               <a
-                href="/books/book-02"
+                href="/proyecto-libros/books/book-02"
                 class="text-blue-600 font-semibold hover:underline"
                 >Ver proyecto →</a
               >
@@ -153,7 +149,7 @@ import Layout from "../layouts/Layout.astro";
         <!-- BOTÓN VER TODOS -->
         <div class="mt-24 mb-24">
           <a
-            href="/books"
+            href="/proyecto-libros/books"
             class="px-6 py-2 border border-gray-400 rounded hover:bg-[var(--navfooternt)] bg-[var(--cards)] text-[var(--titles)] transition-colors duration-300 ease-in-out"
           >
             Ver todo

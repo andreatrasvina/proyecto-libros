@@ -1,147 +1,795 @@
 <div>
-  <h3 class="text-[var(--pepe)] text-3xl lato-bold">Ejercicios interactivos</h3>
-  <hr class="border-[var(--pepe)]" />
   <div
-    class="p-4 my-6 border border-[var(--rayas)] rounded-md shadow bg-[var(--titlesnt)]"
+    class="p-4 my-6 border border-[var(--borderEjercicio)] shadow-md rounded-md bg-[var(--cardEjercicio)]"
   >
-    <h1 class="font-semibold text-lg text-[var(--titles)]">Evaporación</h1>
+    <h1 class="font-semibold text-lg text-[var(--titles)]">
+      💧 Gradiente hidráulico
+    </h1>
 
-    <label for="humedad" class="text-[var(--titles)] mt-2">
-      <span class="lato-bold">Cómo funciona(resumen): </span>El simulador
-      calcula una actividad del agua a partir de la salinidad (aproximación
-      ilustrativa). Si la actividad del agua es mayor que la del aire, el agua
-      se evapora a una velocidad proporcional a esa diferencia. Más sal → menor
-      actividad → evaporación más lenta.
+    <label for="humedad" class="text-[var(--titles)] mt-2 block">
+      Este ejercicio se basa en la forma despejada de la ley de Darcy, la cual
+      permite analizar el gradiente hidráulico de manera directa. A continuación
+      se presenta la ecuación fundamental:
     </label>
 
-    <div class="vaso mt-12">
-      <div class="agua"></div>
+    <!-- Bloque de la ecuación fundamental -->
+    <div class="flex items-center m-8">
+      <div
+        class="p-4 text-[var(--subtitle-text)] bg-[var(--subtitle-bg)] rounded-md text-center inline-block mx-auto shadow-md"
+      >
+        <span class="font-mono text-lg">
+          Q = K · A · i <br />
+          <!-- i = Δh / ΔL -->
+        </span>
+      </div>
     </div>
 
-    <div class="grid">
-      <label for="salinidad" class="text-[var(--titles)] mt-12"
-        >Nivel de agua: <span id="agua">50</span>
-      </label>
-      <input
-        type="range"
-        min="0"
-        max="100"
-        value="50"
-        id="control"
-        class="mb-2"
-      />
+    <label for="humedad" class="text-[var(--titles)] mt-2 block">
+      Para este ejercicio se emplea la <span class="lato-bold"
+        >fórmula despejada</span
+      > del gradiente hidráulico:
+    </label>
 
-      <label for="salinidad" class="text-[var(--titles)] mb-8"
-        >Aumenta el nivel del agua para experimentar distintos parámetros de
-        evaporación</label
+    <!-- Bloque de la ecuación despejada -->
+    <div class="flex items-center m-8">
+      <div
+        class="p-4 text-[var(--subtitle-text)] bg-[var(--subtitle-bg)] rounded-md text-center inline-block mx-auto shadow-md"
       >
-
-      <label for="salinidad" class="text-[var(--titles)]">
-        Salinidad (mg/L): <span id="salinidad-value">1000</span>
-      </label>
-
-      <input
-        type="range"
-        id="salinidad"
-        name="salinidad"
-        min="1000"
-        max="40000"
-        value="20"
-      />
-      <label for="salinidad" class="text-[var(--titles)] mt-2">
-        Aumenta la salinidad para ver cómo disminuye la evaporación
-      </label>
-
-      <label for="humedad" class="text-[var(--titles)] mt-8">
-        Humedad relativa atmosférica (RH): <span id="humedad-value">65</span>
-      </label>
-      <input
-        type="range"
-        id="humedad"
-        name="humedad"
-        min="0"
-        max="100"
-        value="0"
-      />
-      <label for="humedad" class="text-[var(--titles)] mt-2">
-        Puedes cambiar la humedad del aire (actividad atmosférica).
-      </label>
-
-      <div class="mt-6">
-        <button
-          class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors duration-300 ease-in-out"
-          >Iniciar</button
-        >
-
-        <button
-          class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors duration-300 ease-in-out"
-        >
-          Reiniciar
-        </button>
+        <span class="font-mono text-lg"> i = Q / (K · A) </span>
       </div>
+    </div>
+
+    <label class="text-[var(--titles)] mt-2 block">
+      En esta sección se puede observar cómo el gradiente hidráulico (<em>i</em
+      >) varía en función de la conductividad (<em>K</em>), el caudal (<em>Q</em
+      >) y el área (<em>A</em>).
+    </label>
+
+    <h1 class="font-semibold text-lg text-[var(--titles)] mt-8">
+      ⚙️ Cómo funciona
+    </h1>
+
+    <label class="text-[var(--titles)] mt-2 block">
+      Ajusta los controles para observar cómo cada parámetro influye en la
+      visualización del gradiente hidráulico:
+      <br /><br />
+      <div class="formulas text-center">
+        <span class="lato-bold">K (Conductividad)</span>: regula la facilidad
+        con la que el agua fluye a través del medio.
+        <br />
+        <span class="lato-bold">A (Área)</span>: determina la cantidad de flujo
+        visible en los tubos.
+        <br />
+        <span class="lato-bold">Q (Caudal)</span>: establece el volumen total de
+        flujo en el sistema.
+      </div>
+      <br />
+      Utiliza los sliders o introduce los valores manualmente para explorar cómo
+      las variaciones de cada parámetro afectan el gradiente hidráulico.
+    </label>
+
+    <!-- aqui va el canvas -->
+    <div class="canvas mt-10 mb-14">
+      <canvas
+        id="myCanvas"
+        width="800"
+        height="500"
+        style="border:1px solid var(--borderEjercicio); margin: 0 auto; background-color: #ffffff;"
+        class="rounded"
+      >
+      </canvas>
+    </div>
+
+    <label class="switch-container flex items-center space-x-2">
+      <div class="switch">
+        <input type="checkbox" id="manual" />
+        <span class="slider-toggle text-[var(--titles)]"></span>
+      </div>
+      <h1 class="lato-regular text-sm mt-3">
+        Datos manuales <span class="lato-bold">
+          (La representacion visual puede distorsionarse)</span
+        >
+      </h1>
+    </label>
+
+    <div class="controls">
+      <div class="section-card">
+        <h3>Sección A</h3>
+
+        <!-- range de K -->
+        <label for="kA">K (Conductividad)</label>
+        <input
+          type="range"
+          id="kA"
+          min="1"
+          max="50"
+          value="25"
+          onblur="if(this.value < 1 || this.value === '') this.value = 1;"
+        />
+        <span class="removeSpan" id="kAVal">25</span><span class="removeSpan"
+          >m/d</span
+        >
+
+        <!-- range del area -->
+        <label for="aA">A (Área)</label>
+        <input
+          type="range"
+          id="aA"
+          min="1"
+          max="100"
+          value="50"
+          onblur="if(this.value < 1 || this.value === '') this.value = 1;"
+        />
+        <span class="removeSpan" id="aAVal">50</span>
+      </div>
+
+      <div class="section-card">
+        <h3>Sección B</h3>
+        <label for="kB">K (Conductividad)</label>
+        <input
+          type="range"
+          id="kB"
+          min="1"
+          max="50"
+          value="25"
+          onblur="if(this.value < 1 || this.value === '') this.value = 1;"
+        />
+        <span class="removeSpan" id="kBVal">25</span><span class="removeSpan"
+          >m/d</span
+        >
+
+        <!-- range del area tubo 2 -->
+        <label for="aB">A (Área)</label>
+        <input
+          type="range"
+          id="aB"
+          min="1"
+          max="100"
+          value="50"
+          onblur="if(this.value < 1 || this.value === '') this.value = 1;"
+        />
+        <span class="removeSpan" id="aBVal">50</span>
+      </div>
+
+      <div class="section-card">
+        <h3>Sección C</h3>
+        <label for="kC">K (Conductividad)</label>
+        <input
+          type="range"
+          id="kC"
+          min="1"
+          max="50"
+          value="25"
+          onblur="if(this.value < 1 || this.value === '') this.value = 1;"
+        />
+        <span class="removeSpan" id="kCVal">25</span><span class="removeSpan"
+          >m/d</span
+        >
+
+        <!-- range del area tubo 3 -->
+        <label for="aC">A (Área)</label>
+        <input
+          type="range"
+          id="aC"
+          min="1"
+          max="100"
+          value="50"
+          onblur="if(this.value < 1 || this.value === '') this.value = 1;"
+        />
+        <span class="removeSpan" id="aCVal">50</span>
+      </div>
+
+      <div class="section-card">
+        <h3>Sección D</h3>
+        <label for="ejemplo">Q (Caudal): </label>
+        <input
+          type="range"
+          id="ejemplo"
+          min="1"
+          max="100"
+          value="50"
+          onblur="if(this.value < 1 || this.value === '') this.value = 1;"
+        />
+        <span class="removeSpan" id="ejemploVal">50</span>
+      </div>
+    </div>
+
+    <div class="mt-6">
+      <button
+        class="bg-[#7dc6d9] hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md shadow-lg transition-colors duration-300 ease-in-out"
+        id="resetBtn"
+      >
+        Reiniciar
+      </button>
     </div>
   </div>
 </div>
 
-<style>
-  .vaso {
-    width: 200px;
-    height: 300px;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow:
-      inset 2px 2px 5px rgba(255, 255, 255, 0.4),
-      0 8px 20px rgba(0, 0, 0, 0.25);
+<script>
+  // Paleta general
+  const colores = {
+    fondoCanvas: "#f8f9fa", // fondo neutro, cálido y limpio
+    tubo: "#dfe4ea", // gris claro
+    bordeTubo: "#c5cbd3", // gris medio para borde
+    aguaGradienteInicio: "#6fd3e7", // azul claro
+    aguaGradienteFin: "#3aa6b9", // azul medio
+    particula1: "rgba(194, 178, 128, 0.8)", // beige suave
+    particula2: "rgba(181, 166, 109, 0.75)", // ocre claro
+    particula3: "rgba(153, 132, 82, 0.7)", // marrón arena
+    piezometro: "#e7ebef", // gris azulado muy claro
+    bordePiezometro: "#bfc6cf",
+    texto: "#2d3436", // gris oscuro para tipografía
+    gradienteLine: "#3aa6b9", // azul consistente con el agua
+  };
 
-    backdrop-filter: blur(10px) saturate(180%);
-    -webkit-backdrop-filter: blur(10px) saturate(180%);
+  //esto es para los numeritos del span, se actualizan cuando se mueve el range
+  document.querySelectorAll("input[type=range]").forEach((slider) => {
+    const span = document.getElementById(slider.id + "Val");
+    if (span) {
+      slider.addEventListener("input", () => {
+        span.textContent = slider.value;
+      });
+    }
+  });
+
+  //seleccionar todos los inputs range
+  const ranges = document.querySelectorAll('input[type="range"]');
+  //o inputs tipo number
+  const inputs = document.querySelectorAll('input[type="number"]');
+
+  const resetBtn = document.querySelector("#resetBtn");
+
+  //evnto del boton de reseteo
+  resetBtn.addEventListener("click", () => {
+    ranges.forEach((range) => {
+      //reinicia el input a su valor por defecto
+      range.value = range.defaultValue;
+
+      //span
+      const span = document.querySelector(`#${range.id}Val`);
+      if (span) {
+        span.textContent = range.defaultValue;
+      }
+    });
+  });
+
+  //convertir el tipo slider a manual equis de
+  document.getElementById("manual").addEventListener("change", (e) => {
+    const isManual = e.target.checked;
+
+    const type = e.target.checked ? "number" : "range";
+
+    //seccion a
+    document.getElementById("kA").type = type;
+    document.getElementById("aA").type = type;
+
+    //seccion b
+    document.getElementById("kB").type = type;
+    document.getElementById("aB").type = type;
+
+    //seccion c
+    document.getElementById("kC").type = type;
+    document.getElementById("aC").type = type;
+
+    //seccion ejemplo
+    document.getElementById("ejemplo").type = type;
+
+    document.querySelectorAll(".removeSpan").forEach((span) => {
+      span.style.display = isManual ? "none" : "inline";
+    });
+  });
+
+  // funcionn para dibujar los piezometros
+  function drawPiezometro(ctx, x, y, width, height, hAgua) {
+    //agua dentro del tubo
+    // ctx.fillStyle = colores.tubo;
+    // ctx.strokeStyle = colores.bordeTubo;
+
+    //gradiente del color del agua
+    const grad = ctx.createLinearGradient(0, y + height, 0, y + height - hAgua);
+    grad.addColorStop(0, colores.aguaGradienteFin);
+    grad.addColorStop(1, colores.aguaGradienteInicio);
+    ctx.fillStyle = grad;
+
+    ctx.fillRect(x, y + height - hAgua, width, hAgua);
+
+    //tubo del piezometro
+    // ctx.fillStyle = colores.piezometro;
+    ctx.strokeStyle = colores.bordePiezometro;
+    ctx.lineWidth = 1;
+
+    ctx.strokeRect(x, y, width, height);
   }
 
-  .agua {
-    position: absolute;
-    border-radius: 16px;
-    bottom: 0;
+  function drawTube(ctx, x, centroY, w, h) {
+    const gradTubo = ctx.createLinearGradient(0, centroY, 0, centroY + h);
+    gradTubo.addColorStop(0, colores.aguaGradienteInicio);
+    gradTubo.addColorStop(1, colores.aguaGradienteFin);
+    ctx.fillStyle = gradTubo;
+    // ctx.fill();
+    ctx.strokeStyle = colores.aguaGradienteFin;
+    ctx.lineWidth = 1;
+
+    //calcular el punto superior para mantener el centro fijo jeje
+    const y = centroY - h / 2;
+
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeRect(x, y, w, h);
+  }
+
+  function drawGradienteHidraulico(ctx, piezometros) {
+    ctx.beginPath();
+
+    piezometros.forEach((p, i) => {
+      const xCentro = p.x + p.w / 2;
+      const yAgua = p.y + p.h - p.hAgua;
+      if (i === 0) ctx.moveTo(xCentro, yAgua);
+      else ctx.lineTo(xCentro, yAgua);
+    });
+
+    ctx.strokeStyle = colores.gradienteLine;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+
+  // let cantidadBolitas = Math.max(5, Math.floor((area / 100) * 40));
+  let cantidadBolitas = 40;
+
+  //posiciones verticales random del tubo
+  let posicionesY_Tubo1 = Array.from({ length: cantidadBolitas }, () =>
+    Math.random(),
+  );
+  let posicionesY_Tubo2 = Array.from({ length: cantidadBolitas }, () =>
+    Math.random(),
+  );
+  let posicionesY_Tubo3 = Array.from({ length: cantidadBolitas }, () =>
+    Math.random(),
+  );
+
+  let t = 0;
+
+  function drawParticulas(
+    ctx,
+    x,
+    centroY,
+    width,
+    height,
+    kValue,
+    aValue,
+    posicionesY,
+  ) {
+    const radio = 1 + kValue / 25; //tamaño segun K
+    const velocidadBase = 1; //velocidad base
+
+    //let velocidad =( velocidadBase * (1 / aValue)) * 10;
+    const velocidad = velocidadBase * (100 / Math.max(aValue, 1)) * 0.1;
+
+    //min = 20 y max = (area/100)*40
+    cantidadBolitas = Math.max(25, Math.floor((aValue / 100) * 40));
+    for (let i = 0; i < cantidadBolitas; i++) {
+      //posicion x de la arena
+      const px = x + ((i * (width / cantidadBolitas) + t * velocidad) % width);
+
+      //posicion y de la arena
+      const py = centroY - height / 2 + posicionesY[i] * height;
+
+      ctx.beginPath();
+      ctx.arc(px, py, radio, 0, Math.PI * 2);
+
+      ctx.fillStyle = colores.particula1; //aki se puede poner otro colorr, quiza negro como en el libro
+      ctx.fill();
+    }
+  }
+
+  const canvas = document.getElementById("myCanvas");
+  const ctx = canvas.getContext("2d");
+
+  //Obtener el valor real de la variable CSS
+  const styles = getComputedStyle(document.documentElement);
+  const borderColor = styles.getPropertyValue("--rayaTubo").trim();
+
+  //Tubo 1
+  const areaTubo1 = document.getElementById("aA");
+  console.log("Valor del tubo:", areaTubo1.value);
+
+  //Tubo 2
+  const areaTubo2 = document.getElementById("aB");
+  console.log("Valor del tubo:", areaTubo2.value);
+
+  //Tubo 3
+  const areaTubo3 = document.getElementById("aC");
+  console.log("Valor del tubo:", areaTubo3.value);
+
+  //Empezamos con la logica de la ley de darcy
+
+  //1. Dejaremos fijos los metros de L, seran 200
+  const L = 200;
+  const altura_piezometro_total = 200;
+  const h_inicial = 150; //Altura del primer piezometro
+  const altura_base_tubo = 320;
+
+  //Esta funcion obtiene los valores de los inputs (ya sean range o number)
+  function getValorInput(id) {
+    const elemento = document.getElementById(id);
+    const valor = parseFloat(elemento.value);
+
+    //validacion para entradas invalidas, menor a 1 o vacio devuelve 1
+    if (isNaN(valor) || valor < 1) {
+      return 1;
+    }
+
+    return valor;
+  }
+
+  function drawOval(ctx, x, y, radioX, radioY) {
+    ctx.beginPath();
+    // Dibuja la elipse: (x, y, radioX, radioY, rotación, ángulo inicial, ángulo final)
+    ctx.ellipse(x, y, radioX, radioY, 0, 0, 2 * Math.PI);
+
+    // Estilos del óvalo
+    const gradTubo = ctx.createLinearGradient(0, radioY, 0, y + x);
+    gradTubo.addColorStop(0, colores.aguaGradienteInicio);
+    gradTubo.addColorStop(1, colores.aguaGradienteFin);
+    ctx.fillStyle = gradTubo;
+    ctx.fill(); // Azul para el agua
+
+    ctx.strokeStyle = colores.bordeTubo;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.closePath();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // --- Mostrar mensaje si la pantalla es muy pequeña ---
+    if (window.innerWidth < 890) {
+      ctx.fillStyle = "var(--titles)";
+      ctx.font = "20px Lato, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(
+        "📱 Amplía la pantalla",
+        canvas.width / 2,
+        canvas.height / 2,
+      );
+      return;
+    }
+    // ctx.fillStyle = "#f9fafb";
+    // ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const kA = getValorInput("kA");
+    const aA = getValorInput("aA");
+    const kB = getValorInput("kB");
+    const aB = getValorInput("aB");
+    const kC = getValorInput("kC");
+    const aC = getValorInput("aC");
+    const Q = getValorInput("ejemplo");
+
+    // dibuja los tubos
+    drawTube(ctx, 100, 320, 200, aA);
+    drawTube(ctx, 300, 320, 200, aB);
+    drawTube(ctx, 500, 320, 200, aC);
+
+    // --- DIBUJA EL ÓVALO (Origen del Caudal Q) ---
+    const tuboX = 100;
+    const tuboCentroY = 320;
+    const tuboHeight = aA;
+    const tuboHeightC = aC;
+
+    // Calculamos el radio vertical
+    let radioY = aA * 0.8;
+    let radioYC = aC * 0.8;
+
+    radioY = Math.max(4, Math.min(radioY, tuboHeight / 2));
+    radioYC = Math.max(4, Math.min(radioYC, tuboHeightC / 2));
+
+    //El radioX será mayor que el radioY ya que es una ellipse vertical
+    const radioX = radioY * 0.4;
+    const radioXC = radioYC * 0.2;
+
+    // Centramos el óvalo verticalmente en el tubo
+    const ovalCenterX = tuboX - 2; // ligeramente a la izquierda del tubo
+    const ovalCenterY = tuboCentroY; // centrado verticalmente
+
+    // Inicio del Caudal
+    drawOval(ctx, ovalCenterX, ovalCenterY, radioX, radioY);
+
+    // Fin del Caudal
+    drawOval(ctx, 700, 320, radioXC, radioYC);
+
+    // --- FIN DEL DIBUJO DEL OVALO (QUE PEDOTE) ---
+
+    //animar arena dentro del tubo
+    drawParticulas(ctx, 100, 320, 200, aA, kA, aA, posicionesY_Tubo1);
+    drawParticulas(ctx, 300, 320, 200, aB, kB, aB, posicionesY_Tubo2);
+    drawParticulas(ctx, 500, 320, 200, aC, kC, aC, posicionesY_Tubo3);
+
+    // 2. CALCULO DEL GRADIENTE (i) Y PERDIDA DE CARGAa (Delta de h), la cual sera fija porque el largo de los tubos sera de 200
+    // Fórmula: i = Q / (K * A) y Delta h = i * L
+
+    //Seccion A
+    const denominadorA = kA * aA;
+    const iA = Q / denominadorA; // i = Q / (K * A)
+    const deltaHA = iA * L; // Delta h = i * L
+
+    //seccionn B
+    const denominadorB = kB * aB;
+    const iB = Q / denominadorB;
+    const deltaHB = iB * L;
+
+    //Seccion C
+    const denominadorC = kC * aC;
+    const iC = Q / denominadorC;
+    const deltaHC = iC * L;
+
+    //3 CÁLCULO DE LAS CARGAS PIEZOMÉTRICAS (h)
+    // Carga inicial (P1). Asume que 'h_inicial' ya está definida globalmente
+    let h1 = h_inicial;
+
+    // Carga en la unión A-B (P2)
+    let h2 = h1 - deltaHA;
+
+    // Carga en la unión B-C (P3)
+    let h3 = h2 - deltaHB;
+
+    // Carga final (P4)
+    let h4 = h3 - deltaHC;
+
+    // 4b. APLICACIÓN DEL CONTROL DE LÍMITES (Define safeH1, safeH2, etc.)
+    // Asegurarse de que las cargas no sean < 0 ni > altura_piezometro_total
+
+    // altura_base_tubo = 335;
+    // altura_piezometro_total = 200;
+    // h_inicial = 150;
+
+    // Esto es necesario para la coordenada 'y' en el array piezometros
+    const Y_SUPERIOR = altura_base_tubo - altura_piezometro_total;
+    const safeH1 = Math.min(Math.max(h1, 0), altura_piezometro_total);
+    const safeH2 = Math.min(Math.max(h2, 0), altura_piezometro_total);
+    const safeH3 = Math.min(Math.max(h3, 0), altura_piezometro_total);
+    const safeH4 = Math.min(Math.max(h4, 0), altura_piezometro_total);
+
+    //dibuja los piezometros
+    const piezometros = [
+      // Usamos Y_SUPERIOR (calculada arriba) y las cargas dinámicas (safeHX)
+      {
+        x: 120,
+        y: Y_SUPERIOR,
+        w: 20,
+        h: altura_piezometro_total,
+        hAgua: safeH1,
+      },
+      {
+        x: 290,
+        y: Y_SUPERIOR,
+        w: 20,
+        h: altura_piezometro_total,
+        hAgua: safeH2,
+      },
+      {
+        x: 490,
+        y: Y_SUPERIOR,
+        w: 20,
+        h: altura_piezometro_total,
+        hAgua: safeH3,
+      },
+      {
+        x: 660,
+        y: Y_SUPERIOR,
+        w: 20,
+        h: altura_piezometro_total,
+        hAgua: safeH4,
+      },
+    ];
+
+    piezometros.forEach((p) =>
+      drawPiezometro(ctx, p.x, p.y, p.w, p.h, p.hAgua),
+    );
+
+    // 6. MOSTRAR CÁLCULOS CLAVE EN EL CANVAS
+    ctx.font = "14px 'Roboto Mono', monospace";
+    ctx.fillStyle = colores.texto;
+    ctx.textAlign = "left";
+    ctx.textBaseline = "top";
+
+    // Gradiente Total (i_total)
+    const deltaH_total = deltaHA + deltaHB + deltaHC;
+    const L_total = 3 * L;
+    const i_total = deltaH_total / L_total;
+
+    // Sección A
+    const textoIA = `iA = ${iA.toFixed(4)}`;
+    ctx.fillText(`${textoIA}`, 175, 100);
+    const textoDha = `ΔhA = ${deltaHA.toFixed(2)}`;
+    ctx.fillText(`${textoDha}`, 175, 120);
+    ctx.fillText("ΔL = 200", 175, 140);
+
+    // Sección B
+    const textoIB = `iB = ${iB.toFixed(4)}`;
+    ctx.fillText(`${textoIB}`, 365, 100);
+    const textoDhb = `ΔhB = ${deltaHB.toFixed(2)}`;
+    ctx.fillText(`${textoDhb}`, 365, 120);
+    ctx.fillText("ΔL = 200", 365, 140);
+
+    // Sección C
+    const textoIC = `iC = ${iC.toFixed(4)}`;
+    ctx.fillText(`${textoIC}`, 550, 100);
+    const textoDhc = `ΔhC = ${deltaHC.toFixed(2)}`;
+    ctx.fillText(`${textoDhc}`, 550, 120);
+    ctx.fillText("ΔL = 200", 550, 140);
+
+    //Texto de la Q
+    ctx.fillText("Q", 27, 315);
+    ctx.fillText("――――>", 40, 315);
+
+    //Gradiente Hidráulico Total (por si lo quieres matar yeya)
+    const textoITotal = `i TOTAL (Promedio) = ${i_total.toFixed(4)}`;
+    ctx.fillText(textoITotal, 550, 400);
+
+    //dibuja la linea que conecta los niveles de agua jeje
+    drawGradienteHidraulico(ctx, piezometros);
+
+    //avanza tiempo
+    t += 1;
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+
+  // Llamar cada vez que cambia el tamaño de la pantalla
+  window.addEventListener("resize", () => {
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+    draw();
+  });
+  // document.getElementById("kA").addEventListener("input", draw);
+  // document.getElementById("aA").addEventListener("input", draw);
+  // document.getElementById("kB").addEventListener("input", draw);
+  // document.getElementById("aB").addEventListener("input", draw);
+  // document.getElementById("kC").addEventListener("input", draw);
+  // document.getElementById("aC").addEventListener("input", draw);
+  // document.getElementById("ejemplo").addEventListener("input", draw); // Q
+  // areaTubo1.addEventListener("input", draw);
+  // areaTubo2.addEventListener("input", draw);
+  // areaTubo3.addEventListener("input", draw);
+</script>
+
+<style>
+  .controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.3s ease;
+  }
+
+  .section-card {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow:
+      0 4px 6px rgba(0, 0, 0, 0.1),
+      0 2px 4px rgba(0, 0, 0, 0.06);
+  }
+
+  .section-card h3 {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--titles);
+  }
+
+  .section-card label {
+    display: block;
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--textoCardCanvas);
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
     width: 100%;
-    height: 50%; /* nivel inicial */
-    background: #67bed9;
-    transition: height 0.8s ease;
+    height: 6px;
+    border-radius: 5px;
+    background: linear-gradient(90deg, #3aa6b9, #6fd3e7);
+    outline: none;
+    transition: 0.3s ease;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    background: #3aa6b9;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+  }
+
+  .section-card input[type="range"] {
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .section-card input[type="number"] {
+    width: 100%;
+    margin-top: 4px;
+    outline: none;
+    color: var(--textoHover);
+    background-color: var(--hoverSidebar);
+    padding-left: 12px;
+    border-radius: 5px;
+  }
+
+  .section-card span {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--textoCardCanvas);
+    margin-left: 8px;
+  }
+
+  .section-card:hover {
+    transform: scale(0.99);
+    /* box-shadow: 0 10px 25px rgba(0, 0, 0, 0.55); */
+    border-color: rgba(0, 191, 255, 0.4);
+  }
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 22px;
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider-toggle {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #555;
+    transition: 0.4s;
+    border-radius: 34px;
+  }
+
+  .slider-toggle:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+
+  .switch input:checked + .slider-toggle {
+    background-color: #3aa6b9;
+  }
+
+  .switch input:checked + .slider-toggle:before {
+    transform: translateX(18px);
   }
 </style>
-
-<script>
-  let salinidad = 1000;
-  let humedad = 65;
-
-  const agua = document.querySelector(".agua");
-  const control = document.getElementById("control");
-
-  control.addEventListener("input", () => {
-    agua.style.height = control.value + "%";
-  });
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const sliderSalinidad = document.getElementById("salinidad");
-    const sliderHumedad = document.getElementById("humedad");
-    const salinidadValue = document.getElementById("salinidad-value");
-    const humedadValue = document.getElementById("humedad-value");
-
-    // Inicializamos sliders y spans
-    sliderSalinidad.value = salinidad;
-    sliderHumedad.value = humedad;
-
-    // Actualizamos la variable y el span al mover el slider de salinidad
-    sliderSalinidad.addEventListener("input", (event) => {
-      salinidad = Number(event.target.value);
-      salinidadValue.textContent = salinidad;
-      console.log("Salinidad:", salinidad);
-    });
-
-    // Actualizamos la variable y el span al mover el slider de humedad
-    sliderHumedad.addEventListener("input", (event) => {
-      humedad = Number(event.target.value);
-      humedadValue.textContent = humedad;
-      console.log("Humedad:", humedad);
-    });
-  });
-</script>

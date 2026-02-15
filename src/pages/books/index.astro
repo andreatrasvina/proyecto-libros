@@ -11,7 +11,7 @@ console.log(books);
   <div class="max-w-[75%] flex flex-col justify-center mt-22 mx-auto">
     <div>
       <h1 class="lato-bold">Detalles de los libros</h1>
-      <h1 class="lato-bold text-7xl mt-8">Explora nuestros libros</h1>
+      <h1 class="lato-bold text-7xl mt-8">Explora la biblioteca interactiva</h1>
       <h2 class="lato-regular text-xl w-[90%] mt-8 mb-8">
         Descubre una nueva forma de aprender.
       </h2>
@@ -31,9 +31,9 @@ console.log(books);
         <div class="flex gap-8 p-6 bg-[var(--cards)] max-w-[75%] mx-auto mt-8 border-t border-[var(--rayas)]">
           {/* <!-- imagen del libro --> */}
           <div>
-            <a href={`/books/${slug}`}>
+            <a href={`/proyecto-libros/books/${slug}`}>
               <img
-                src={`${img}`}
+                src={`/proyecto-libros/${img}`}
                 alt="Portada del libro"
                 class="max-w-[500px] max-h-[300px] h-auto rounded-sm shadow-md object-cover"
               />
@@ -75,7 +75,7 @@ console.log(books);
             {/* <!-- botones --> */}
             <div class="flex gap-3">
               <a
-                href={`/books/${slug}`}
+                href={`/proyecto-libros/books/${slug}`}
                 class="bg-[var(--botonOscuro)] border border-gray-400 text-white px-4 py-2 rounded hover:bg-gray-800 transition"
               >
                 Ir al libro
@@ -90,7 +90,7 @@ console.log(books);
   <!-- BOTÓN VER TODOS -->
   <div class="mt-24 mb-24 ver-mas flex justify-center">
     <a
-      href="/books"
+      href="/proyecto-libros/books"
       class="px-6 py-2 border border-gray-400 rounded hover:bg-[var(--navfooternt)] bg-[var(--cards)] text-[var(--titles)] transition-colors duration-300 ease-in-out"
     >
       Ver más
